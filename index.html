@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>RE:BORN — Собери ПК</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">⚡ RE:BORN — Собери ПК</div>
+            <div class="header-stats">
+                <span class="stat">🪙 <span id="bonus-points">0</span></span>
+                <span class="stat">🎫 <span id="tickets">5</span>/5</span>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab active" data-tab="drop">🎰 Дроп</button>
+            <button class="tab" data-tab="inventory">🎒 Инвентарь</button>
+            <button class="tab" data-tab="build">🖥 Сборка</button>
+            <button class="tab" data-tab="rating">🏆 Рейтинг</button>
+        </div>
+
+        <!-- Drop Page -->
+        <div id="page-drop" class="page active">
+            <div class="drop-area">
+                <div class="drop-box" id="drop-box">
+                    <div class="drop-box-inner" id="drop-box-inner">
+                        <div class="drop-icon">📦</div>
+                        <div class="drop-text">Нажми, чтобы открыть</div>
+                        <div class="drop-subtext">Шанс редких деталей: 1%</div>
+                    </div>
+                </div>
+                <div class="drop-result hidden" id="drop-result">
+                    <div class="result-rarity" id="result-rarity"></div>
+                    <div class="result-icon" id="result-icon"></div>
+                    <div class="result-name" id="result-name"></div>
+                    <div class="result-model" id="result-model"></div>
+                    <div class="result-power" id="result-power"></div>
+                    <button class="btn btn-primary" id="btn-collect">Забрать</button>
+                </div>
+            </div>
+            <div class="ticket-timer" id="ticket-timer"></div>
+        </div>
+
+        <!-- Inventory Page -->
+        <div id="page-inventory" class="page">
+            <div class="inventory-filters">
+                <button class="filter-btn active" data-filter="all">Все</button>
+                <button class="filter-btn" data-filter="cpu">CPU</button>
+                <button class="filter-btn" data-filter="gpu">GPU</button>
+                <button class="filter-btn" data-filter="ram">RAM</button>
+                <button class="filter-btn" data-filter="mb">Плата</button>
+                <button class="filter-btn" data-filter="psu">БП</button>
+                <button class="filter-btn" data-filter="case">Корпус</button>
+                <button class="filter-btn" data-filter="cool">Охлажд.</button>
+            </div>
+            <div class="inventory-list" id="inventory-list"></div>
+        </div>
+
+        <!-- Build Page -->
+        <div id="page-build" class="page">
+            <div class="build-slots" id="build-slots"></div>
+            <div class="build-rating" id="build-rating"></div>
+            <button class="btn btn-accent" id="btn-assemble">⚡ Собрать ПК</button>
+        </div>
+
+        <!-- Rating Page -->
+        <div id="page-rating" class="page">
+            <div class="rating-tiers" id="rating-tiers"></div>
+            <div class="builds-history" id="builds-history"></div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
