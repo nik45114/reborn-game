@@ -287,8 +287,32 @@ dropBox.addEventListener("click", () => {
         document.getElementById("result-model").style.color = rar.color;
         document.getElementById("result-power").textContent = "⚡ " + comp.power + " очков мощности";
 
+        // Auto-equip info
+        const currentInSlot = state.currentBuild[comp.category];
+        const isUpgrade = !currentInSlot || comp.power > currentInSlot.power;
+        const autoEquipInfo = document.getElementById("auto-equip-info");
+        if (autoEquipInfo) autoEquipInfo.remove();
+
+        if (isUpgrade) {
+            const info = document.createElement("div");
+            info.id = "auto-equip-info";
+            info.style.cssText = "color:#22c55e;font-size:13px;margin-top:8px;font-weight:600;";
+            info.textContent = currentInSlot
+                ? `🔄 Заменит ${currentInSlot.model} (⚡${currentInSlot.power}) в сборке`
+                : `✅ Автоматически встанет в сборку`;
+            document.getElementById("result-power").after(info);
+        }
+
         document.getElementById("btn-collect").onclick = () => {
             state.inventory.push(comp);
+
+            // Auto-equip: if better than current slot — put in build
+            const slotComp = state.currentBuild[comp.category];
+            if (!slotComp || comp.power > slotComp.power) {
+                // Return old component to free inventory (unlink from build)
+                state.currentBuild[comp.category] = comp;
+            }
+
             saveState();
 
             dropResult.classList.add("hidden");
