@@ -250,10 +250,9 @@ function renderCase() {
         }
     }
 
-    // RGB strip when has parts
-    pcCase.classList.toggle("has-rgb", filledCount > 0);
-    const deskGlow = document.getElementById("desk-glow");
-    if (deskGlow) deskGlow.classList.toggle("active", filledCount > 0);
+    // RGB strip in SVG
+    const rgbStrip = document.getElementById("rgb-strip");
+    if (rgbStrip) rgbStrip.setAttribute("opacity", filledCount > 0 ? "0.8" : "0");
 
     // Update build bar
     const power = getBuildPower();
