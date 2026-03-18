@@ -18,125 +18,33 @@
             </div>
         </div>
 
-        <!-- PC on desk scene -->
+        <!-- PC Case with background image -->
         <div class="case-container">
-            <div class="pc-scene">
-                <div class="pc-case-wrapper">
-                    <!-- SVG PC Case illustration -->
-                    <svg class="pc-case-svg" viewBox="0 0 320 370" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Shadow under case -->
-                        <ellipse cx="160" cy="355" rx="120" ry="8" fill="rgba(0,0,0,0.3)"/>
+            <div class="pc-image-wrapper" id="pc-case">
+                <img src="bg.png" class="pc-bg-image" alt="PC Case">
 
-                        <!-- Case body - main rectangle -->
-                        <rect x="30" y="15" width="230" height="330" rx="10" ry="10"
-                              fill="#1a1f2e" stroke="#3d4660" stroke-width="2.5"/>
-
-                        <!-- Case inner area (dark) -->
-                        <rect x="40" y="25" width="210" height="310" rx="6" ry="6"
-                              fill="#0d1117" stroke="#2a3348" stroke-width="1"/>
-
-                        <!-- Motherboard (PCB green-ish board) -->
-                        <rect x="50" y="30" width="180" height="215" rx="4" ry="4"
-                              fill="#141e28" stroke="#1e3a2a" stroke-width="1.5"/>
-                        <!-- PCB traces -->
-                        <line x1="60" y1="80" x2="220" y2="80" stroke="#1a2e24" stroke-width="0.5"/>
-                        <line x1="60" y1="120" x2="220" y2="120" stroke="#1a2e24" stroke-width="0.5"/>
-                        <line x1="60" y1="160" x2="220" y2="160" stroke="#1a2e24" stroke-width="0.5"/>
-                        <line x1="60" y1="200" x2="220" y2="200" stroke="#1a2e24" stroke-width="0.5"/>
-                        <line x1="100" y1="35" x2="100" y2="240" stroke="#1a2e24" stroke-width="0.5"/>
-                        <line x1="150" y1="35" x2="150" y2="240" stroke="#1a2e24" stroke-width="0.5"/>
-                        <line x1="200" y1="35" x2="200" y2="240" stroke="#1a2e24" stroke-width="0.5"/>
-
-                        <!-- PSU bay divider -->
-                        <line x1="40" y1="258" x2="250" y2="258" stroke="#2a3348" stroke-width="1.5"/>
-
-                        <!-- PSU unit -->
-                        <rect x="145" y="268" width="95" height="58" rx="3" ry="3"
-                              fill="#1a1f28" stroke="#333d50" stroke-width="1.5"/>
-                        <!-- PSU fan grill -->
-                        <circle cx="192" cy="297" r="20" fill="none" stroke="#2a3040" stroke-width="1"/>
-                        <circle cx="192" cy="297" r="14" fill="none" stroke="#2a3040" stroke-width="0.7"/>
-                        <circle cx="192" cy="297" r="8" fill="none" stroke="#2a3040" stroke-width="0.5"/>
-                        <!-- PSU label -->
-                        <rect x="152" y="275" width="22" height="8" rx="1" fill="#333d50"/>
-
-                        <!-- Drive bays area -->
-                        <rect x="50" y="268" width="80" height="58" rx="3" ry="3"
-                              fill="none" stroke="#222c3d" stroke-width="1" stroke-dasharray="3,3"/>
-
-                        <!-- Front panel (right side strip) -->
-                        <rect x="255" y="25" width="18" height="310" rx="3" ry="3"
-                              fill="#161b28" stroke="#2a3348" stroke-width="1"/>
-                        <!-- Power button -->
-                        <circle cx="264" cy="50" r="6" fill="#0d2818" stroke="#22c55e" stroke-width="1.5">
-                            <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
-                        </circle>
-                        <!-- USB ports -->
-                        <rect x="258" y="70" width="12" height="5" rx="1" fill="#0d1117" stroke="#2a3348" stroke-width="0.8"/>
-                        <rect x="258" y="82" width="12" height="5" rx="1" fill="#0d1117" stroke="#2a3348" stroke-width="0.8"/>
-
-                        <!-- IO shield (top) -->
-                        <rect x="30" y="15" width="230" height="3" rx="1"
-                              fill="#2a3040"/>
-
-                        <!-- Expansion slot brackets (back, left side) -->
-                        <rect x="32" y="160" width="8" height="14" rx="1" fill="#1a1f28" stroke="#2a3040" stroke-width="0.7"/>
-                        <rect x="32" y="178" width="8" height="14" rx="1" fill="#1a1f28" stroke="#2a3040" stroke-width="0.7"/>
-                        <rect x="32" y="196" width="8" height="14" rx="1" fill="#1a1f28" stroke="#2a3040" stroke-width="0.7"/>
-                        <rect x="32" y="214" width="8" height="14" rx="1" fill="#1a1f28" stroke="#2a3040" stroke-width="0.7"/>
-
-                        <!-- Case feet -->
-                        <rect x="50" y="345" width="30" height="8" rx="3" fill="#333"/>
-                        <rect x="210" y="345" width="30" height="8" rx="3" fill="#333"/>
-
-                        <!-- RGB strip (bottom of MB area) - animated -->
-                        <rect x="52" y="248" width="176" height="3" rx="1" fill="url(#rgbGrad)" opacity="0" id="rgb-strip">
-                            <animate attributeName="opacity" values="0" dur="1s" fill="freeze" id="rgb-anim"/>
-                        </rect>
-
-                        <!-- RGB gradient -->
-                        <defs>
-                            <linearGradient id="rgbGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#ef4444">
-                                    <animate attributeName="stop-color" values="#ef4444;#3b82f6;#ef4444" dur="3s" repeatCount="indefinite"/>
-                                </stop>
-                                <stop offset="33%" stop-color="#22c55e">
-                                    <animate attributeName="stop-color" values="#22c55e;#a855f7;#22c55e" dur="3s" repeatCount="indefinite"/>
-                                </stop>
-                                <stop offset="66%" stop-color="#3b82f6">
-                                    <animate attributeName="stop-color" values="#3b82f6;#f59e0b;#3b82f6" dur="3s" repeatCount="indefinite"/>
-                                </stop>
-                                <stop offset="100%" stop-color="#a855f7">
-                                    <animate attributeName="stop-color" values="#a855f7;#ef4444;#a855f7" dur="3s" repeatCount="indefinite"/>
-                                </stop>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-
-                    <!-- Overlay component slots -->
-                    <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
-                        <div class="slot-placeholder">Мат. плата</div>
-                    </div>
-                    <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
-                        <div class="slot-placeholder">CPU</div>
-                    </div>
-                    <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
-                        <div class="slot-placeholder">Кулер</div>
-                    </div>
-                    <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
-                        <div class="slot-placeholder">RAM</div>
-                    </div>
-                    <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
-                        <div class="slot-placeholder">Видеокарта</div>
-                    </div>
-                    <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
-                        <div class="slot-placeholder">Блок питания</div>
-                    </div>
-                    <div class="pc-slot slot-case" id="slot-case" data-slot="case">
-                        <div class="slot-placeholder">Корпус</div>
-                    </div>
+                <!-- Component slots overlaid on image -->
+                <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
+                    <div class="slot-placeholder">Кулер</div>
                 </div>
-                <div class="pc-desk"></div>
+                <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
+                    <div class="slot-placeholder">CPU</div>
+                </div>
+                <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
+                    <div class="slot-placeholder">RAM</div>
+                </div>
+                <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
+                    <div class="slot-placeholder">Мат. плата</div>
+                </div>
+                <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
+                    <div class="slot-placeholder">Видеокарта</div>
+                </div>
+                <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
+                    <div class="slot-placeholder">БП</div>
+                </div>
+                <div class="pc-slot slot-case" id="slot-case" data-slot="case">
+                    <div class="slot-placeholder">Корпус</div>
+                </div>
             </div>
 
             <!-- Build bar -->

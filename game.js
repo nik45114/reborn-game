@@ -250,9 +250,8 @@ function renderCase() {
         }
     }
 
-    // RGB strip in SVG
-    const rgbStrip = document.getElementById("rgb-strip");
-    if (rgbStrip) rgbStrip.setAttribute("opacity", filledCount > 0 ? "0.8" : "0");
+    // Update stats
+
 
     // Update build bar
     const power = getBuildPower();
