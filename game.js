@@ -251,7 +251,8 @@ function renderCase() {
     }
 
     // RGB strip when has parts
-    pcCase.classList.toggle("has-parts", filledCount > 0);
+    const caseBody = pcCase.closest(".case-body") || pcCase;
+    caseBody.classList.toggle("has-parts", filledCount > 0);
 
     // Update build bar
     const power = getBuildPower();

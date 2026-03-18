@@ -65,92 +65,234 @@ body {
     font-weight: 600;
 }
 
-/* ===== PC CASE ===== */
+/* ===== 3D PC CASE ===== */
 .case-container {
     padding: 16px;
+    perspective: 900px;
 }
 
-.case-frame {
-    position: relative;
+.case-scene {
     width: 100%;
-    aspect-ratio: 4/3;
-    background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
-    border: 2px solid #30363d;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.1), inset 0 0 60px rgba(0,0,0,0.5);
+    aspect-ratio: 5/4;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(-18deg) rotateX(5deg);
+    margin: 10px auto;
 }
 
-/* Case shell decorations */
-.case-shell {
+/* -- Case body (box) -- */
+.case-body {
     position: absolute;
     inset: 0;
-    pointer-events: none;
+    transform-style: preserve-3d;
 }
 
-.case-top {
+/* Back wall — motherboard tray */
+.case-back-wall {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #21262d, #30363d, #21262d);
-    border-bottom: 1px solid #444c56;
+    inset: 0;
+    background:
+        linear-gradient(180deg, #12161f 0%, #0d1117 100%);
+    border: 1px solid #2a2f3a;
+    border-radius: 4px;
+    transform: translateZ(0px);
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
 }
 
-.case-bottom {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #21262d, #30363d, #21262d);
-    border-top: 1px solid #444c56;
-}
-
-.case-back {
-    position: absolute;
-    top: 6px; bottom: 6px; right: 0;
-    width: 30px;
-    background: linear-gradient(180deg, #161b22, #1c2128);
-    border-left: 1px solid #30363d;
-    /* IO panel lines */
-    background-image: repeating-linear-gradient(
-        0deg, transparent, transparent 8px, #30363d 8px, #30363d 9px
-    );
-}
-
-.case-front {
-    position: absolute;
-    top: 6px; bottom: 6px; left: 0;
-    width: 24px;
-    background: linear-gradient(180deg, #161b22, #0d1117);
-    border-right: 1px solid #30363d;
-}
-
-.case-front::after {
+/* Motherboard texture on back wall */
+.case-back-wall::before {
     content: '';
     position: absolute;
-    top: 15px; left: 6px;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 8px #22c55e;
-    animation: blink 2s ease-in-out infinite;
+    top: 5%; left: 8%; right: 25%;
+    bottom: 20%;
+    background:
+        linear-gradient(180deg, #1a1f2e 0%, #151a26 100%);
+    border: 1px solid #2a3040;
+    border-radius: 3px;
+    /* PCB traces */
+    background-image:
+        linear-gradient(0deg, transparent 49%, #1e2738 49%, #1e2738 51%, transparent 51%),
+        linear-gradient(90deg, transparent 49%, #1e2738 49%, #1e2738 51%, transparent 51%);
+    background-size: 20px 20px;
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+/* Right side wall (visible depth) */
+.case-right-wall {
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #0f1319, #161b24);
+    border: 1px solid #2a2f3a;
+    transform-origin: right center;
+    transform: rotateY(90deg);
+    width: 60px;
+}
+
+/* IO panel cutouts on right wall */
+.case-right-wall::before {
+    content: '';
+    position: absolute;
+    top: 10%; left: 15%; right: 15%;
+    height: 50%;
+    background: repeating-linear-gradient(
+        180deg,
+        #0a0e14 0px, #0a0e14 6px,
+        #1a1f2a 6px, #1a1f2a 8px
+    );
+    border-radius: 2px;
+}
+
+/* Top panel */
+.case-top-wall {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 100%;
+    background: linear-gradient(180deg, #1a1f2a, #151922);
+    border: 1px solid #2a2f3a;
+    transform-origin: top center;
+    transform: rotateX(90deg);
+    height: 60px;
+}
+
+/* Vent holes on top */
+.case-top-wall::before {
+    content: '';
+    position: absolute;
+    top: 20%; left: 10%; right: 30%;
+    bottom: 20%;
+    background: repeating-linear-gradient(
+        90deg,
+        #0d1117 0px, #0d1117 3px,
+        transparent 3px, transparent 6px
+    );
+    border-radius: 2px;
+}
+
+/* Bottom panel */
+.case-bottom-wall {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 100%;
+    background: #0d1117;
+    border: 1px solid #2a2f3a;
+    transform-origin: bottom center;
+    transform: rotateX(-90deg);
+    height: 60px;
+}
+
+/* Left side (open - glass panel removed) */
+/* We don't render this - it's the opening we see through */
+
+/* Front panel */
+.case-front-wall {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 100%;
+    background: linear-gradient(180deg, #181d28, #111620);
+    border: 1px solid #2a2f3a;
+    transform-origin: left center;
+    transform: rotateY(-90deg);
+    width: 60px;
+}
+
+/* Front panel details - power button, USB ports */
+.case-front-wall::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #22c55e 30%, #166534 70%);
+    box-shadow: 0 0 10px #22c55e, 0 0 20px rgba(34, 197, 94, 0.3);
+    animation: powerBlink 2s ease-in-out infinite;
+}
+
+.case-front-wall::after {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 6px;
+    background: #1a1f2a;
+    border: 1px solid #2a3040;
+    border-radius: 2px;
+    box-shadow: 0 12px 0 0 #1a1f2a, 0 12px 0 1px #2a3040;
+}
+
+@keyframes powerBlink {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px #22c55e; }
+    50% { opacity: 0.5; box-shadow: 0 0 5px #22c55e; }
+}
+
+/* RGB strip at bottom of case interior */
+.case-body.has-parts .case-back-wall::after {
+    content: '';
+    position: absolute;
+    bottom: 3%;
+    left: 5%;
+    right: 5%;
+    height: 3px;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #a855f7, #ec4899, #ef4444);
+    background-size: 200% 100%;
+    animation: rgb-flow 2s linear infinite;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+@keyframes rgb-flow {
+    to { background-position: 200% 0; }
+}
+
+/* Side RGB strips */
+.case-body.has-parts .case-right-wall::after {
+    content: '';
+    position: absolute;
+    bottom: 5%;
+    left: 10%; right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
+    background-size: 200% 100%;
+    animation: rgb-flow 3s linear infinite;
+    border-radius: 1px;
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+}
+
+/* Glass panel (leaning against case) */
+.case-glass {
+    position: absolute;
+    top: 5%;
+    right: -28px;
+    bottom: 5%;
+    width: 14px;
+    background: linear-gradient(180deg,
+        rgba(99, 102, 241, 0.08) 0%,
+        rgba(99, 102, 241, 0.03) 50%,
+        rgba(99, 102, 241, 0.08) 100%
+    );
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 2px;
+    transform: rotateY(-8deg) translateZ(10px);
+    backdrop-filter: blur(1px);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.05);
 }
 
 /* ===== COMPONENT SLOTS ===== */
 .pc-slot {
     position: absolute;
-    border: 1px dashed #30363d;
-    border-radius: 6px;
+    border: 1px dashed #2a3040;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
     cursor: pointer;
     overflow: hidden;
+    z-index: 2;
 }
 
 .pc-slot.filled {
@@ -158,11 +300,12 @@ body {
 }
 
 .slot-placeholder {
-    font-size: 10px;
-    color: #30363d;
+    font-size: 9px;
+    color: #2a3040;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .pc-slot.filled .slot-placeholder { display: none; }
@@ -174,88 +317,114 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
-    font-weight: 600;
-    text-align: center;
     padding: 2px;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
-.slot-comp-icon { font-size: 18px; }
+.slot-comp-icon { font-size: 16px; }
 .slot-comp-name {
-    font-size: 8px;
+    font-size: 7px;
+    font-weight: 600;
     opacity: 0.9;
-    line-height: 1.1;
+    line-height: 1;
     margin-top: 1px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 100%;
+    text-align: center;
 }
 
-/* Slot positions — side view of open case */
+/* Slot positions inside the case */
+/* Motherboard area */
 .slot-mb {
-    top: 8%; left: 28%; right: 38%;
-    bottom: 25%;
-    background: rgba(30, 41, 59, 0.4);
+    top: 6%; left: 10%;
+    width: 55%; height: 70%;
+    background: rgba(26, 31, 46, 0.3);
+    border-radius: 3px;
+    border-color: #1e2738;
 }
 
+/* CPU - on motherboard, upper area */
 .slot-cpu {
-    top: 15%; left: 38%;
-    width: 18%; height: 18%;
+    top: 14%; left: 24%;
+    width: 16%; height: 16%;
+    z-index: 3;
 }
 
+/* Cooler - on top of CPU */
 .slot-cool {
-    top: 10%; left: 57%;
-    width: 14%; height: 24%;
+    top: 8%; left: 41%;
+    width: 13%; height: 24%;
+    z-index: 3;
 }
 
+/* RAM - right of CPU, vertical sticks */
 .slot-ram {
-    top: 12%; right: 38%;
-    width: 6%; height: 28%;
+    top: 10%; left: 56%;
+    width: 6%; height: 26%;
+    z-index: 3;
 }
 
+/* GPU - large, below CPU area */
 .slot-gpu {
-    top: 52%; left: 30%;
-    width: 38%; height: 18%;
+    top: 48%; left: 14%;
+    width: 48%; height: 16%;
+    z-index: 3;
 }
 
+/* PSU - bottom right corner */
 .slot-psu {
-    bottom: 4%; right: 34%;
-    width: 24%; height: 18%;
+    bottom: 5%; right: 28%;
+    width: 22%; height: 16%;
+    z-index: 3;
 }
 
+/* Case slot - bottom left */
 .slot-case {
-    bottom: 4%; left: 28%;
-    width: 16%; height: 18%;
+    bottom: 5%; left: 12%;
+    width: 16%; height: 16%;
+    z-index: 3;
 }
 
-/* Slot filled colors by rarity */
-.pc-slot.common { border-color: var(--common); background: rgba(156,163,175,0.1); }
-.pc-slot.uncommon { border-color: var(--uncommon); background: rgba(34,197,94,0.1); }
-.pc-slot.rare { border-color: var(--rare); background: rgba(59,130,246,0.15); }
-.pc-slot.epic { border-color: var(--epic); background: rgba(168,85,247,0.15); box-shadow: 0 0 10px rgba(168,85,247,0.2); }
-.pc-slot.legendary { border-color: var(--legendary); background: rgba(245,158,11,0.15); box-shadow: 0 0 15px rgba(245,158,11,0.3); animation: glow-leg 2s ease-in-out infinite; }
+/* Slot rarity colors */
+.pc-slot.common {
+    border-color: var(--common);
+    background: rgba(156,163,175,0.08);
+}
+.pc-slot.uncommon {
+    border-color: var(--uncommon);
+    background: rgba(34,197,94,0.08);
+}
+.pc-slot.rare {
+    border-color: var(--rare);
+    background: rgba(59,130,246,0.1);
+    box-shadow: inset 0 0 8px rgba(59,130,246,0.1);
+}
+.pc-slot.epic {
+    border-color: var(--epic);
+    background: rgba(168,85,247,0.1);
+    box-shadow: 0 0 10px rgba(168,85,247,0.15), inset 0 0 8px rgba(168,85,247,0.1);
+}
+.pc-slot.legendary {
+    border-color: var(--legendary);
+    background: rgba(245,158,11,0.1);
+    box-shadow: 0 0 12px rgba(245,158,11,0.2), inset 0 0 10px rgba(245,158,11,0.1);
+    animation: glow-leg 2s ease-in-out infinite;
+}
 
 @keyframes glow-leg {
-    0%, 100% { box-shadow: 0 0 10px rgba(245,158,11,0.2); }
-    50% { box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+    0%, 100% { box-shadow: 0 0 8px rgba(245,158,11,0.15); }
+    50% { box-shadow: 0 0 20px rgba(245,158,11,0.4); }
 }
 
-/* RGB strip when components are installed */
-.case-frame.has-parts::before {
-    content: '';
-    position: absolute;
-    bottom: 6px; left: 24px; right: 30px;
-    height: 2px;
-    background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #a855f7, #ef4444);
-    background-size: 200% 100%;
-    animation: rgb-flow 3s linear infinite;
-    z-index: 5;
+/* Fan animation for cooler slot */
+.slot-cool.filled .slot-comp-icon {
+    animation: spin-fan 2s linear infinite;
 }
 
-@keyframes rgb-flow {
-    to { background-position: 200% 0; }
+@keyframes spin-fan {
+    to { transform: rotate(360deg); }
 }
 
 /* ===== BUILD BAR ===== */
@@ -338,21 +507,11 @@ body {
 @keyframes rotate { to { transform: rotate(360deg); } }
 
 .btn-drop:active { transform: scale(0.97); }
-
-.btn-drop:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
+.btn-drop:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-drop-icon { font-size: 28px; }
-
 .btn-drop-text { flex: 1; text-align: left; }
-
-.btn-drop-sub {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--accent2);
-}
+.btn-drop-sub { font-size: 11px; font-weight: 500; color: var(--accent2); }
 
 .btn-assemble {
     padding: 14px;
@@ -381,7 +540,7 @@ body {
 .drop-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,0.92);
     z-index: 200;
     display: flex;
     align-items: center;
@@ -395,8 +554,8 @@ body {
 }
 
 @keyframes dropAppear {
-    from { opacity: 0; transform: scale(0.5); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.5) rotateY(180deg); }
+    to { opacity: 1; transform: scale(1) rotateY(0); }
 }
 
 .drop-glow {
@@ -406,7 +565,7 @@ body {
     transform: translate(-50%, -50%);
     border-radius: 50%;
     filter: blur(40px);
-    opacity: 0.6;
+    opacity: 0.5;
     z-index: -1;
 }
 
@@ -422,7 +581,6 @@ body {
 }
 
 .drop-comp-icon { font-size: 56px; }
-
 .drop-info { margin-top: 8px; }
 
 .drop-rarity {
@@ -433,17 +591,8 @@ body {
     margin-bottom: 6px;
 }
 
-.drop-model {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.drop-power {
-    font-size: 14px;
-    color: var(--accent2);
-    margin-bottom: 6px;
-}
+.drop-model { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.drop-power { font-size: 14px; color: var(--accent2); margin-bottom: 6px; }
 
 .drop-action {
     font-size: 12px;
@@ -477,13 +626,13 @@ body {
     font-size: 30px;
     z-index: 300;
     pointer-events: none;
-    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.8));
+    transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.9));
 }
 
 .flying-comp.fly {
-    transform: scale(0.5);
-    opacity: 0.8;
+    transform: scale(0.4);
+    opacity: 0.7;
 }
 
 /* ===== BOTTOM TABS ===== */
@@ -513,10 +662,7 @@ body {
     transition: all 0.2s;
 }
 
-.btab.active {
-    background: var(--accent);
-    color: white;
-}
+.btab.active { background: var(--accent); color: white; }
 
 /* ===== PAGES ===== */
 .page { display: none; padding: 16px; }
@@ -538,7 +684,6 @@ body {
     border-radius: 8px;
     font-size: 11px;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .filter-btn.active {
@@ -566,7 +711,10 @@ body {
 .inv-item.uncommon { border-left-color: var(--uncommon); }
 .inv-item.rare { border-left-color: var(--rare); }
 .inv-item.epic { border-left-color: var(--epic); }
-.inv-item.legendary { border-left-color: var(--legendary); background: linear-gradient(135deg, #1a1000, #1e293b); }
+.inv-item.legendary {
+    border-left-color: var(--legendary);
+    background: linear-gradient(135deg, #1a1000, #1e293b);
+}
 
 .inv-item-icon { font-size: 24px; width: 32px; text-align: center; }
 .inv-item-info { flex: 1; }
@@ -604,11 +752,7 @@ body {
 .tier-desc { font-size: 11px; color: var(--text2); }
 .tier-bonus { font-size: 13px; font-weight: 700; color: var(--green); }
 
-.history-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
+.history-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
 
 .history-item {
     background: var(--bg2);
@@ -663,10 +807,10 @@ body {
 
 /* Slot install flash */
 @keyframes slotFlash {
-    0% { filter: brightness(3); }
-    100% { filter: brightness(1); }
+    0% { filter: brightness(3); transform: scale(1.1); }
+    100% { filter: brightness(1); transform: scale(1); }
 }
 
 .slot-flash {
-    animation: slotFlash 0.4s ease;
+    animation: slotFlash 0.5s ease;
 }
