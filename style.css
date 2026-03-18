@@ -67,28 +67,23 @@ body {
 
 /* ===== PC IMAGE + SLOTS ===== */
 .case-container {
-    padding: 0 10px;
+    padding: 0;
 }
 
 .pc-image-wrapper {
     position: relative;
     width: 100%;
-    border-radius: 12px;
+    min-height: 65vh;
     overflow: hidden;
-    perspective: 800px;
 }
 
 .pc-bg-image {
     width: 100%;
+    height: 100%;
+    min-height: 65vh;
+    object-fit: cover;
+    object-position: center 55%;
     display: block;
-    border-radius: 12px;
-    transform: rotateX(2deg) rotateY(-3deg) scale(1.02);
-    transform-origin: center 60%;
-    filter: contrast(1.08) brightness(1.05);
-    box-shadow:
-        0 20px 40px rgba(0,0,0,0.6),
-        0 8px 16px rgba(0,0,0,0.4),
-        0 0 60px rgba(147, 51, 234, 0.15);
 }
 
 /* ===== COMPONENT SLOTS ===== */
@@ -158,27 +153,14 @@ body {
     text-shadow: 0 0 3px rgba(0,0,0,0.8);
 }
 
-/* Slot positions — mapped to the case image */
-/* Fan/cooler area — top left in the case */
-.slot-cool { top: 30%; left: 20%; width: 12%; height: 14%; }
-
-/* CPU — center-left area under cooler */
-.slot-cpu { top: 35%; left: 33%; width: 14%; height: 11%; }
-
-/* RAM — right of CPU, vertical */
-.slot-ram { top: 30%; left: 49%; width: 6%; height: 17%; }
-
-/* Motherboard — large area */
-.slot-mb { top: 28%; left: 19%; width: 42%; height: 32%; z-index: 0; border-color: rgba(147,51,234,0.15); background: rgba(14,8,32,0.15); }
-
-/* GPU — center area of case */
-.slot-gpu { top: 51%; left: 22%; width: 38%; height: 9%; }
-
-/* PSU — bottom right */
-.slot-psu { top: 71%; left: 22%; width: 34%; height: 12%; }
-
-/* Case — bottom (represents the case upgrade) */
-.slot-case { top: 71%; left: 58%; width: 16%; height: 12%; }
+/* Slot positions — mapped to fullscreen case image */
+.slot-cool { top: 26%; left: 22%; width: 10%; height: 12%; }
+.slot-cpu  { top: 32%; left: 34%; width: 12%; height: 10%; }
+.slot-ram  { top: 26%; left: 48%; width: 5%;  height: 16%; }
+.slot-mb   { top: 24%; left: 21%; width: 38%; height: 28%; z-index: 0; border-color: rgba(147,51,234,0.12); background: rgba(14,8,32,0.1); }
+.slot-gpu  { top: 46%; left: 24%; width: 34%; height: 8%; }
+.slot-psu  { top: 62%; left: 24%; width: 28%; height: 10%; }
+.slot-case { top: 62%; left: 54%; width: 14%; height: 10%; }
 
 /* Rarity colors */
 .pc-slot.common { border-color: var(--common); background: rgba(156,163,175,0.15); }
@@ -205,6 +187,7 @@ body {
 
 /* ===== BUILD BAR ===== */
 .build-bar {
+    margin: 0 10px;
     margin-top: 8px;
     background: var(--bg2);
     border: 1px solid rgba(147, 51, 234, 0.15);
@@ -246,7 +229,7 @@ body {
 
 /* ===== ACTION BUTTONS ===== */
 .action-area {
-    padding: 0 10px;
+    padding: 0 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
