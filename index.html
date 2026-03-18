@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -26,6 +26,28 @@
             <div class="pc-scene">
                 <div class="pc-case-area" id="pc-case">
                     <div class="case-svg-container" id="case-svg-container"></div>
+                    <!-- Component slots overlay -->
+                    <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
+                        <div class="slot-placeholder">Кулер</div>
+                    </div>
+                    <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
+                        <div class="slot-placeholder">CPU</div>
+                    </div>
+                    <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
+                        <div class="slot-placeholder">RAM</div>
+                    </div>
+                    <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
+                        <div class="slot-placeholder">GPU</div>
+                    </div>
+                    <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
+                        <div class="slot-placeholder">БП</div>
+                    </div>
+                    <div class="pc-slot slot-case" id="slot-case" data-slot="case">
+                        <div class="slot-placeholder">SSD</div>
+                    </div>
+                    <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
+                        <div class="slot-placeholder">Плата</div>
+                    </div>
                 </div>
                 <div class="pc-desk"></div>
             </div>
@@ -107,7 +129,7 @@
         <div class="flying-comp hidden" id="flying-comp"></div>
     </div>
 
-    <script src="cases.js?v=10"></script>
-    <script src="game.js?v=10"></script>
+    <script src="cases.js?v=11"></script>
+    <script src="game.js?v=11"></script>
 </body>
 </html>

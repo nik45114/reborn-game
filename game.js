@@ -225,14 +225,37 @@ function assembleBuild() {
 // ========== UI: CASE RENDERING ==========
 
 function renderCase() {
-    const filledCount = getFilledCount();
     const power = getBuildPower();
     const tier = getBuildTier(power);
+    let filledCount = 0;
 
     // Update SVG case based on tier
     const container = document.getElementById("case-svg-container");
     if (container) {
         container.innerHTML = getCaseSVG(tier.stars);
+    }
+
+    // Update component slots
+    for (const [slot, comp] of Object.entries(state.currentBuild)) {
+        const el = document.getElementById("slot-" + slot);
+        if (!el) continue;
+        const cat = CATEGORIES[slot];
+
+        el.className = "pc-slot slot-" + slot;
+
+        if (comp) {
+            filledCount++;
+            const rar = RARITIES[comp.rarity];
+            el.classList.add("filled", comp.rarity);
+            el.innerHTML = `
+                <div class="slot-component" style="color:${rar.color}">
+                    <div class="slot-comp-icon">${cat.icon}</div>
+                    <div class="slot-comp-name">${comp.model}</div>
+                </div>
+            `;
+        } else {
+            el.innerHTML = `<div class="slot-placeholder">${cat.name}</div>`;
+        }
     }
 
     // Update build bar
