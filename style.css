@@ -65,227 +65,340 @@ body {
     font-weight: 600;
 }
 
-/* ===== 3D PC CASE ===== */
+/* ===== SCENE — DESK + PC ===== */
 .case-container {
-    padding: 16px;
-    perspective: 900px;
+    padding: 12px 16px 0;
 }
 
-.case-scene {
+.scene-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 10px;
+}
+
+/* Room / wall background */
+.room-bg {
+    position: relative;
     width: 100%;
     aspect-ratio: 5/4;
-    position: relative;
-    transform-style: preserve-3d;
-    transform: rotateY(-18deg) rotateX(5deg);
-    margin: 10px auto;
+    background: linear-gradient(180deg, #151b2e 0%, #1a2035 60%, #1f2640 100%);
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0;
 }
 
-/* -- Case body (box) -- */
-.case-body {
-    position: absolute;
-    inset: 0;
-    transform-style: preserve-3d;
-}
-
-/* Back wall — motherboard tray */
-.case-back-wall {
-    position: absolute;
-    inset: 0;
-    background:
-        linear-gradient(180deg, #12161f 0%, #0d1117 100%);
-    border: 1px solid #2a2f3a;
-    border-radius: 4px;
-    transform: translateZ(0px);
-    box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
-}
-
-/* Motherboard texture on back wall */
-.case-back-wall::before {
+/* Wall decoration — LED strip on wall */
+.room-bg::before {
     content: '';
     position: absolute;
-    top: 5%; left: 8%; right: 25%;
-    bottom: 20%;
-    background:
-        linear-gradient(180deg, #1a1f2e 0%, #151a26 100%);
-    border: 1px solid #2a3040;
-    border-radius: 3px;
-    /* PCB traces */
-    background-image:
-        linear-gradient(0deg, transparent 49%, #1e2738 49%, #1e2738 51%, transparent 51%),
-        linear-gradient(90deg, transparent 49%, #1e2738 49%, #1e2738 51%, transparent 51%);
-    background-size: 20px 20px;
+    top: 12%;
+    left: 15%;
+    right: 15%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #6366f1 20%, #a855f7 50%, #6366f1 80%, transparent 100%);
+    opacity: 0.4;
+    border-radius: 1px;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
 }
 
-/* Right side wall (visible depth) */
-.case-right-wall {
+/* Poster on wall */
+.room-bg::after {
+    content: 'RE:BORN';
+    position: absolute;
+    top: 18%;
+    right: 12%;
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(99, 102, 241, 0.2);
+    letter-spacing: 3px;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+/* Desk surface */
+.desk {
+    width: 100%;
+    background: linear-gradient(180deg, #2a1f12 0%, #1f170d 100%);
+    height: 28px;
+    border-radius: 0 0 16px 16px;
+    position: relative;
+    border-top: 3px solid #3d2e1a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Desk wood grain */
+.desk::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 40px,
+        rgba(255,255,255,0.02) 40px,
+        rgba(255,255,255,0.02) 42px
+    );
+    border-radius: 0 0 16px 16px;
+}
+
+/* Desk edge highlight */
+.desk::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+/* ===== 3D PC CASE ===== */
+.case-3d-wrapper {
+    perspective: 600px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -2px;
+    position: relative;
+    z-index: 2;
+}
+
+.case-3d {
+    width: 68%;
+    aspect-ratio: 3/4;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(-22deg) rotateX(3deg);
+}
+
+/* Main open face — we see inside */
+.case-face-front {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #12161f, #0d1117);
+    border: 2px solid #2d3548;
+    border-radius: 8px;
+    transform: translateZ(0px);
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 30px rgba(0,0,0,0.5),
+        inset 0 2px 0 rgba(255,255,255,0.03);
+}
+
+/* Motherboard PCB texture */
+.case-face-front::before {
+    content: '';
+    position: absolute;
+    top: 4%; left: 6%; right: 8%;
+    bottom: 18%;
+    background: #141a28;
+    border: 1px solid #232d42;
+    border-radius: 4px;
+    background-image:
+        linear-gradient(0deg, transparent 48.5%, #1b2335 48.5%, #1b2335 51.5%, transparent 51.5%),
+        linear-gradient(90deg, transparent 48.5%, #1b2335 48.5%, #1b2335 51.5%, transparent 51.5%);
+    background-size: 16px 16px;
+    opacity: 0.6;
+}
+
+/* Side panel (depth) */
+.case-face-side {
     position: absolute;
     top: 0; bottom: 0; right: 0;
     width: 100%;
-    background: linear-gradient(90deg, #0f1319, #161b24);
-    border: 1px solid #2a2f3a;
     transform-origin: right center;
     transform: rotateY(90deg);
-    width: 60px;
+    width: 45px;
+    background: linear-gradient(180deg, #1e2433, #171c28);
+    border: 2px solid #2d3548;
+    border-radius: 0 8px 8px 0;
+    box-shadow: inset -4px 0 10px rgba(0,0,0,0.3);
 }
 
-/* IO panel cutouts on right wall */
-.case-right-wall::before {
+/* IO panel holes */
+.case-face-side::before {
     content: '';
     position: absolute;
-    top: 10%; left: 15%; right: 15%;
-    height: 50%;
+    top: 8%; left: 20%; right: 20%;
+    height: 40%;
     background: repeating-linear-gradient(
         180deg,
-        #0a0e14 0px, #0a0e14 6px,
-        #1a1f2a 6px, #1a1f2a 8px
+        #0d1117 0px, #0d1117 4px,
+        #1a2030 4px, #1a2030 7px
     );
     border-radius: 2px;
 }
 
+/* GPU bracket slots on side */
+.case-face-side::after {
+    content: '';
+    position: absolute;
+    top: 55%; left: 20%; right: 20%;
+    height: 20%;
+    background: repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 6px,
+        #0d1117 6px, #0d1117 8px
+    );
+}
+
 /* Top panel */
-.case-top-wall {
+.case-face-top {
     position: absolute;
     left: 0; right: 0; top: 0;
     height: 100%;
-    background: linear-gradient(180deg, #1a1f2a, #151922);
-    border: 1px solid #2a2f3a;
     transform-origin: top center;
     transform: rotateX(90deg);
-    height: 60px;
+    height: 45px;
+    background: linear-gradient(90deg, #1a2030, #212838);
+    border: 2px solid #2d3548;
+    border-radius: 8px 8px 0 0;
 }
 
-/* Vent holes on top */
-.case-top-wall::before {
+/* Top vents */
+.case-face-top::before {
     content: '';
     position: absolute;
-    top: 20%; left: 10%; right: 30%;
-    bottom: 20%;
+    top: 25%; left: 10%; right: 40%;
+    bottom: 25%;
     background: repeating-linear-gradient(
         90deg,
-        #0d1117 0px, #0d1117 3px,
-        transparent 3px, transparent 6px
+        #0d1117 0px, #0d1117 2px,
+        transparent 2px, transparent 5px
     );
     border-radius: 2px;
 }
 
 /* Bottom panel */
-.case-bottom-wall {
+.case-face-bottom {
     position: absolute;
     left: 0; right: 0; bottom: 0;
     height: 100%;
-    background: #0d1117;
-    border: 1px solid #2a2f3a;
     transform-origin: bottom center;
     transform: rotateX(-90deg);
-    height: 60px;
+    height: 45px;
+    background: #0d1117;
+    border: 2px solid #2d3548;
 }
 
-/* Left side (open - glass panel removed) */
-/* We don't render this - it's the opening we see through */
+/* Rubber feet */
+.case-face-bottom::before {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: 15%;
+    width: 14px; height: 6px;
+    background: #333;
+    border-radius: 2px;
+    box-shadow: calc(70% + 30px) 0 0 0 #333;
+}
 
-/* Front panel */
-.case-front-wall {
+/* Front panel of PC */
+.case-face-left {
     position: absolute;
     top: 0; bottom: 0; left: 0;
     width: 100%;
-    background: linear-gradient(180deg, #181d28, #111620);
-    border: 1px solid #2a2f3a;
     transform-origin: left center;
     transform: rotateY(-90deg);
-    width: 60px;
+    width: 45px;
+    background: linear-gradient(180deg, #1e2433, #141925);
+    border: 2px solid #2d3548;
+    border-radius: 8px 0 0 8px;
 }
 
-/* Front panel details - power button, USB ports */
-.case-front-wall::before {
+/* Power button */
+.case-face-left::before {
     content: '';
     position: absolute;
-    top: 12px;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #22c55e 20%, #0d4a20 80%);
+    box-shadow: 0 0 8px #22c55e, 0 0 20px rgba(34,197,94,0.3);
+    animation: powerGlow 2s ease-in-out infinite;
+}
+
+/* USB ports */
+.case-face-left::after {
+    content: '';
+    position: absolute;
+    top: 28%;
     left: 50%;
     transform: translateX(-50%);
     width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #22c55e 30%, #166534 70%);
-    box-shadow: 0 0 10px #22c55e, 0 0 20px rgba(34, 197, 94, 0.3);
-    animation: powerBlink 2s ease-in-out infinite;
-}
-
-.case-front-wall::after {
-    content: '';
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 6px;
-    background: #1a1f2a;
+    height: 5px;
+    background: #0d1117;
     border: 1px solid #2a3040;
-    border-radius: 2px;
-    box-shadow: 0 12px 0 0 #1a1f2a, 0 12px 0 1px #2a3040;
+    border-radius: 1px;
+    box-shadow: 0 10px 0 0 #0d1117, 0 10px 0 1px #2a3040;
 }
 
-@keyframes powerBlink {
-    0%, 100% { opacity: 1; box-shadow: 0 0 10px #22c55e; }
-    50% { opacity: 0.5; box-shadow: 0 0 5px #22c55e; }
+@keyframes powerGlow {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px #22c55e; }
+    50% { opacity: 0.4; box-shadow: 0 0 4px #22c55e; }
 }
 
-/* RGB strip at bottom of case interior */
-.case-body.has-parts .case-back-wall::after {
+/* Glass panel leaning against case */
+.case-glass-panel {
+    position: absolute;
+    top: 8%;
+    right: -30px;
+    bottom: 4%;
+    width: 12px;
+    background: linear-gradient(180deg,
+        rgba(100, 120, 200, 0.06),
+        rgba(100, 120, 200, 0.02),
+        rgba(100, 120, 200, 0.06)
+    );
+    border: 1px solid rgba(100, 120, 200, 0.12);
+    border-radius: 3px;
+    transform: rotateY(-10deg) translateZ(12px);
+    box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+}
+
+/* ===== RGB inside case ===== */
+.case-face-front.has-rgb::after {
     content: '';
     position: absolute;
-    bottom: 3%;
-    left: 5%;
-    right: 5%;
+    bottom: 4%;
+    left: 8%; right: 10%;
     height: 3px;
     background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e, #3b82f6, #a855f7, #ec4899, #ef4444);
     background-size: 200% 100%;
     animation: rgb-flow 2s linear infinite;
     border-radius: 2px;
-    box-shadow: 0 0 8px rgba(99, 102, 241, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4), 0 0 25px rgba(168, 85, 247, 0.2);
+    z-index: 1;
 }
 
 @keyframes rgb-flow {
     to { background-position: 200% 0; }
 }
 
-/* Side RGB strips */
-.case-body.has-parts .case-right-wall::after {
-    content: '';
+/* Ambient glow on desk from RGB */
+.desk-glow {
     position: absolute;
-    bottom: 5%;
-    left: 10%; right: 10%;
-    height: 2px;
-    background: linear-gradient(90deg, #6366f1, #a855f7, #6366f1);
-    background-size: 200% 100%;
-    animation: rgb-flow 3s linear infinite;
-    border-radius: 1px;
-    box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+    bottom: 0;
+    left: 20%; right: 20%;
+    height: 20px;
+    background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s;
 }
 
-/* Glass panel (leaning against case) */
-.case-glass {
-    position: absolute;
-    top: 5%;
-    right: -28px;
-    bottom: 5%;
-    width: 14px;
-    background: linear-gradient(180deg,
-        rgba(99, 102, 241, 0.08) 0%,
-        rgba(99, 102, 241, 0.03) 50%,
-        rgba(99, 102, 241, 0.08) 100%
-    );
-    border: 1px solid rgba(99, 102, 241, 0.15);
-    border-radius: 2px;
-    transform: rotateY(-8deg) translateZ(10px);
-    backdrop-filter: blur(1px);
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.05);
+.desk-glow.active {
+    opacity: 1;
 }
 
 /* ===== COMPONENT SLOTS ===== */
 .pc-slot {
     position: absolute;
-    border: 1px dashed #2a3040;
-    border-radius: 4px;
+    border: 1.5px dashed #2a3348;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -295,17 +408,15 @@ body {
     z-index: 2;
 }
 
-.pc-slot.filled {
-    border-style: solid;
-}
+.pc-slot.filled { border-style: solid; }
 
 .slot-placeholder {
-    font-size: 9px;
-    color: #2a3040;
+    font-size: 8px;
+    color: #2a3348;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .pc-slot.filled .slot-placeholder { display: none; }
@@ -318,13 +429,13 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2px;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
-.slot-comp-icon { font-size: 16px; }
+.slot-comp-icon { font-size: 15px; }
 .slot-comp-name {
-    font-size: 7px;
-    font-weight: 600;
+    font-size: 6px;
+    font-weight: 700;
     opacity: 0.9;
     line-height: 1;
     margin-top: 1px;
@@ -335,92 +446,68 @@ body {
     text-align: center;
 }
 
-/* Slot positions inside the case */
-/* Motherboard area */
+/* Slot positions */
 .slot-mb {
-    top: 6%; left: 10%;
-    width: 55%; height: 70%;
-    background: rgba(26, 31, 46, 0.3);
-    border-radius: 3px;
-    border-color: #1e2738;
+    top: 5%; left: 7%; right: 10%;
+    bottom: 20%;
+    background: rgba(20, 26, 40, 0.5);
+    border-color: #232d42;
+    border-style: solid;
+    border-radius: 4px;
+    z-index: 1;
 }
 
-/* CPU - on motherboard, upper area */
 .slot-cpu {
-    top: 14%; left: 24%;
-    width: 16%; height: 16%;
+    top: 12%; left: 20%;
+    width: 20%; height: 14%;
     z-index: 3;
 }
 
-/* Cooler - on top of CPU */
 .slot-cool {
-    top: 8%; left: 41%;
-    width: 13%; height: 24%;
+    top: 8%; left: 42%;
+    width: 16%; height: 20%;
     z-index: 3;
 }
 
-/* RAM - right of CPU, vertical sticks */
 .slot-ram {
-    top: 10%; left: 56%;
-    width: 6%; height: 26%;
+    top: 8%; right: 14%;
+    width: 8%; height: 24%;
     z-index: 3;
 }
 
-/* GPU - large, below CPU area */
 .slot-gpu {
-    top: 48%; left: 14%;
-    width: 48%; height: 16%;
+    top: 50%; left: 10%;
+    width: 56%; height: 14%;
     z-index: 3;
 }
 
-/* PSU - bottom right corner */
 .slot-psu {
-    bottom: 5%; right: 28%;
-    width: 22%; height: 16%;
+    bottom: 3%; right: 12%;
+    width: 26%; height: 14%;
     z-index: 3;
 }
 
-/* Case slot - bottom left */
 .slot-case {
-    bottom: 5%; left: 12%;
-    width: 16%; height: 16%;
+    bottom: 3%; left: 8%;
+    width: 18%; height: 14%;
     z-index: 3;
 }
 
-/* Slot rarity colors */
-.pc-slot.common {
-    border-color: var(--common);
-    background: rgba(156,163,175,0.08);
-}
-.pc-slot.uncommon {
-    border-color: var(--uncommon);
-    background: rgba(34,197,94,0.08);
-}
-.pc-slot.rare {
-    border-color: var(--rare);
-    background: rgba(59,130,246,0.1);
-    box-shadow: inset 0 0 8px rgba(59,130,246,0.1);
-}
-.pc-slot.epic {
-    border-color: var(--epic);
-    background: rgba(168,85,247,0.1);
-    box-shadow: 0 0 10px rgba(168,85,247,0.15), inset 0 0 8px rgba(168,85,247,0.1);
-}
-.pc-slot.legendary {
-    border-color: var(--legendary);
-    background: rgba(245,158,11,0.1);
-    box-shadow: 0 0 12px rgba(245,158,11,0.2), inset 0 0 10px rgba(245,158,11,0.1);
-    animation: glow-leg 2s ease-in-out infinite;
-}
+/* Rarity colors */
+.pc-slot.common { border-color: var(--common); background: rgba(156,163,175,0.07); }
+.pc-slot.uncommon { border-color: var(--uncommon); background: rgba(34,197,94,0.07); }
+.pc-slot.rare { border-color: var(--rare); background: rgba(59,130,246,0.1); box-shadow: inset 0 0 6px rgba(59,130,246,0.08); }
+.pc-slot.epic { border-color: var(--epic); background: rgba(168,85,247,0.1); box-shadow: 0 0 8px rgba(168,85,247,0.12); }
+.pc-slot.legendary { border-color: var(--legendary); background: rgba(245,158,11,0.1); box-shadow: 0 0 10px rgba(245,158,11,0.15); animation: glow-leg 2s ease-in-out infinite; }
 
 @keyframes glow-leg {
-    0%, 100% { box-shadow: 0 0 8px rgba(245,158,11,0.15); }
-    50% { box-shadow: 0 0 20px rgba(245,158,11,0.4); }
+    0%, 100% { box-shadow: 0 0 6px rgba(245,158,11,0.1); }
+    50% { box-shadow: 0 0 18px rgba(245,158,11,0.35); }
 }
 
-/* Fan animation for cooler slot */
+/* Fan spin for cooler */
 .slot-cool.filled .slot-comp-icon {
-    animation: spin-fan 2s linear infinite;
+    animation: spin-fan 1.5s linear infinite;
 }
 
 @keyframes spin-fan {
@@ -429,10 +516,10 @@ body {
 
 /* ===== BUILD BAR ===== */
 .build-bar {
-    margin-top: 12px;
+    margin-top: 10px;
     background: var(--bg2);
     border-radius: 10px;
-    padding: 12px;
+    padding: 10px 12px;
 }
 
 .build-bar-label {
@@ -440,12 +527,12 @@ body {
     justify-content: space-between;
     font-size: 13px;
     font-weight: 600;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
 .build-progress-track {
     width: 100%;
-    height: 6px;
+    height: 5px;
     background: var(--bg3);
     border-radius: 3px;
     overflow: hidden;
@@ -464,7 +551,7 @@ body {
     justify-content: space-between;
     font-size: 11px;
     color: var(--text2);
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 /* ===== ACTION BUTTONS ===== */
@@ -473,14 +560,14 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .btn-drop {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 18px;
+    padding: 13px 16px;
     background: linear-gradient(135deg, #1a1040, #2d1b69);
     border: 1px solid var(--accent);
     border-radius: 14px;
@@ -509,12 +596,12 @@ body {
 .btn-drop:active { transform: scale(0.97); }
 .btn-drop:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.btn-drop-icon { font-size: 28px; }
+.btn-drop-icon { font-size: 26px; }
 .btn-drop-text { flex: 1; text-align: left; }
 .btn-drop-sub { font-size: 11px; font-weight: 500; color: var(--accent2); }
 
 .btn-assemble {
-    padding: 14px;
+    padding: 13px;
     background: linear-gradient(135deg, #065f46, #047857);
     border: 1px solid #10b981;
     border-radius: 14px;
@@ -532,7 +619,7 @@ body {
     text-align: center;
     font-size: 12px;
     color: var(--text2);
-    margin-top: 8px;
+    margin-top: 6px;
     padding: 0 16px;
 }
 
@@ -610,7 +697,6 @@ body {
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .drop-collect-btn:active { transform: scale(0.95); }
@@ -627,19 +713,15 @@ body {
     z-index: 300;
     pointer-events: none;
     transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-    filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.9));
+    filter: drop-shadow(0 0 12px rgba(99,102,241,0.9));
 }
 
-.flying-comp.fly {
-    transform: scale(0.4);
-    opacity: 0.7;
-}
+.flying-comp.fly { transform: scale(0.4); opacity: 0.7; }
 
 /* ===== BOTTOM TABS ===== */
 .bottom-tabs {
     position: fixed;
-    bottom: 0;
-    left: 0; right: 0;
+    bottom: 0; left: 0; right: 0;
     background: var(--bg2);
     border-top: 1px solid #30363d;
     display: flex;
@@ -659,7 +741,6 @@ body {
     font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .btab.active { background: var(--accent); color: white; }
@@ -670,10 +751,7 @@ body {
 
 /* ===== INVENTORY ===== */
 .inventory-filters {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
+    display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;
 }
 
 .filter-btn {
@@ -686,17 +764,9 @@ body {
     cursor: pointer;
 }
 
-.filter-btn.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-}
+.filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-.inventory-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
+.inventory-list { display: flex; flex-direction: column; gap: 6px; }
 
 .inv-item {
     background: var(--bg2);
@@ -711,10 +781,7 @@ body {
 .inv-item.uncommon { border-left-color: var(--uncommon); }
 .inv-item.rare { border-left-color: var(--rare); }
 .inv-item.epic { border-left-color: var(--epic); }
-.inv-item.legendary {
-    border-left-color: var(--legendary);
-    background: linear-gradient(135deg, #1a1000, #1e293b);
-}
+.inv-item.legendary { border-left-color: var(--legendary); background: linear-gradient(135deg, #1a1000, #1e293b); }
 
 .inv-item-icon { font-size: 24px; width: 32px; text-align: center; }
 .inv-item-info { flex: 1; }
@@ -722,28 +789,14 @@ body {
 .inv-item-type { font-size: 10px; color: var(--text2); }
 .inv-item-power { font-size: 12px; font-weight: 700; color: var(--accent2); }
 
-.inv-empty {
-    text-align: center;
-    padding: 40px;
-    color: var(--text2);
-    font-size: 14px;
-}
+.inv-empty { text-align: center; padding: 40px; color: var(--text2); font-size: 14px; }
 
 /* ===== RATING ===== */
-.rating-tiers {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
-}
+.rating-tiers { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 
 .tier-card {
-    background: var(--bg2);
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    background: var(--bg2); border-radius: 10px; padding: 12px;
+    display: flex; align-items: center; gap: 10px;
 }
 
 .tier-stars { font-size: 14px; min-width: 85px; }
@@ -755,62 +808,33 @@ body {
 .history-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
 
 .history-item {
-    background: var(--bg2);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: var(--bg2); border-radius: 10px; padding: 10px 12px;
+    margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
 }
 
-.history-empty {
-    text-align: center;
-    padding: 30px;
-    color: var(--text2);
-    font-size: 13px;
-}
+.history-empty { text-align: center; padding: 30px; color: var(--text2); font-size: 13px; }
 
 /* ===== RESULT MODAL ===== */
 .result-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 250;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    z-index: 250; display: flex; align-items: center; justify-content: center;
 }
 
-.result-content {
-    text-align: center;
-    padding: 30px;
-    animation: dropAppear 0.4s ease;
-}
-
+.result-content { text-align: center; padding: 30px; animation: dropAppear 0.4s ease; }
 .result-emoji { font-size: 56px; margin-bottom: 12px; }
 .result-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
 .result-stars { font-size: 32px; letter-spacing: 4px; }
 .result-bonus { font-size: 18px; color: var(--green); font-weight: 700; margin-top: 10px; }
 
 .result-btn {
-    margin-top: 20px;
-    padding: 12px 40px;
-    background: var(--accent);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
+    margin-top: 20px; padding: 12px 40px; background: var(--accent);
+    border: none; border-radius: 12px; color: white; font-size: 15px; font-weight: 700; cursor: pointer;
 }
 
 /* Slot install flash */
 @keyframes slotFlash {
-    0% { filter: brightness(3); transform: scale(1.1); }
+    0% { filter: brightness(3); transform: scale(1.15); }
     100% { filter: brightness(1); transform: scale(1); }
 }
 
-.slot-flash {
-    animation: slotFlash 0.5s ease;
-}
+.slot-flash { animation: slotFlash 0.5s ease; }

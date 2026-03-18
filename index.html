@@ -18,43 +18,50 @@
             </div>
         </div>
 
-        <!-- 3D PC Case View -->
+        <!-- Scene: Room + Desk + 3D PC -->
         <div class="case-container">
-            <div class="case-scene">
-                <div class="case-body" id="pc-case">
-                    <!-- 3D walls -->
-                    <div class="case-back-wall"></div>
-                    <div class="case-right-wall"></div>
-                    <div class="case-top-wall"></div>
-                    <div class="case-bottom-wall"></div>
-                    <div class="case-front-wall"></div>
-
-                    <!-- Glass panel leaning -->
-                    <div class="case-glass"></div>
-
-                    <!-- Component slots inside case -->
-                    <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
-                        <div class="slot-placeholder">Мат. плата</div>
+            <div class="scene-wrapper">
+                <div class="room-bg">
+                    <!-- 3D PC on desk -->
+                    <div class="case-3d-wrapper">
+                        <div class="case-3d">
+                            <!-- Open face — inside view -->
+                            <div class="case-face-front" id="pc-case">
+                                <!-- Component slots -->
+                                <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
+                                    <div class="slot-placeholder">Мат. плата</div>
+                                </div>
+                                <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
+                                    <div class="slot-placeholder">CPU</div>
+                                </div>
+                                <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
+                                    <div class="slot-placeholder">Охлажд.</div>
+                                </div>
+                                <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
+                                    <div class="slot-placeholder">RAM</div>
+                                </div>
+                                <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
+                                    <div class="slot-placeholder">GPU</div>
+                                </div>
+                                <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
+                                    <div class="slot-placeholder">БП</div>
+                                </div>
+                                <div class="pc-slot slot-case" id="slot-case" data-slot="case">
+                                    <div class="slot-placeholder">Корпус</div>
+                                </div>
+                            </div>
+                            <!-- 3D sides -->
+                            <div class="case-face-side"></div>
+                            <div class="case-face-top"></div>
+                            <div class="case-face-bottom"></div>
+                            <div class="case-face-left"></div>
+                            <!-- Glass panel leaning -->
+                            <div class="case-glass-panel"></div>
+                        </div>
                     </div>
-                    <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
-                        <div class="slot-placeholder">CPU</div>
-                    </div>
-                    <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
-                        <div class="slot-placeholder">Охлажд.</div>
-                    </div>
-                    <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
-                        <div class="slot-placeholder">RAM</div>
-                    </div>
-                    <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
-                        <div class="slot-placeholder">GPU</div>
-                    </div>
-                    <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
-                        <div class="slot-placeholder">БП</div>
-                    </div>
-                    <div class="pc-slot slot-case" id="slot-case" data-slot="case">
-                        <div class="slot-placeholder">Корпус</div>
-                    </div>
+                    <div class="desk-glow" id="desk-glow"></div>
                 </div>
+                <div class="desk"></div>
             </div>
 
             <!-- Build rating bar -->

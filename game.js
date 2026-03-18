@@ -251,8 +251,9 @@ function renderCase() {
     }
 
     // RGB strip when has parts
-    const caseBody = pcCase.closest(".case-body") || pcCase;
-    caseBody.classList.toggle("has-parts", filledCount > 0);
+    pcCase.classList.toggle("has-rgb", filledCount > 0);
+    const deskGlow = document.getElementById("desk-glow");
+    if (deskGlow) deskGlow.classList.toggle("active", filledCount > 0);
 
     // Update build bar
     const power = getBuildPower();
