@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -21,33 +21,13 @@
             </div>
         </div>
 
-        <!-- PC Case with background image -->
+        <!-- PC Case - dynamic SVG -->
         <div class="case-container">
-            <div class="pc-image-wrapper" id="pc-case">
-                <img src="bg.png" class="pc-bg-image" alt="PC Case">
-
-                <!-- Component slots overlaid on image -->
-                <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
-                    <div class="slot-placeholder">Кулер</div>
+            <div class="pc-scene">
+                <div class="pc-case-area" id="pc-case">
+                    <div class="case-svg-container" id="case-svg-container"></div>
                 </div>
-                <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
-                    <div class="slot-placeholder">CPU</div>
-                </div>
-                <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
-                    <div class="slot-placeholder">RAM</div>
-                </div>
-                <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
-                    <div class="slot-placeholder">Мат. плата</div>
-                </div>
-                <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
-                    <div class="slot-placeholder">Видеокарта</div>
-                </div>
-                <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
-                    <div class="slot-placeholder">БП</div>
-                </div>
-                <div class="pc-slot slot-case" id="slot-case" data-slot="case">
-                    <div class="slot-placeholder">SSD</div>
-                </div>
+                <div class="pc-desk"></div>
             </div>
 
             <!-- Build bar -->
@@ -127,6 +107,7 @@
         <div class="flying-comp hidden" id="flying-comp"></div>
     </div>
 
-    <script src="game.js?v=8"></script>
+    <script src="cases.js?v=9"></script>
+    <script src="game.js?v=9"></script>
 </body>
 </html>

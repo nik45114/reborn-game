@@ -67,23 +67,47 @@ body {
 
 /* ===== PC IMAGE + SLOTS ===== */
 .case-container {
-    padding: 0;
+    padding: 0 10px;
 }
 
-.pc-image-wrapper {
+.pc-scene {
     position: relative;
-    width: 100%;
-    min-height: 65vh;
+    background: linear-gradient(180deg, #0e0820 0%, #150d2a 60%, #1a1230 100%);
+    border-radius: 16px;
     overflow: hidden;
+    padding: 16px 16px 0;
 }
 
-.pc-bg-image {
+.pc-case-area {
+    position: relative;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.case-svg-container {
     width: 100%;
-    height: 100%;
-    min-height: 65vh;
-    object-fit: cover;
-    object-position: center 55%;
+}
+
+.case-svg {
+    width: 100%;
     display: block;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+}
+
+.pc-desk {
+    width: 100%;
+    height: 18px;
+    background: linear-gradient(180deg, #3d2e1a, #2a1f12);
+    border-top: 2px solid #5a4530;
+}
+
+.pc-desk::before {
+    content: '';
+    position: absolute;
+    bottom: 18px;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
 }
 
 /* ===== COMPONENT SLOTS ===== */
