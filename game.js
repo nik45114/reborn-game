@@ -226,20 +226,16 @@ function assembleBuild() {
 
 function renderCase() {
     const filledCount = getFilledCount();
-
-    // Update SVG case based on tier
     const power = getBuildPower();
     const tier = getBuildTier(power);
+
+    // Update SVG case based on tier
     const container = document.getElementById("case-svg-container");
     if (container) {
         container.innerHTML = getCaseSVG(tier.stars);
     }
 
-
-
     // Update build bar
-    const power = getBuildPower();
-    const tier = getBuildTier(power);
     document.getElementById("build-tier-name").textContent = tier.emoji + " " + tier.name;
     document.getElementById("build-stars").textContent = "⭐".repeat(tier.stars);
     document.getElementById("build-power").textContent = power;
