@@ -154,13 +154,13 @@ body {
 }
 
 /* Slot positions — mapped to fullscreen case image */
-.slot-cool { top: 28%; left: 25%; width: 10%; height: 10%; }
-.slot-cpu  { top: 30%; left: 37%; width: 12%; height: 9%;  }
-.slot-ram  { top: 27%; left: 56%; width: 5%;  height: 14%; }
-.slot-mb   { top: 26%; left: 24%; width: 40%; height: 26%; z-index: 0; border-color: rgba(147,51,234,0.12); background: rgba(14,8,32,0.08); }
-.slot-gpu  { top: 48%; left: 27%; width: 34%; height: 7%;  }
-.slot-psu  { top: 63%; left: 40%; width: 24%; height: 10%; }
-.slot-case { top: 55%; left: 27%; width: 12%; height: 8%;  }
+.slot-cool { top: 30%; left: 30%; width: 8%;  height: 9%;  }
+.slot-cpu  { top: 32%; left: 40%; width: 10%; height: 8%;  }
+.slot-ram  { top: 29%; left: 58%; width: 4%;  height: 13%; }
+.slot-mb   { top: 28%; left: 29%; width: 36%; height: 24%; z-index: 0; border-color: rgba(147,51,234,0.12); background: rgba(14,8,32,0.08); }
+.slot-gpu  { top: 49%; left: 31%; width: 30%; height: 6%;  }
+.slot-psu  { top: 63%; left: 44%; width: 20%; height: 9%;  }
+.slot-case { top: 56%; left: 31%; width: 10%; height: 7%;  }
 
 /* Rarity colors */
 .pc-slot.common { border-color: var(--common); background: rgba(156,163,175,0.15); }
