@@ -78,8 +78,8 @@ const BUILD_TIERS = [
     { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 500, emoji: "👑" }
 ];
 
-const MAX_TICKETS = 5;
-const TICKET_REGEN_MS = 30 * 60 * 1000; // 30 минут
+const MAX_TICKETS = 2;
+const TICKET_REGEN_MS = 12 * 60 * 60 * 1000; // 12 часов
 
 // ========== STATE ==========
 
@@ -135,9 +135,10 @@ function updateTicketTimer() {
     } else {
         const elapsed = Date.now() - state.lastTicketTime;
         const remaining = TICKET_REGEN_MS - elapsed;
-        const min = Math.floor(remaining / 60000);
+        const hrs = Math.floor(remaining / 3600000);
+        const min = Math.floor((remaining % 3600000) / 60000);
         const sec = Math.floor((remaining % 60000) / 1000);
-        el.textContent = `Следующий билет через ${min}:${sec.toString().padStart(2, "0")}`;
+        el.textContent = `Следующая попытка через ${hrs}ч ${min.toString().padStart(2, "0")}м ${sec.toString().padStart(2, "0")}с`;
     }
 }
 
