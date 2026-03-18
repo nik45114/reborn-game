@@ -229,10 +229,10 @@ function renderCase() {
     const tier = getBuildTier(power);
     let filledCount = 0;
 
-    // Update SVG case based on tier
-    const container = document.getElementById("case-svg-container");
-    if (container) {
-        container.innerHTML = getCaseSVG(tier.stars);
+    // Update case visual tier
+    const caseArea = document.getElementById("pc-case");
+    if (caseArea) {
+        caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
     // Update component slots
