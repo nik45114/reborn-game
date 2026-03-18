@@ -6,7 +6,7 @@ const CATEGORIES = {
     ram:  { name: "Оперативная",  icon: "💾" },
     mb:   { name: "Мат. плата",   icon: "🔲" },
     psu:  { name: "Блок питания", icon: "🔌" },
-    case: { name: "Корпус",       icon: "🖥" },
+    case: { name: "Накопитель",    icon: "💿" },
     cool: { name: "Охлаждение",   icon: "❄️" }
 };
 
@@ -55,11 +55,11 @@ const COMPONENTS = {
         legendary: ["1200W Corsair AX1200i", "1600W ROG Thor"]
     },
     case: {
-        common:    ["Deepcool CC360", "AeroCool Cylon", "Zalman S2"],
-        uncommon:  ["NZXT H5 Flow", "Corsair 4000D", "Fractal Pop Air"],
-        rare:      ["Lian Li O11 Dynamic", "Corsair 5000T", "Be Quiet 802"],
-        epic:      ["Lian Li O11 Vision", "HYTE Y60"],
-        legendary: ["Lian Li O11D EVO XL", "Phanteks NV9"]
+        common:    ["Kingston A400 240GB", "WD Green 480GB", "Crucial BX500 240GB"],
+        uncommon:  ["Samsung 870 EVO 500GB", "WD Blue SN570 500GB", "Crucial P3 500GB"],
+        rare:      ["Samsung 980 Pro 1TB", "WD Black SN770 1TB", "Kingston KC3000 1TB"],
+        epic:      ["Samsung 990 Pro 2TB", "WD Black SN850X 2TB"],
+        legendary: ["Samsung 990 Pro 4TB", "Seagate FireCuda 530 4TB"]
     },
     cool: {
         common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400", "Hyper 212"],
