@@ -1,21 +1,21 @@
 // ========== DATA ==========
 
 const CATEGORIES = {
-    cpu:  { name: "Процессор",    icon: "🧠", slot: "cpu" },
-    gpu:  { name: "Видеокарта",   icon: "🎮", slot: "gpu" },
-    ram:  { name: "Оперативная",  icon: "💾", slot: "ram" },
-    mb:   { name: "Мат. плата",   icon: "🔲", slot: "mb" },
-    psu:  { name: "Блок питания", icon: "🔌", slot: "psu" },
-    case: { name: "Корпус",       icon: "🖥", slot: "case" },
-    cool: { name: "Охлаждение",   icon: "❄️", slot: "cool" }
+    cpu:  { name: "Процессор",    icon: "🧠" },
+    gpu:  { name: "Видеокарта",   icon: "🎮" },
+    ram:  { name: "Оперативная",  icon: "💾" },
+    mb:   { name: "Мат. плата",   icon: "🔲" },
+    psu:  { name: "Блок питания", icon: "🔌" },
+    case: { name: "Корпус",       icon: "🖥" },
+    cool: { name: "Охлаждение",   icon: "❄️" }
 };
 
 const RARITIES = {
-    common:    { name: "Обычная",      chance: 0.55, color: "#9ca3af", power: [10, 25],  mult: 1 },
-    uncommon:  { name: "Необычная",    chance: 0.25, color: "#22c55e", power: [26, 50],  mult: 2 },
-    rare:      { name: "Редкая",       chance: 0.12, color: "#3b82f6", power: [51, 75],  mult: 3 },
-    epic:      { name: "Эпическая",    chance: 0.06, color: "#a855f7", power: [76, 92],  mult: 5 },
-    legendary: { name: "Легендарная",   chance: 0.02, color: "#f59e0b", power: [93, 100], mult: 10 }
+    common:    { name: "Обычная",    chance: 0.55, color: "#9ca3af", power: [10, 25] },
+    uncommon:  { name: "Необычная",  chance: 0.25, color: "#22c55e", power: [26, 50] },
+    rare:      { name: "Редкая",     chance: 0.12, color: "#3b82f6", power: [51, 75] },
+    epic:      { name: "Эпическая",  chance: 0.06, color: "#a855f7", power: [76, 92] },
+    legendary: { name: "Легендарная", chance: 0.02, color: "#f59e0b", power: [93, 100] }
 };
 
 const COMPONENTS = {
@@ -45,14 +45,14 @@ const COMPONENTS = {
         uncommon:  ["MSI B550 Tomahawk", "ASUS TUF B660", "Gigabyte B550 AORUS"],
         rare:      ["ASUS ROG Strix B550-F", "MSI MAG X570S", "Gigabyte Z690 AORUS"],
         epic:      ["ASUS ROG Maximus Z790", "MSI MEG Z690 ACE"],
-        legendary: ["ASUS ROG Crosshair X670E Extreme", "MSI MEG Z790 GODLIKE"]
+        legendary: ["ASUS ROG Crosshair X670E", "MSI MEG Z790 GODLIKE"]
     },
     psu: {
         common:    ["500W Be Quiet", "550W Corsair CV", "500W Deepcool"],
-        uncommon:  ["650W Corsair RM", "700W Be Quiet Pure Power", "650W Seasonic Focus"],
-        rare:      ["850W Corsair RM850x", "850W Seasonic Focus GX"],
-        epic:      ["1000W Corsair HX1000", "1000W Be Quiet Dark Power"],
-        legendary: ["1200W Corsair AX1200i", "1600W ASUS ROG Thor"]
+        uncommon:  ["650W Corsair RM", "700W Be Quiet Pure", "650W Seasonic Focus"],
+        rare:      ["850W Corsair RM850x", "850W Seasonic GX"],
+        epic:      ["1000W Corsair HX1000", "1000W Be Quiet Dark"],
+        legendary: ["1200W Corsair AX1200i", "1600W ROG Thor"]
     },
     case: {
         common:    ["Deepcool CC360", "AeroCool Cylon", "Zalman S2"],
@@ -62,11 +62,11 @@ const COMPONENTS = {
         legendary: ["Lian Li O11D EVO XL", "Phanteks NV9"]
     },
     cool: {
-        common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400", "Cooler Master Hyper 212"],
+        common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400", "Hyper 212"],
         uncommon:  ["Be Quiet Pure Rock 2", "Noctua NH-U12S", "Arctic Freezer 34"],
-        rare:      ["Noctua NH-D15", "Be Quiet Dark Rock Pro 4", "Corsair H100i"],
+        rare:      ["Noctua NH-D15", "Be Quiet Dark Rock Pro", "Corsair H100i"],
         epic:      ["NZXT Kraken X73", "Corsair H150i Elite"],
-        legendary: ["ASUS ROG RYUJIN III 360", "NZXT Kraken Z73 Elite"]
+        legendary: ["ROG RYUJIN III 360", "Kraken Z73 Elite"]
     }
 };
 
@@ -79,7 +79,7 @@ const BUILD_TIERS = [
 ];
 
 const MAX_TICKETS = 2;
-const TICKET_REGEN_MS = 12 * 60 * 60 * 1000; // 12 часов
+const TICKET_REGEN_MS = 12 * 60 * 60 * 1000;
 
 // ========== STATE ==========
 
@@ -98,17 +98,17 @@ function defaultState() {
 
 function loadState() {
     try {
-        const saved = localStorage.getItem("reborn_pc_game");
-        if (saved) return JSON.parse(saved);
+        const s = localStorage.getItem("reborn_pc_game_v2");
+        if (s) return JSON.parse(s);
     } catch(e) {}
     return defaultState();
 }
 
 function saveState() {
-    localStorage.setItem("reborn_pc_game", JSON.stringify(state));
+    localStorage.setItem("reborn_pc_game_v2", JSON.stringify(state));
 }
 
-// ========== TICKET SYSTEM ==========
+// ========== TICKETS ==========
 
 function regenTickets() {
     if (state.tickets >= MAX_TICKETS) {
@@ -116,9 +116,9 @@ function regenTickets() {
         return;
     }
     const elapsed = Date.now() - state.lastTicketTime;
-    const newTickets = Math.floor(elapsed / TICKET_REGEN_MS);
-    if (newTickets > 0) {
-        state.tickets = Math.min(MAX_TICKETS, state.tickets + newTickets);
+    const newT = Math.floor(elapsed / TICKET_REGEN_MS);
+    if (newT > 0) {
+        state.tickets = Math.min(MAX_TICKETS, state.tickets + newT);
         state.lastTicketTime = Date.now();
         saveState();
     }
@@ -126,30 +126,34 @@ function regenTickets() {
 
 function updateTicketTimer() {
     regenTickets();
+    document.getElementById("tickets").textContent = state.tickets;
     const el = document.getElementById("ticket-timer");
-    const ticketEl = document.getElementById("tickets");
-    ticketEl.textContent = state.tickets;
+    const dropSub = document.getElementById("drop-sub");
+    const dropBtn = document.getElementById("btn-drop");
+
+    dropSub.textContent = `🎫 ${state.tickets} попыт${state.tickets === 1 ? "ка" : "ки"}`;
+    dropBtn.disabled = state.tickets <= 0;
 
     if (state.tickets >= MAX_TICKETS) {
-        el.textContent = "Все билеты доступны!";
+        el.textContent = "Все попытки доступны!";
     } else {
         const elapsed = Date.now() - state.lastTicketTime;
         const remaining = TICKET_REGEN_MS - elapsed;
         const hrs = Math.floor(remaining / 3600000);
         const min = Math.floor((remaining % 3600000) / 60000);
         const sec = Math.floor((remaining % 60000) / 1000);
-        el.textContent = `Следующая попытка через ${hrs}ч ${min.toString().padStart(2, "0")}м ${sec.toString().padStart(2, "0")}с`;
+        el.textContent = `Следующая попытка через ${hrs}ч ${min.toString().padStart(2,"0")}м ${sec.toString().padStart(2,"0")}с`;
     }
 }
 
-// ========== DROP SYSTEM ==========
+// ========== DROP ==========
 
 function rollRarity() {
-    const roll = Math.random();
-    let cumulative = 0;
-    for (const [key, rarity] of Object.entries(RARITIES)) {
-        cumulative += rarity.chance;
-        if (roll <= cumulative) return key;
+    const r = Math.random();
+    let c = 0;
+    for (const [key, rar] of Object.entries(RARITIES)) {
+        c += rar.chance;
+        if (r <= c) return key;
     }
     return "common";
 }
@@ -162,47 +166,30 @@ function rollComponent() {
     const model = models[Math.floor(Math.random() * models.length)];
     const [minP, maxP] = RARITIES[rarity].power;
     const power = minP + Math.floor(Math.random() * (maxP - minP + 1));
-
-    return {
-        id: Date.now() + Math.random(),
-        category,
-        rarity,
-        model,
-        power
-    };
+    return { id: Date.now() + Math.random(), category, rarity, model, power };
 }
 
 function doDrop() {
     regenTickets();
     if (state.tickets <= 0) return null;
-
     state.tickets--;
-    state.lastTicketTime = state.tickets < MAX_TICKETS && state.lastTicketTime === 0
-        ? Date.now() : state.lastTicketTime;
-    if (state.tickets === MAX_TICKETS - 1) {
-        state.lastTicketTime = Date.now();
-    }
-
-    const component = rollComponent();
+    if (state.tickets === MAX_TICKETS - 1) state.lastTicketTime = Date.now();
+    const comp = rollComponent();
     saveState();
-    return component;
+    return comp;
 }
 
-// ========== BUILD SYSTEM ==========
+// ========== BUILD ==========
 
 function getBuildPower() {
-    let total = 0;
-    for (const slot of Object.values(state.currentBuild)) {
-        if (slot) total += slot.power;
-    }
-    return total;
+    let t = 0;
+    for (const s of Object.values(state.currentBuild)) if (s) t += s.power;
+    return t;
 }
 
 function getBuildTier(power) {
     let tier = BUILD_TIERS[0];
-    for (const t of BUILD_TIERS) {
-        if (power >= t.minPower) tier = t;
-    }
+    for (const t of BUILD_TIERS) if (power >= t.minPower) tier = t;
     return tier;
 }
 
@@ -210,23 +197,19 @@ function isBuildComplete() {
     return Object.values(state.currentBuild).every(s => s !== null);
 }
 
+function getFilledCount() {
+    return Object.values(state.currentBuild).filter(s => s !== null).length;
+}
+
 function assembleBuild() {
     if (!isBuildComplete()) return;
-
     const power = getBuildPower();
     const tier = getBuildTier(power);
-
     state.bonusPoints += tier.bonus;
-
     state.buildsHistory.unshift({
         date: new Date().toLocaleDateString("ru"),
-        tier: tier.name,
-        stars: tier.stars,
-        power,
-        bonus: tier.bonus
+        tier: tier.name, stars: tier.stars, power, bonus: tier.bonus
     });
-
-    // Remove used components from inventory
     for (const slot of Object.keys(state.currentBuild)) {
         const comp = state.currentBuild[slot];
         if (comp) {
@@ -235,104 +218,229 @@ function assembleBuild() {
         }
         state.currentBuild[slot] = null;
     }
-
     saveState();
     return tier;
 }
 
-// ========== UI ==========
+// ========== UI: CASE RENDERING ==========
 
-// Tabs
-document.querySelectorAll(".tab").forEach(tab => {
+function renderCase() {
+    const pcCase = document.getElementById("pc-case");
+    let filledCount = 0;
+
+    for (const [slot, comp] of Object.entries(state.currentBuild)) {
+        const el = document.getElementById("slot-" + slot);
+        const cat = CATEGORIES[slot];
+
+        // Clear classes
+        el.className = "pc-slot slot-" + slot;
+
+        if (comp) {
+            filledCount++;
+            const rar = RARITIES[comp.rarity];
+            el.classList.add("filled", comp.rarity);
+            el.innerHTML = `
+                <div class="slot-component" style="color:${rar.color}">
+                    <div class="slot-comp-icon">${cat.icon}</div>
+                    <div class="slot-comp-name">${comp.model}</div>
+                </div>
+            `;
+        } else {
+            el.innerHTML = `<div class="slot-placeholder">${cat.name}</div>`;
+        }
+    }
+
+    // RGB strip when has parts
+    pcCase.classList.toggle("has-parts", filledCount > 0);
+
+    // Update build bar
+    const power = getBuildPower();
+    const tier = getBuildTier(power);
+    document.getElementById("build-tier-name").textContent = tier.emoji + " " + tier.name;
+    document.getElementById("build-stars").textContent = "⭐".repeat(tier.stars);
+    document.getElementById("build-power").textContent = power;
+    document.getElementById("build-count").textContent = filledCount + "/7";
+
+    const maxPower = 700;
+    document.getElementById("build-progress").style.width = Math.min(100, (power / maxPower) * 100) + "%";
+
+    // Assemble button
+    document.getElementById("btn-assemble").disabled = !isBuildComplete();
+
+    document.getElementById("bonus-points").textContent = state.bonusPoints;
+}
+
+// ========== UI: DROP ANIMATION ==========
+
+function showDrop(comp) {
+    const overlay = document.getElementById("drop-overlay");
+    const cat = CATEGORIES[comp.category];
+    const rar = RARITIES[comp.rarity];
+
+    // Glow color
+    document.getElementById("drop-glow").style.background = rar.color;
+
+    // Component display
+    const compEl = document.getElementById("drop-component");
+    compEl.style.borderColor = rar.color;
+    document.getElementById("drop-comp-icon").textContent = cat.icon;
+
+    // Info
+    document.getElementById("drop-rarity").textContent = rar.name;
+    document.getElementById("drop-rarity").style.color = rar.color;
+    document.getElementById("drop-model").textContent = comp.model;
+    document.getElementById("drop-model").style.color = rar.color;
+    document.getElementById("drop-power").textContent = "⚡ " + comp.power + " мощности";
+
+    // Auto-equip info
+    const current = state.currentBuild[comp.category];
+    const isUpgrade = !current || comp.power > current.power;
+    const actionEl = document.getElementById("drop-action");
+    if (isUpgrade) {
+        actionEl.textContent = current
+            ? `🔄 Заменит ${current.model} (⚡${current.power})`
+            : `✅ Встанет в сборку`;
+        actionEl.style.color = "#22c55e";
+    } else {
+        actionEl.textContent = `📦 В инвентарь (в сборке лучше)`;
+        actionEl.style.color = "#94a3b8";
+    }
+
+    // Collect button
+    const btnArea = document.getElementById("drop-info");
+    let btn = btnArea.querySelector(".drop-collect-btn");
+    if (!btn) {
+        btn = document.createElement("button");
+        btn.className = "drop-collect-btn";
+        btn.textContent = "Забрать";
+        btnArea.appendChild(btn);
+    }
+
+    btn.onclick = () => {
+        overlay.classList.add("hidden");
+
+        // Add to inventory
+        state.inventory.push(comp);
+
+        // Auto-equip if upgrade
+        if (isUpgrade) {
+            state.currentBuild[comp.category] = comp;
+            saveState();
+            flyComponentToSlot(comp, cat);
+        } else {
+            saveState();
+            renderCase();
+        }
+
+        updateTicketTimer();
+    };
+
+    overlay.classList.remove("hidden");
+}
+
+function flyComponentToSlot(comp, cat) {
+    const flyEl = document.getElementById("flying-comp");
+    const slotEl = document.getElementById("slot-" + comp.category);
+
+    // Start position: center of screen
+    const startX = window.innerWidth / 2 - 25;
+    const startY = window.innerHeight / 2 - 25;
+
+    flyEl.textContent = cat.icon;
+    flyEl.style.left = startX + "px";
+    flyEl.style.top = startY + "px";
+    flyEl.style.transform = "scale(1)";
+    flyEl.style.opacity = "1";
+    flyEl.classList.remove("hidden");
+
+    // Target position
+    requestAnimationFrame(() => {
+        const slotRect = slotEl.getBoundingClientRect();
+        const targetX = slotRect.left + slotRect.width / 2 - 25;
+        const targetY = slotRect.top + slotRect.height / 2 - 25;
+
+        flyEl.style.left = targetX + "px";
+        flyEl.style.top = targetY + "px";
+        flyEl.classList.add("fly");
+
+        setTimeout(() => {
+            flyEl.classList.add("hidden");
+            flyEl.classList.remove("fly");
+
+            // Flash the slot
+            slotEl.classList.add("slot-flash");
+            setTimeout(() => slotEl.classList.remove("slot-flash"), 400);
+
+            renderCase();
+        }, 650);
+    });
+}
+
+// ========== UI: TABS ==========
+
+const mainView = document.querySelector(".case-container");
+const actionArea = document.querySelector(".action-area");
+const timerEl = document.querySelector(".ticket-timer");
+
+document.querySelectorAll(".btab").forEach(tab => {
     tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".btab").forEach(t => t.classList.remove("active"));
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         tab.classList.add("active");
-        document.getElementById("page-" + tab.dataset.tab).classList.add("active");
 
-        if (tab.dataset.tab === "inventory") renderInventory();
-        if (tab.dataset.tab === "build") renderBuild();
-        if (tab.dataset.tab === "rating") renderRating();
+        const tabName = tab.dataset.tab;
+        if (tabName === "main") {
+            mainView.style.display = "";
+            actionArea.style.display = "";
+            timerEl.style.display = "";
+        } else {
+            mainView.style.display = "none";
+            actionArea.style.display = "none";
+            timerEl.style.display = "none";
+            document.getElementById("page-" + tabName).classList.add("active");
+            if (tabName === "inventory") renderInventory();
+            if (tabName === "rating") renderRating();
+        }
     });
 });
 
-// Drop
-const dropBox = document.getElementById("drop-box");
-const dropResult = document.getElementById("drop-result");
-const dropBoxInner = document.getElementById("drop-box-inner");
+// ========== UI: DROP BUTTON ==========
 
-dropBox.addEventListener("click", () => {
+document.getElementById("btn-drop").addEventListener("click", () => {
     const comp = doDrop();
-    if (!comp) {
-        dropBox.style.borderColor = "#ef4444";
-        setTimeout(() => dropBox.style.borderColor = "", 500);
-        return;
-    }
-
-    dropBox.classList.add("opening");
-    dropBoxInner.style.display = "none";
-
-    setTimeout(() => {
-        dropBox.classList.remove("opening");
-        dropBox.style.display = "none";
-        dropResult.classList.remove("hidden");
-
-        const cat = CATEGORIES[comp.category];
-        const rar = RARITIES[comp.rarity];
-
-        document.getElementById("result-rarity").textContent = rar.name;
-        document.getElementById("result-rarity").className = "result-rarity " + comp.rarity;
-        document.getElementById("result-icon").textContent = cat.icon;
-        document.getElementById("result-name").textContent = cat.name;
-        document.getElementById("result-model").textContent = comp.model;
-        document.getElementById("result-model").style.color = rar.color;
-        document.getElementById("result-power").textContent = "⚡ " + comp.power + " очков мощности";
-
-        // Auto-equip info
-        const currentInSlot = state.currentBuild[comp.category];
-        const isUpgrade = !currentInSlot || comp.power > currentInSlot.power;
-        const autoEquipInfo = document.getElementById("auto-equip-info");
-        if (autoEquipInfo) autoEquipInfo.remove();
-
-        if (isUpgrade) {
-            const info = document.createElement("div");
-            info.id = "auto-equip-info";
-            info.style.cssText = "color:#22c55e;font-size:13px;margin-top:8px;font-weight:600;";
-            info.textContent = currentInSlot
-                ? `🔄 Заменит ${currentInSlot.model} (⚡${currentInSlot.power}) в сборке`
-                : `✅ Автоматически встанет в сборку`;
-            document.getElementById("result-power").after(info);
-        }
-
-        document.getElementById("btn-collect").onclick = () => {
-            state.inventory.push(comp);
-
-            // Auto-equip: if better than current slot — put in build
-            const slotComp = state.currentBuild[comp.category];
-            if (!slotComp || comp.power > slotComp.power) {
-                // Return old component to free inventory (unlink from build)
-                state.currentBuild[comp.category] = comp;
-            }
-
-            saveState();
-
-            dropResult.classList.add("hidden");
-            dropBox.style.display = "flex";
-            dropBoxInner.style.display = "block";
-            updateTicketTimer();
-        };
-
-        updateTicketTimer();
-    }, 600);
+    if (!comp) return;
+    showDrop(comp);
 });
 
-// Inventory
-const filterBtns = document.querySelectorAll(".filter-btn");
+// ========== UI: ASSEMBLE ==========
+
+document.getElementById("btn-assemble").addEventListener("click", () => {
+    const tier = assembleBuild();
+    if (!tier) return;
+
+    const modal = document.createElement("div");
+    modal.className = "result-modal";
+    modal.innerHTML = `
+        <div class="result-content">
+            <div class="result-emoji">${tier.emoji}</div>
+            <div class="result-title">${tier.name}</div>
+            <div class="result-stars">${"⭐".repeat(tier.stars)}</div>
+            <div class="result-bonus">+${tier.bonus} бонусных баллов! 🪙</div>
+            <button class="result-btn" onclick="this.closest('.result-modal').remove()">Отлично!</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    renderCase();
+});
+
+// ========== UI: INVENTORY ==========
+
 let currentFilter = "all";
 
-filterBtns.forEach(btn => {
+document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-        filterBtns.forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         currentFilter = btn.dataset.filter;
         renderInventory();
@@ -343,28 +451,26 @@ function renderInventory() {
     const list = document.getElementById("inventory-list");
     let items = state.inventory;
 
-    if (currentFilter !== "all") {
-        items = items.filter(i => i.category === currentFilter);
-    }
+    if (currentFilter !== "all") items = items.filter(i => i.category === currentFilter);
 
-    // Sort by rarity (legendary first) then power
     const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
     items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
 
-    if (items.length === 0) {
-        list.innerHTML = '<div class="inv-empty">Пока пусто. Открывайте дропы! 📦</div>';
+    if (!items.length) {
+        list.innerHTML = '<div class="inv-empty">Пока пусто. Выбивайте детали! 📦</div>';
         return;
     }
 
     list.innerHTML = items.map(item => {
         const cat = CATEGORIES[item.category];
         const rar = RARITIES[item.rarity];
+        const inBuild = Object.values(state.currentBuild).some(b => b && b.id === item.id);
         return `
             <div class="inv-item ${item.rarity}">
                 <div class="inv-item-icon">${cat.icon}</div>
                 <div class="inv-item-info">
                     <div class="inv-item-name" style="color:${rar.color}">${item.model}</div>
-                    <div class="inv-item-type">${cat.name} · ${rar.name}</div>
+                    <div class="inv-item-type">${cat.name} · ${rar.name}${inBuild ? " · 🖥 в сборке" : ""}</div>
                 </div>
                 <div class="inv-item-power">⚡${item.power}</div>
             </div>
@@ -372,177 +478,22 @@ function renderInventory() {
     }).join("");
 }
 
-// Build
-function renderBuild() {
-    const slotsEl = document.getElementById("build-slots");
-    const slots = Object.keys(CATEGORIES);
+// ========== UI: RATING ==========
 
-    slotsEl.innerHTML = slots.map(slot => {
-        const cat = CATEGORIES[slot];
-        const comp = state.currentBuild[slot];
-
-        if (comp) {
-            const rar = RARITIES[comp.rarity];
-            return `
-                <div class="build-slot filled ${comp.rarity}" data-slot="${slot}">
-                    <div class="slot-icon">${cat.icon}</div>
-                    <div class="slot-info">
-                        <div class="slot-label">${cat.name}</div>
-                        <div class="slot-value" style="color:${rar.color}">${comp.model} <span style="color:var(--accent2)">⚡${comp.power}</span></div>
-                    </div>
-                    <div class="slot-clear" data-clear="${slot}">✕</div>
-                </div>
-            `;
-        }
-
-        return `
-            <div class="build-slot" data-slot="${slot}">
-                <div class="slot-icon">${cat.icon}</div>
-                <div class="slot-info">
-                    <div class="slot-label">${cat.name}</div>
-                    <div class="slot-value" style="color:var(--text2)">Нажми чтобы выбрать</div>
-                </div>
-            </div>
-        `;
-    }).join("");
-
-    // Rating preview
-    const power = getBuildPower();
-    const tier = getBuildTier(power);
-    const filledCount = Object.values(state.currentBuild).filter(s => s).length;
-    const ratingEl = document.getElementById("build-rating");
-
-    const starsStr = "⭐".repeat(tier.stars) + "☆".repeat(5 - tier.stars);
-    ratingEl.innerHTML = `
-        <div class="build-rating-label">Рейтинг сборки (${filledCount}/7 комплектующих)</div>
-        <div class="build-rating-stars">${starsStr}</div>
-        <div class="build-rating-name">${tier.emoji} ${tier.name}</div>
-        <div class="build-rating-bonus">Бонус: +${tier.bonus} 🪙</div>
-    `;
-
-    // Assemble button
-    const assembleBtn = document.getElementById("btn-assemble");
-    assembleBtn.disabled = !isBuildComplete();
-
-    // Click handlers
-    document.querySelectorAll(".build-slot").forEach(el => {
-        el.addEventListener("click", (e) => {
-            if (e.target.dataset.clear) {
-                state.currentBuild[e.target.dataset.clear] = null;
-                saveState();
-                renderBuild();
-                return;
-            }
-            const slot = el.dataset.slot;
-            showComponentPicker(slot);
-        });
-    });
-
-    document.querySelectorAll(".slot-clear").forEach(el => {
-        el.addEventListener("click", (e) => {
-            e.stopPropagation();
-            state.currentBuild[el.dataset.clear] = null;
-            saveState();
-            renderBuild();
-        });
-    });
-}
-
-function showComponentPicker(slot) {
-    const available = state.inventory.filter(i =>
-        i.category === slot &&
-        !Object.values(state.currentBuild).some(b => b && b.id === i.id)
-    );
-
-    const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
-    available.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
-
-    const overlay = document.createElement("div");
-    overlay.className = "modal-overlay";
-
-    const cat = CATEGORIES[slot];
-
-    overlay.innerHTML = `
-        <div class="modal">
-            <div class="modal-title">${cat.icon} Выбери ${cat.name}</div>
-            ${available.length === 0 ? '<div class="inv-empty">Нет доступных. Откройте дропы!</div>' : ""}
-            ${available.map(item => {
-                const rar = RARITIES[item.rarity];
-                return `
-                    <div class="modal-item" data-id="${item.id}">
-                        <div class="inv-item-icon">${cat.icon}</div>
-                        <div class="inv-item-info">
-                            <div class="inv-item-name" style="color:${rar.color}">${item.model}</div>
-                            <div class="inv-item-type">${rar.name}</div>
-                        </div>
-                        <div class="inv-item-power">⚡${item.power}</div>
-                    </div>
-                `;
-            }).join("")}
-            <div class="modal-close">Закрыть</div>
-        </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    overlay.querySelector(".modal-close").addEventListener("click", () => overlay.remove());
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) overlay.remove();
-    });
-
-    overlay.querySelectorAll(".modal-item").forEach(el => {
-        el.addEventListener("click", () => {
-            const id = parseFloat(el.dataset.id);
-            const comp = state.inventory.find(i => i.id === id);
-            if (comp) {
-                state.currentBuild[slot] = comp;
-                saveState();
-                overlay.remove();
-                renderBuild();
-            }
-        });
-    });
-}
-
-// Assemble
-document.getElementById("btn-assemble").addEventListener("click", () => {
-    const tier = assembleBuild();
-    if (!tier) return;
-
-    document.getElementById("bonus-points").textContent = state.bonusPoints;
-
-    const overlay = document.createElement("div");
-    overlay.className = "modal-overlay";
-    overlay.innerHTML = `
-        <div class="modal" style="text-align:center; padding:30px;">
-            <div style="font-size:48px; margin-bottom:16px;">${tier.emoji}</div>
-            <div style="font-size:24px; font-weight:700; margin-bottom:8px;">${tier.name}</div>
-            <div style="font-size:28px; letter-spacing:4px;">${"⭐".repeat(tier.stars)}</div>
-            <div style="font-size:18px; color:#22c55e; margin-top:12px; font-weight:700;">+${tier.bonus} бонусных баллов! 🪙</div>
-            <button class="btn btn-primary" style="margin-top:20px;" onclick="this.closest('.modal-overlay').remove()">Отлично!</button>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-
-    renderBuild();
-});
-
-// Rating page
 function renderRating() {
-    const tiersEl = document.getElementById("rating-tiers");
-    tiersEl.innerHTML = BUILD_TIERS.map(t => `
+    document.getElementById("rating-tiers").innerHTML = BUILD_TIERS.map(t => `
         <div class="tier-card">
             <div class="tier-stars">${"⭐".repeat(t.stars)}${"☆".repeat(5 - t.stars)}</div>
             <div class="tier-info">
                 <div class="tier-name">${t.emoji} ${t.name}</div>
-                <div class="tier-desc">от ${t.minPower} очков мощности</div>
+                <div class="tier-desc">от ${t.minPower} мощности</div>
             </div>
             <div class="tier-bonus">+${t.bonus} 🪙</div>
         </div>
     `).join("");
 
     const histEl = document.getElementById("builds-history");
-    if (state.buildsHistory.length === 0) {
+    if (!state.buildsHistory.length) {
         histEl.innerHTML = `
             <div class="history-title">📜 История сборок</div>
             <div class="history-empty">Вы ещё не собрали ни одного ПК</div>
@@ -556,11 +507,11 @@ function renderRating() {
             <div class="history-item">
                 <div>
                     <div style="font-weight:600">${b.tier}</div>
-                    <div style="font-size:12px;color:var(--text2)">${b.date} · ⚡${b.power}</div>
+                    <div style="font-size:11px;color:var(--text2)">${b.date} · ⚡${b.power}</div>
                 </div>
-                <div>
-                    <div class="history-stars">${"⭐".repeat(b.stars)}</div>
-                    <div class="history-bonus">+${b.bonus} 🪙</div>
+                <div style="text-align:right">
+                    <div>${"⭐".repeat(b.stars)}</div>
+                    <div style="font-size:12px;color:var(--green);font-weight:600">+${b.bonus} 🪙</div>
                 </div>
             </div>
         `).join("")}
@@ -572,10 +523,9 @@ function renderRating() {
 function init() {
     regenTickets();
     updateTicketTimer();
-    document.getElementById("bonus-points").textContent = state.bonusPoints;
+    renderCase();
     setInterval(updateTicketTimer, 1000);
 
-    // Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();

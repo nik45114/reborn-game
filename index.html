@@ -18,34 +18,77 @@
             </div>
         </div>
 
-        <!-- Tab Navigation -->
-        <div class="tabs">
-            <button class="tab active" data-tab="drop">🎰 Дроп</button>
-            <button class="tab" data-tab="inventory">🎒 Инвентарь</button>
-            <button class="tab" data-tab="build">🖥 Сборка</button>
-            <button class="tab" data-tab="rating">🏆 Рейтинг</button>
-        </div>
-
-        <!-- Drop Page -->
-        <div id="page-drop" class="page active">
-            <div class="drop-area">
-                <div class="drop-box" id="drop-box">
-                    <div class="drop-box-inner" id="drop-box-inner">
-                        <div class="drop-icon">📦</div>
-                        <div class="drop-text">Нажми, чтобы открыть</div>
-                        <div class="drop-subtext">Шанс редких деталей: 1%</div>
-                    </div>
+        <!-- PC Case View -->
+        <div class="case-container">
+            <div class="case-frame" id="pc-case">
+                <!-- Case shell -->
+                <div class="case-shell">
+                    <div class="case-top"></div>
+                    <div class="case-bottom"></div>
+                    <div class="case-back"></div>
+                    <div class="case-front"></div>
                 </div>
-                <div class="drop-result hidden" id="drop-result">
-                    <div class="result-rarity" id="result-rarity"></div>
-                    <div class="result-icon" id="result-icon"></div>
-                    <div class="result-name" id="result-name"></div>
-                    <div class="result-model" id="result-model"></div>
-                    <div class="result-power" id="result-power"></div>
-                    <button class="btn btn-primary" id="btn-collect">Забрать</button>
+
+                <!-- Component slots inside case -->
+                <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
+                    <div class="slot-placeholder">Мат. плата</div>
+                </div>
+                <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
+                    <div class="slot-placeholder">CPU</div>
+                </div>
+                <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
+                    <div class="slot-placeholder">Охлажд.</div>
+                </div>
+                <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
+                    <div class="slot-placeholder">RAM</div>
+                </div>
+                <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
+                    <div class="slot-placeholder">GPU</div>
+                </div>
+                <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
+                    <div class="slot-placeholder">БП</div>
+                </div>
+                <div class="pc-slot slot-case" id="slot-case" data-slot="case">
+                    <div class="slot-placeholder">Корпус</div>
                 </div>
             </div>
-            <div class="ticket-timer" id="ticket-timer"></div>
+
+            <!-- Build rating bar -->
+            <div class="build-bar">
+                <div class="build-bar-label">
+                    <span id="build-tier-name">Пустая сборка</span>
+                    <span id="build-stars"></span>
+                </div>
+                <div class="build-progress-track">
+                    <div class="build-progress-fill" id="build-progress"></div>
+                </div>
+                <div class="build-bar-sub">
+                    <span>⚡ <span id="build-power">0</span> мощности</span>
+                    <span id="build-count">0/7</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-area">
+            <button class="btn-drop" id="btn-drop">
+                <span class="btn-drop-icon">📦</span>
+                <span class="btn-drop-text">Выбить деталь</span>
+                <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
+            </button>
+            <button class="btn-assemble" id="btn-assemble" disabled>
+                <span>⚡ Собрать ПК и получить бонус</span>
+            </button>
+        </div>
+
+        <!-- Timer -->
+        <div class="ticket-timer" id="ticket-timer"></div>
+
+        <!-- Bottom tabs -->
+        <div class="bottom-tabs">
+            <button class="btab active" data-tab="main">🖥 Сборка</button>
+            <button class="btab" data-tab="inventory">🎒 Детали</button>
+            <button class="btab" data-tab="rating">🏆 Рейтинг</button>
         </div>
 
         <!-- Inventory Page -->
@@ -63,18 +106,30 @@
             <div class="inventory-list" id="inventory-list"></div>
         </div>
 
-        <!-- Build Page -->
-        <div id="page-build" class="page">
-            <div class="build-slots" id="build-slots"></div>
-            <div class="build-rating" id="build-rating"></div>
-            <button class="btn btn-accent" id="btn-assemble">⚡ Собрать ПК</button>
-        </div>
-
         <!-- Rating Page -->
         <div id="page-rating" class="page">
             <div class="rating-tiers" id="rating-tiers"></div>
             <div class="builds-history" id="builds-history"></div>
         </div>
+
+        <!-- Drop animation overlay -->
+        <div class="drop-overlay hidden" id="drop-overlay">
+            <div class="drop-reveal" id="drop-reveal">
+                <div class="drop-glow" id="drop-glow"></div>
+                <div class="drop-component" id="drop-component">
+                    <div class="drop-comp-icon" id="drop-comp-icon"></div>
+                </div>
+                <div class="drop-info" id="drop-info">
+                    <div class="drop-rarity" id="drop-rarity"></div>
+                    <div class="drop-model" id="drop-model"></div>
+                    <div class="drop-power" id="drop-power"></div>
+                    <div class="drop-action" id="drop-action"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flying component -->
+        <div class="flying-comp hidden" id="flying-comp"></div>
     </div>
 
     <script src="game.js"></script>
