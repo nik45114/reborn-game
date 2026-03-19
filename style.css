@@ -30,8 +30,8 @@ body {
 }
 
 #app {
-    max-width: 500px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     padding-bottom: 70px;
 }
 
@@ -40,11 +40,16 @@ body {
 /* ===== HEADER ===== */
 .header {
     background: linear-gradient(135deg, #1a0a35, #0e0820);
-    padding: 14px 16px;
+    padding: 10px 12px;
     border-bottom: 1px solid rgba(147, 51, 234, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    background: rgba(14, 8, 32, 0.7);
+    backdrop-filter: blur(8px);
 }
 
 .header-title {
@@ -222,7 +227,9 @@ body {
 /* ===== BUILD BAR ===== */
 .build-bar {
     margin: 0 10px;
-    margin-top: 8px;
+    margin-top: -4px;
+    position: relative;
+    z-index: 5;
     background: var(--bg2);
     border: 1px solid rgba(147, 51, 234, 0.15);
     border-radius: 10px;
