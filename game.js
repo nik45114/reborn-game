@@ -670,6 +670,16 @@ function renderBlueprint() {
 
 // ========== INIT ==========
 
+// Reset button for admin
+function resetAll() {
+    localStorage.removeItem("reborn_pc_game_v2");
+    state = defaultState();
+    state.tickets = 99999;
+    saveState();
+    renderCase();
+    updateTicketTimer();
+}
+
 function init() {
     regenTickets();
 
