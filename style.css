@@ -142,15 +142,17 @@ body {
 }
 
 .hw-ram {
-    top: 46%;
-    left: 60%;
-    width: 22%;
+    top: 50%;
+    left: 58%;
+    width: 28%;
     height: auto;
     aspect-ratio: 4 / 1;
     border-radius: 3px;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    filter: drop-shadow(0 0 6px rgba(147, 51, 234, 0.6)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.8))
+           drop-shadow(0 0 20px rgba(147, 51, 234, 0.5))
+           drop-shadow(0 4px 8px rgba(0, 0, 0, 0.9));
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
