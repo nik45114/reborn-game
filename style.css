@@ -82,11 +82,14 @@ body {
 
 .pc-case-area {
     position: relative;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .pc-bg-image {
     width: 100%;
+    min-height: 70vh;
+    object-fit: cover;
+    object-position: center 45%;
     display: block;
     transition: filter 0.5s ease;
 }
