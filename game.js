@@ -235,13 +235,22 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Update glow zones on case
+    // Show hardware visuals in case
     for (const [slot, comp] of Object.entries(state.currentBuild)) {
-        const zone = document.getElementById("zone-" + slot);
-        if (!zone) continue;
-        zone.className = "glow-zone zone-" + (slot === "case" ? "ssd" : slot);
+        const hw = document.getElementById("hw-" + slot);
+        if (!hw) continue;
+        hw.className = "hw";
         if (comp) {
-            zone.classList.add("active", comp.rarity);
+            hw.classList.add("active", comp.rarity);
+            // GPU label
+            if (slot === "gpu" && !hw.querySelector(".gpu-label")) {
+                const label = document.createElement("div");
+                label.className = "gpu-label";
+                label.textContent = comp.model;
+                hw.appendChild(label);
+            } else if (slot === "gpu") {
+                hw.querySelector(".gpu-label").textContent = comp.model;
+            }
         }
     }
 
@@ -407,10 +416,10 @@ function flyComponentToSlot(comp, cat) {
             flyEl.classList.remove("fly");
 
             // Flash zone
-            const zone = document.getElementById("zone-" + comp.category);
-            if (zone) {
-                zone.classList.add("flash");
-                setTimeout(() => zone.classList.remove("flash"), 500);
+            const hw = document.getElementById("hw-" + comp.category);
+            if (hw) {
+                hw.classList.add("flash");
+                setTimeout(() => hw.classList.remove("flash"), 600);
             }
 
             renderCase();
@@ -441,10 +450,10 @@ function flyFromCardToCase(cardEl, comp) {
         setTimeout(() => {
             flyEl.classList.add("hidden");
             flyEl.classList.remove("fly");
-            const zone = document.getElementById("zone-" + comp.category);
-            if (zone) {
-                zone.classList.add("flash");
-                setTimeout(() => zone.classList.remove("flash"), 500);
+            const hw = document.getElementById("hw-" + comp.category);
+            if (hw) {
+                hw.classList.add("flash");
+                setTimeout(() => hw.classList.remove("flash"), 600);
             }
         }, 700);
     });
