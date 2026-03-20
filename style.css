@@ -142,12 +142,11 @@ body {
 }
 
 .hw-ram {
-    top: 38%;
-    left: 52%;
-    width: 6%;
+    top: 33%;
+    left: 48%;
+    width: 18%;
     transform: rotate(90deg);
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
-    mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+    border-radius: 3px;
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
