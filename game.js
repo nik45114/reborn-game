@@ -235,7 +235,7 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Update component slots
+    // Update component pin markers
     for (const [slot, comp] of Object.entries(state.currentBuild)) {
         const el = document.getElementById("slot-" + slot);
         if (!el) continue;
@@ -248,13 +248,14 @@ function renderCase() {
             const rar = RARITIES[comp.rarity];
             el.classList.add("filled", comp.rarity);
             el.innerHTML = `
-                <div class="slot-component" style="color:${rar.color}">
-                    <div class="slot-comp-icon">${cat.icon}</div>
-                    <div class="slot-comp-name">${comp.model}</div>
-                </div>
+                <div class="slot-marker"><span class="slot-icon">${cat.icon}</span></div>
+                <div class="slot-label" style="color:${rar.color}">${comp.model}</div>
             `;
         } else {
-            el.innerHTML = `<div class="slot-placeholder">${cat.name}</div>`;
+            el.innerHTML = `
+                <div class="slot-marker"><span class="slot-icon">${cat.icon}</span></div>
+                <div class="slot-label">${cat.name}</div>
+            `;
         }
     }
 

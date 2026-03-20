@@ -125,81 +125,106 @@ body {
     display: none;
 }
 
-/* ===== COMPONENT SLOTS ===== */
+/* ===== COMPONENT SLOTS — Pin markers ===== */
 .pc-slot {
     position: absolute;
-    border: 1.5px dashed rgba(168, 85, 247, 0.4);
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-    cursor: pointer;
-    overflow: hidden;
-    backdrop-filter: blur(2px);
-    background: rgba(14, 8, 32, 0.3);
-}
-
-.pc-slot:hover {
-    border-color: rgba(168, 85, 247, 0.7);
-    background: rgba(14, 8, 32, 0.5);
-}
-
-.pc-slot.filled {
-    border-style: solid;
-    backdrop-filter: none;
-}
-
-.slot-placeholder {
-    font-size: 9px;
-    color: rgba(168, 85, 247, 0.5);
-    text-align: center;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 4px rgba(0,0,0,0.8);
-}
-
-.pc-slot.filled .slot-placeholder { display: none; }
-
-.slot-component {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2px;
-    background: rgba(14, 8, 32, 0.6);
-    border-radius: 4px;
+    transition: all 0.3s;
+    cursor: pointer;
+    z-index: 2;
 }
 
-.slot-comp-icon {
-    font-size: 16px;
-    line-height: 1;
-    filter: drop-shadow(0 0 4px rgba(168,85,247,0.5));
+/* Empty slot — glowing dot with label */
+.slot-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(147, 51, 234, 0.15);
+    border: 1.5px solid rgba(147, 51, 234, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: 0 0 8px rgba(147, 51, 234, 0.3);
+    animation: markerPulse 2s ease-in-out infinite;
+    transition: all 0.3s;
 }
 
-.slot-comp-name {
-    font-size: 7px;
+@keyframes markerPulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(147,51,234,0.2); }
+    50% { box-shadow: 0 0 14px rgba(147,51,234,0.5); }
+}
+
+.slot-label {
+    font-size: 8px;
     font-weight: 700;
-    line-height: 1;
+    color: rgba(200, 180, 255, 0.7);
+    text-shadow: 0 0 4px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.9);
     margin-top: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 100%;
-    text-align: center;
-    text-shadow: 0 0 3px rgba(0,0,0,0.8);
+    letter-spacing: 0.3px;
 }
 
-/* Slot positions — mapped to bg.png case interior */
-.slot-cool { top: 30%; left: 24%; width: 9%;  height: 10%; }
-.slot-cpu  { top: 33%; left: 35%; width: 11%; height: 9%;  }
-.slot-ram  { top: 29%; left: 54%; width: 5%;  height: 14%; }
-.slot-mb   { top: 27%; left: 23%; width: 40%; height: 28%; z-index: 0; border-color: rgba(147,51,234,0.1); background: transparent; }
-.slot-gpu  { top: 50%; left: 26%; width: 32%; height: 7%;  }
-.slot-psu  { top: 66%; left: 38%; width: 22%; height: 10%; }
-.slot-case { top: 58%; left: 26%; width: 12%; height: 7%;  }
+/* Filled slot */
+.pc-slot.filled .slot-marker {
+    animation: none;
+}
+
+.pc-slot.filled .slot-label {
+    color: rgba(255,255,255,0.85);
+}
+
+.pc-slot.filled .slot-marker {
+    background: rgba(14, 8, 32, 0.7);
+    transform: scale(1.1);
+}
+
+/* Rarity colors for filled markers */
+.pc-slot.common .slot-marker { border-color: var(--common); box-shadow: 0 0 8px rgba(156,163,175,0.3); }
+.pc-slot.uncommon .slot-marker { border-color: var(--uncommon); box-shadow: 0 0 10px rgba(34,197,94,0.4); }
+.pc-slot.rare .slot-marker { border-color: var(--rare); box-shadow: 0 0 12px rgba(59,130,246,0.5); }
+.pc-slot.epic .slot-marker { border-color: var(--epic); box-shadow: 0 0 14px rgba(168,85,247,0.5); }
+.pc-slot.legendary .slot-marker {
+    border-color: var(--legendary);
+    box-shadow: 0 0 16px rgba(245,158,11,0.6);
+    animation: legendGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes legendGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(245,158,11,0.4); }
+    50% { box-shadow: 0 0 22px rgba(245,158,11,0.7); }
+}
+
+/* Connecting line from marker to area (subtle) */
+.pc-slot::before {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 8px;
+    background: rgba(147, 51, 234, 0.3);
+    top: -8px;
+}
+
+.pc-slot.filled::before {
+    background: transparent;
+}
+
+.slot-cool.filled .slot-marker { font-size: 12px; }
+.slot-cool.filled .slot-marker .slot-icon {
+    animation: spin-fan 1.5s linear infinite;
+    display: inline-block;
+}
+
+/* Slot positions — pin markers inside the case */
+.slot-cool { top: 32%; left: 32%; }
+.slot-cpu  { top: 38%; left: 46%; }
+.slot-ram  { top: 32%; left: 60%; }
+.slot-mb   { top: 28%; left: 72%; }
+.slot-gpu  { top: 52%; left: 46%; }
+.slot-psu  { top: 68%; left: 55%; }
+.slot-case { top: 60%; left: 36%; }
 
 /* Rarity colors */
 .pc-slot.common { border-color: var(--common); background: rgba(156,163,175,0.15); }
