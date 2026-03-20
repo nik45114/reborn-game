@@ -256,6 +256,25 @@ function renderCase() {
         }
     }
 
+    // RAM overlay
+    const ramImg = document.getElementById("hw-ram");
+    if (ramImg) {
+        const ram = state.currentBuild.ram;
+        if (ram) {
+            const ramImages = {
+                common: "ram-1.png",
+                uncommon: "ram-1.png",
+                rare: "ram-2.png",
+                epic: "ram-3.png",
+                legendary: "ram-4.png"
+            };
+            ramImg.src = ramImages[ram.rarity] || "ram-1.png";
+            ramImg.classList.add("active");
+        } else {
+            ramImg.classList.remove("active");
+        }
+    }
+
     // Update component grid
     const grid = document.getElementById("comp-grid");
     if (grid) {

@@ -128,6 +128,27 @@ body {
     display: none;
 }
 
+/* ===== COMPONENT OVERLAYS ===== */
+.hw-overlay {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    mix-blend-mode: lighten;
+}
+
+.hw-overlay.active {
+    opacity: 1;
+}
+
+.hw-ram {
+    top: 35%;
+    right: 28%;
+    width: 22%;
+    transform: rotate(90deg);
+}
+
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
 .hw {
     position: absolute;
