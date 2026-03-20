@@ -142,8 +142,8 @@ body {
 }
 
 .hw-ram {
-    top: 55%;
-    left: 58%;
+    top: 50%;
+    left: 50%;
     width: 28%;
     height: auto;
     aspect-ratio: 4 / 1;
