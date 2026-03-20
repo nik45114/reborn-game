@@ -257,8 +257,8 @@ function renderCase() {
     }
 
     // RAM overlay
-    const ramImg = document.getElementById("hw-ram");
-    if (ramImg) {
+    const ramEl = document.getElementById("hw-ram");
+    if (ramEl) {
         const ram = state.currentBuild.ram;
         if (ram) {
             const ramImages = {
@@ -268,10 +268,11 @@ function renderCase() {
                 epic: "ram-3.png",
                 legendary: "ram-4.png"
             };
-            ramImg.src = ramImages[ram.rarity] || "ram-1.png";
-            ramImg.classList.add("active");
+            ramEl.style.backgroundImage = `url(${ramImages[ram.rarity] || "ram-1.png"})`;
+            ramEl.classList.add("active");
         } else {
-            ramImg.classList.remove("active");
+            ramEl.classList.remove("active");
+            ramEl.style.backgroundImage = "";
         }
     }
 
