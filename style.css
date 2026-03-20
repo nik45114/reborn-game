@@ -135,7 +135,6 @@ body {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.5s ease;
-    mix-blend-mode: lighten;
 }
 
 .hw-overlay.active {
@@ -143,10 +142,12 @@ body {
 }
 
 .hw-ram {
-    top: 35%;
-    right: 28%;
-    width: 22%;
+    top: 38%;
+    left: 52%;
+    width: 6%;
     transform: rotate(90deg);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
