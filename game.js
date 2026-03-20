@@ -238,22 +238,13 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Show hardware visuals in case
-    for (const [slot, comp] of Object.entries(state.currentBuild)) {
-        const hw = document.getElementById("hw-" + slot);
-        if (!hw) continue;
-        hw.className = "hw";
-        if (comp) {
-            hw.classList.add("active", comp.rarity);
-            // GPU label
-            if (slot === "gpu" && !hw.querySelector(".gpu-label")) {
-                const label = document.createElement("div");
-                label.className = "gpu-label";
-                label.textContent = comp.model;
-                hw.appendChild(label);
-            } else if (slot === "gpu") {
-                hw.querySelector(".gpu-label").textContent = comp.model;
-            }
+    // Swap case image based on installed components
+    const bgImg = document.getElementById("pc-bg-image");
+    if (bgImg) {
+        if (state.currentBuild.gpu) {
+            bgImg.src = "bg-gpu.png";
+        } else {
+            bgImg.src = "bg.png";
         }
     }
 
