@@ -235,6 +235,9 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
+    // Blueprint annotations on case
+    renderBlueprint();
+
     // Update component grid
     const grid = document.getElementById("comp-grid");
     if (grid) {
@@ -529,6 +532,56 @@ function renderRating() {
             </div>
         `).join("")}
     `;
+}
+
+// ========== BLUEPRINT ==========
+
+const BLUEPRINT_POINTS = {
+    // {x,y} = dot position inside case, {lx,ly} = label anchor point at edge
+    cpu:  { x: 44, y: 32, lx: 8,  ly: 28, label: "CPU" },
+    cool: { x: 36, y: 28, lx: 8,  ly: 18, label: "Кулер" },
+    ram:  { x: 58, y: 28, lx: 85, ly: 18, label: "RAM" },
+    mb:   { x: 48, y: 40, lx: 85, ly: 38, label: "Плата" },
+    gpu:  { x: 46, y: 52, lx: 8,  ly: 52, label: "GPU" },
+    psu:  { x: 56, y: 68, lx: 85, ly: 68, label: "БП" },
+    case: { x: 38, y: 64, lx: 8,  ly: 68, label: "SSD" }
+};
+
+function renderBlueprint() {
+    const svg = document.getElementById("blueprint-svg");
+    if (!svg) return;
+
+    let html = '';
+
+    for (const [slot, bp] of Object.entries(BLUEPRINT_POINTS)) {
+        const comp = state.currentBuild[slot];
+        const rar = comp ? RARITIES[comp.rarity] : null;
+        const color = rar ? rar.color : "rgba(147,51,234,0.5)";
+        const dotR = comp ? 3 : 2;
+        const labelText = comp ? comp.model : bp.label;
+        const labelColor = rar ? rar.color : "rgba(200,180,255,0.5)";
+        const lineOpacity = comp ? 0.6 : 0.25;
+        const dotGlow = comp ? `<circle cx="${bp.x}" cy="${bp.y}" r="6" fill="none" stroke="${color}" stroke-width="0.3" opacity="0.5"><animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0.1;0.5" dur="2s" repeatCount="indefinite"/></circle>` : '';
+
+        // Midpoint for line bend
+        const mx = bp.lx < 50 ? bp.x - 8 : bp.x + 8;
+
+        html += `
+            <!-- ${slot} -->
+            ${dotGlow}
+            <circle cx="${bp.x}" cy="${bp.y}" r="${dotR}" fill="${color}" />
+            <path d="M${bp.x},${bp.y} L${mx},${bp.ly} L${bp.lx},${bp.ly}"
+                  fill="none" stroke="${color}" stroke-width="0.3" opacity="${lineOpacity}"
+                  stroke-dasharray="${comp ? 'none' : '1,1'}"/>
+            <circle cx="${bp.lx}" cy="${bp.ly}" r="1" fill="${color}" opacity="${lineOpacity}"/>
+            <text x="${bp.lx < 50 ? bp.lx + 2 : bp.lx - 2}" y="${bp.ly + 0.5}"
+                  font-size="2.8" fill="${labelColor}" font-family="sans-serif" font-weight="600"
+                  text-anchor="${bp.lx < 50 ? 'start' : 'end'}"
+                  dominant-baseline="middle">${labelText}</text>
+        `;
+    }
+
+    svg.innerHTML = html;
 }
 
 // ========== INIT ==========
