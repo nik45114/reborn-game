@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=46">
+    <link rel="stylesheet" href="style.css?v=47">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -33,6 +33,16 @@
                 <div class="pc-desk"></div>
             </div>
 
+            <!-- Drop button under case image -->
+            <div class="action-area">
+                <button class="btn-drop" id="btn-drop">
+                    <span class="btn-drop-icon">📦</span>
+                    <span class="btn-drop-text">Выбить деталь</span>
+                    <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
+                </button>
+            </div>
+            <div class="ticket-timer" id="ticket-timer"></div>
+
             <!-- Components grid -->
             <div class="comp-grid" id="comp-grid"></div>
 
@@ -52,18 +62,12 @@
             </div>
         </div>
 
-        <!-- Actions -->
+        <!-- Assemble + Reset -->
         <div class="action-area">
-            <button class="btn-drop" id="btn-drop">
-                <span class="btn-drop-icon">📦</span>
-                <span class="btn-drop-text">Выбить деталь</span>
-                <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
-            </button>
             <button class="btn-assemble" id="btn-assemble" disabled>
                 <span>⚡ Собрать ПК и получить бонус</span>
             </button>
         </div>
-        <div class="ticket-timer" id="ticket-timer"></div>
         <div style="text-align:center;margin-top:8px;">
             <button onclick="resetAll()" style="padding:6px 16px;background:#ef4444;border:none;border-radius:8px;color:white;font-size:12px;font-weight:600;cursor:pointer;">🗑 Сбросить все детали</button>
         </div>
@@ -75,19 +79,20 @@
             <button class="btab" data-tab="rating">🏆 Рейтинг</button>
         </div>
 
-        <!-- Inventory -->
+        <!-- Inventory (opened per-slot) -->
         <div id="page-inventory" class="page">
-            <div class="inventory-filters">
-                <button class="filter-btn active" data-filter="all">Все</button>
-                <button class="filter-btn" data-filter="cpu">CPU</button>
-                <button class="filter-btn" data-filter="gpu">GPU</button>
-                <button class="filter-btn" data-filter="ram">RAM</button>
-                <button class="filter-btn" data-filter="mb">Плата</button>
-                <button class="filter-btn" data-filter="psu">БП</button>
-                <button class="filter-btn" data-filter="case">SSD</button>
-                <button class="filter-btn" data-filter="cool">Кулер</button>
-            </div>
             <div class="inventory-list" id="inventory-list"></div>
+        </div>
+
+        <!-- Slot inventory popup -->
+        <div class="slot-popup hidden" id="slot-popup">
+            <div class="slot-popup-content">
+                <div class="slot-popup-header">
+                    <span class="slot-popup-title" id="slot-popup-title"></span>
+                    <button class="slot-popup-close" id="slot-popup-close">✕</button>
+                </div>
+                <div class="slot-popup-list" id="slot-popup-list"></div>
+            </div>
         </div>
 
         <!-- Rating -->

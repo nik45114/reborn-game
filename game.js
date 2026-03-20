@@ -300,7 +300,7 @@ function renderCase() {
                     </div>`;
             }
             return `
-                <div class="comp-card empty${isWide ? ' wide' : ''}">
+                <div class="comp-card empty${isWide ? ' wide' : ''}" data-slot="${slot}">
                     <div class="comp-icon">${cat.icon}</div>
                     <div class="comp-info">
                         <div class="comp-type">${cat.name}</div>
@@ -310,17 +310,12 @@ function renderCase() {
         }).join("");
     }
 
-    // Card click — fly to case
+    // Card click — open slot inventory popup
     if (grid) {
-        grid.querySelectorAll(".comp-card.filled").forEach(card => {
+        grid.querySelectorAll(".comp-card").forEach(card => {
             card.addEventListener("click", () => {
                 const slot = card.dataset.slot;
-                const comp = state.currentBuild[slot];
-                if (comp) {
-                    card.classList.add("installing");
-                    setTimeout(() => card.classList.remove("installing"), 500);
-                    flyFromCardToCase(card, comp);
-                }
+                if (slot) openSlotPopup(slot);
             });
         });
     }
@@ -541,22 +536,9 @@ document.getElementById("btn-assemble").addEventListener("click", () => {
 
 // ========== UI: INVENTORY ==========
 
-let currentFilter = "all";
-
-document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentFilter = btn.dataset.filter;
-        renderInventory();
-    });
-});
-
 function renderInventory() {
     const list = document.getElementById("inventory-list");
-    let items = state.inventory;
-
-    if (currentFilter !== "all") items = items.filter(i => i.category === currentFilter);
+    const items = [...state.inventory];
 
     const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
     items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
@@ -582,6 +564,69 @@ function renderInventory() {
         `;
     }).join("");
 }
+
+// ========== UI: SLOT POPUP ==========
+
+function openSlotPopup(slot) {
+    const popup = document.getElementById("slot-popup");
+    const title = document.getElementById("slot-popup-title");
+    const list = document.getElementById("slot-popup-list");
+    const cat = CATEGORIES[slot];
+
+    title.textContent = cat.icon + " " + cat.name;
+
+    const items = state.inventory.filter(i => i.category === slot);
+    const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
+    items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
+
+    const current = state.currentBuild[slot];
+
+    if (!items.length) {
+        list.innerHTML = '<div class="inv-empty">Нет деталей этого типа. Выбивайте! 📦</div>';
+    } else {
+        list.innerHTML = items.map(item => {
+            const rar = RARITIES[item.rarity];
+            const inBuild = current && current.id === item.id;
+            const isBetter = !current || item.power > current.power;
+            return `
+                <div class="inv-item ${item.rarity} ${inBuild ? 'equipped' : ''}" data-item-id="${item.id}" data-slot="${slot}">
+                    <div class="inv-item-icon">${cat.icon}</div>
+                    <div class="inv-item-info">
+                        <div class="inv-item-name" style="color:${rar.color}">${item.model}</div>
+                        <div class="inv-item-type">${rar.name} · ⚡${item.power}${inBuild ? " · 🖥 установлено" : (isBetter ? " · ⬆️ улучшение" : "")}</div>
+                    </div>
+                    <div class="inv-item-action">${inBuild ? "✓" : "⬅️"}</div>
+                </div>
+            `;
+        }).join("");
+
+        list.querySelectorAll(".inv-item:not(.equipped)").forEach(el => {
+            el.addEventListener("click", () => {
+                const itemId = parseFloat(el.dataset.itemId);
+                const s = el.dataset.slot;
+                const item = state.inventory.find(i => i.id === itemId);
+                if (item) {
+                    state.currentBuild[s] = item;
+                    saveState();
+                    renderCase();
+                    openSlotPopup(s); // refresh popup
+                }
+            });
+        });
+    }
+
+    popup.classList.remove("hidden");
+}
+
+document.getElementById("slot-popup-close").addEventListener("click", () => {
+    document.getElementById("slot-popup").classList.add("hidden");
+});
+
+document.getElementById("slot-popup").addEventListener("click", (e) => {
+    if (e.target.id === "slot-popup") {
+        document.getElementById("slot-popup").classList.add("hidden");
+    }
+});
 
 // ========== UI: RATING ==========
 

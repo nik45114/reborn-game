@@ -920,3 +920,85 @@ body {
     100% { filter: brightness(1); transform: scale(1); }
 }
 .slot-flash { animation: slotFlash 0.5s ease; }
+
+/* ===== SLOT POPUP ===== */
+.slot-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 5, 20, 0.92);
+    z-index: 150;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.slot-popup-content {
+    width: 100%;
+    max-width: 500px;
+    max-height: 70vh;
+    background: var(--bg2);
+    border-radius: 16px 16px 0 0;
+    border-top: 1px solid rgba(147, 51, 234, 0.3);
+    padding: 16px;
+    animation: slideUp 0.25s ease;
+    overflow-y: auto;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.slot-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.slot-popup-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.slot-popup-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(147, 51, 234, 0.3);
+    background: var(--bg3);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot-popup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.slot-popup-list .inv-item {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slot-popup-list .inv-item:active {
+    transform: scale(0.97);
+}
+
+.slot-popup-list .inv-item.equipped {
+    border-left-color: var(--green);
+    background: rgba(34, 197, 94, 0.1);
+    cursor: default;
+}
+
+.inv-item-action {
+    font-size: 16px;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+}
