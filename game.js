@@ -180,6 +180,7 @@ function rollComponent() {
 }
 
 function doDrop() {
+    if (IS_ADMIN) state.tickets = 99999;
     regenTickets();
     if (state.tickets <= 0) return null;
     state.tickets--;
@@ -659,13 +660,14 @@ function renderBlueprint() {
 // ========== INIT ==========
 
 function init() {
-    // Admin: force unlimited tickets
+    regenTickets();
+
+    // Admin: force unlimited tickets AFTER regen
     if (IS_ADMIN) {
-        state.tickets = MAX_TICKETS;
+        state.tickets = 99999;
         saveState();
     }
 
-    regenTickets();
     updateTicketTimer();
     renderCase();
     setInterval(updateTicketTimer, 1000);
