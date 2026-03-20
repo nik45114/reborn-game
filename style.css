@@ -128,7 +128,7 @@ body {
     display: none;
 }
 
-/* ===== COMPONENT SLOTS — Pin markers ===== */
+/* ===== OLD SLOTS (removed) ===== /*
 .pc-slot {
     position: absolute;
     display: flex;
@@ -251,6 +251,90 @@ body {
 }
 
 @keyframes spin-fan { to { transform: rotate(360deg); } }
+
+/* ===== COMPONENT GRID ===== */
+.comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 8px 10px;
+}
+
+.comp-card {
+    background: rgba(21, 13, 42, 0.8);
+    border: 1px solid rgba(147, 51, 234, 0.2);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.comp-card.empty {
+    border-style: dashed;
+    opacity: 0.6;
+}
+
+.comp-card.filled {
+    border-style: solid;
+}
+
+.comp-card.common { border-color: var(--common); }
+.comp-card.uncommon { border-color: var(--uncommon); }
+.comp-card.rare { border-color: var(--rare); box-shadow: 0 0 8px rgba(59,130,246,0.15); }
+.comp-card.epic { border-color: var(--epic); box-shadow: 0 0 10px rgba(168,85,247,0.2); }
+.comp-card.legendary {
+    border-color: var(--legendary);
+    box-shadow: 0 0 12px rgba(245,158,11,0.25);
+    background: linear-gradient(135deg, rgba(30,20,10,0.8), rgba(21,13,42,0.8));
+}
+
+.comp-icon {
+    font-size: 20px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.comp-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.comp-type {
+    font-size: 9px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.comp-name {
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comp-card.empty .comp-name {
+    color: rgba(167, 139, 218, 0.4);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.comp-power {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent2);
+    flex-shrink: 0;
+}
+
+/* Full width for GPU (spans 2 columns) */
+.comp-card.wide {
+    grid-column: 1 / -1;
+}
 
 /* ===== BUILD BAR ===== */
 .build-bar {

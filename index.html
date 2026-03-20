@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=17">
+    <link rel="stylesheet" href="style.css?v=18">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -27,38 +27,12 @@
                 <div class="pc-case-area" id="pc-case">
                     <img src="bg.png" class="pc-bg-image" id="pc-bg-image" alt="PC">
                     <div class="case-glow" id="case-glow"></div>
-                    <!-- Component pin markers -->
-                    <div class="pc-slot slot-cool" id="slot-cool" data-slot="cool">
-                        <div class="slot-marker"><span class="slot-icon">❄️</span></div>
-                        <div class="slot-label">Кулер</div>
-                    </div>
-                    <div class="pc-slot slot-cpu" id="slot-cpu" data-slot="cpu">
-                        <div class="slot-marker"><span class="slot-icon">🧠</span></div>
-                        <div class="slot-label">CPU</div>
-                    </div>
-                    <div class="pc-slot slot-ram" id="slot-ram" data-slot="ram">
-                        <div class="slot-marker"><span class="slot-icon">💾</span></div>
-                        <div class="slot-label">RAM</div>
-                    </div>
-                    <div class="pc-slot slot-mb" id="slot-mb" data-slot="mb">
-                        <div class="slot-marker"><span class="slot-icon">🔲</span></div>
-                        <div class="slot-label">Плата</div>
-                    </div>
-                    <div class="pc-slot slot-gpu" id="slot-gpu" data-slot="gpu">
-                        <div class="slot-marker"><span class="slot-icon">🎮</span></div>
-                        <div class="slot-label">GPU</div>
-                    </div>
-                    <div class="pc-slot slot-psu" id="slot-psu" data-slot="psu">
-                        <div class="slot-marker"><span class="slot-icon">🔌</span></div>
-                        <div class="slot-label">БП</div>
-                    </div>
-                    <div class="pc-slot slot-case" id="slot-case" data-slot="case">
-                        <div class="slot-marker"><span class="slot-icon">💿</span></div>
-                        <div class="slot-label">SSD</div>
-                    </div>
                 </div>
                 <div class="pc-desk"></div>
             </div>
+
+            <!-- Components grid -->
+            <div class="comp-grid" id="comp-grid"></div>
 
             <!-- Build bar -->
             <div class="build-bar">
@@ -137,7 +111,7 @@
         <div class="flying-comp hidden" id="flying-comp"></div>
     </div>
 
-    <script src="cases.js?v=17"></script>
-    <script src="game.js?v=17"></script>
+    <script src="cases.js?v=18"></script>
+    <script src="game.js?v=18"></script>
 </body>
 </html>

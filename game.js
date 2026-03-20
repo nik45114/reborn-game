@@ -235,28 +235,37 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Update component pin markers
-    for (const [slot, comp] of Object.entries(state.currentBuild)) {
-        const el = document.getElementById("slot-" + slot);
-        if (!el) continue;
-        const cat = CATEGORIES[slot];
+    // Update component grid
+    const grid = document.getElementById("comp-grid");
+    if (grid) {
+        const slotOrder = ["cpu", "cool", "ram", "mb", "gpu", "psu", "case"];
+        grid.innerHTML = slotOrder.map(slot => {
+            const comp = state.currentBuild[slot];
+            const cat = CATEGORIES[slot];
+            const isWide = slot === "gpu";
 
-        el.className = "pc-slot slot-" + slot;
-
-        if (comp) {
-            filledCount++;
-            const rar = RARITIES[comp.rarity];
-            el.classList.add("filled", comp.rarity);
-            el.innerHTML = `
-                <div class="slot-marker"><span class="slot-icon">${cat.icon}</span></div>
-                <div class="slot-label" style="color:${rar.color}">${comp.model}</div>
-            `;
-        } else {
-            el.innerHTML = `
-                <div class="slot-marker"><span class="slot-icon">${cat.icon}</span></div>
-                <div class="slot-label">${cat.name}</div>
-            `;
-        }
+            if (comp) {
+                filledCount++;
+                const rar = RARITIES[comp.rarity];
+                return `
+                    <div class="comp-card filled ${comp.rarity}${isWide ? ' wide' : ''}">
+                        <div class="comp-icon">${cat.icon}</div>
+                        <div class="comp-info">
+                            <div class="comp-type">${cat.name}</div>
+                            <div class="comp-name" style="color:${rar.color}">${comp.model}</div>
+                        </div>
+                        <div class="comp-power">⚡${comp.power}</div>
+                    </div>`;
+            }
+            return `
+                <div class="comp-card empty${isWide ? ' wide' : ''}">
+                    <div class="comp-icon">${cat.icon}</div>
+                    <div class="comp-info">
+                        <div class="comp-type">${cat.name}</div>
+                        <div class="comp-name">Пусто</div>
+                    </div>
+                </div>`;
+        }).join("");
     }
 
     // Update build bar
