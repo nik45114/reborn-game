@@ -82,11 +82,13 @@ let MAX_TICKETS = 2;
 let TICKET_REGEN_MS = 12 * 60 * 60 * 1000;
 
 // Admin mode for @r9daev
+let IS_ADMIN = false;
 if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe &&
     Telegram.WebApp.initDataUnsafe.user &&
     Telegram.WebApp.initDataUnsafe.user.username === "r9daev") {
     MAX_TICKETS = 99999;
     TICKET_REGEN_MS = 1000;
+    IS_ADMIN = true;
 }
 
 // ========== STATE ==========
@@ -657,6 +659,12 @@ function renderBlueprint() {
 // ========== INIT ==========
 
 function init() {
+    // Admin: force unlimited tickets
+    if (IS_ADMIN) {
+        state.tickets = MAX_TICKETS;
+        saveState();
+    }
+
     regenTickets();
     updateTicketTimer();
     renderCase();
