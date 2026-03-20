@@ -235,7 +235,15 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // No overlays on case image
+    // Update glow zones on case
+    for (const [slot, comp] of Object.entries(state.currentBuild)) {
+        const zone = document.getElementById("zone-" + slot);
+        if (!zone) continue;
+        zone.className = "glow-zone zone-" + (slot === "case" ? "ssd" : slot);
+        if (comp) {
+            zone.classList.add("active", comp.rarity);
+        }
+    }
 
     // Update component grid
     const grid = document.getElementById("comp-grid");
@@ -398,10 +406,11 @@ function flyComponentToSlot(comp, cat) {
             flyEl.classList.add("hidden");
             flyEl.classList.remove("fly");
 
-            // Flash the case image
-            if (caseImg) {
-                caseImg.style.filter = "brightness(1.4)";
-                setTimeout(() => caseImg.style.filter = "", 300);
+            // Flash zone
+            const zone = document.getElementById("zone-" + comp.category);
+            if (zone) {
+                zone.classList.add("flash");
+                setTimeout(() => zone.classList.remove("flash"), 500);
             }
 
             renderCase();
@@ -409,7 +418,7 @@ function flyComponentToSlot(comp, cat) {
     });
 }
 
-// Fly from card to case when tapping a filled card
+// Fly from card to case
 function flyFromCardToCase(cardEl, comp) {
     const flyEl = document.getElementById("flying-comp");
     const caseImg = document.getElementById("pc-bg-image");
@@ -432,9 +441,10 @@ function flyFromCardToCase(cardEl, comp) {
         setTimeout(() => {
             flyEl.classList.add("hidden");
             flyEl.classList.remove("fly");
-            if (caseImg) {
-                caseImg.style.filter = "brightness(1.3)";
-                setTimeout(() => caseImg.style.filter = "", 300);
+            const zone = document.getElementById("zone-" + comp.category);
+            if (zone) {
+                zone.classList.add("flash");
+                setTimeout(() => zone.classList.remove("flash"), 500);
             }
         }, 700);
     });

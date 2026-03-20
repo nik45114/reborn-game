@@ -128,14 +128,52 @@ body {
     display: none;
 }
 
-/* ===== BLUEPRINT ANNOTATIONS ===== */
-.blueprint-svg {
+/* ===== COMPONENT GLOW ZONES ===== */
+.glow-zone {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 3;
+    border-radius: 4px;
+    opacity: 0;
     pointer-events: none;
+    z-index: 2;
+    transition: all 0.5s ease;
+}
+
+.glow-zone.active {
+    opacity: 1;
+}
+
+/* Zone positions inside the case */
+.zone-cool { top: 37%; left: 28%; width: 10%; height: 10%; border-radius: 50%; }
+.zone-cpu  { top: 40%; left: 39%; width: 12%; height: 9%; }
+.zone-ram  { top: 37%; left: 53%; width: 5%;  height: 14%; }
+.zone-gpu  { top: 54%; left: 30%; width: 32%; height: 6%; border-radius: 3px; }
+.zone-psu  { top: 70%; left: 44%; width: 20%; height: 10%; }
+.zone-ssd  { top: 67%; left: 30%; width: 10%; height: 6%; }
+.zone-mb   { top: 35%; left: 27%; width: 35%; height: 25%; border-radius: 3px; }
+
+/* Rarity glow colors */
+.glow-zone.common   { background: radial-gradient(ellipse, rgba(156,163,175,0.25) 0%, transparent 70%); }
+.glow-zone.uncommon { background: radial-gradient(ellipse, rgba(34,197,94,0.3) 0%, transparent 70%); }
+.glow-zone.rare     { background: radial-gradient(ellipse, rgba(59,130,246,0.35) 0%, transparent 70%); }
+.glow-zone.epic     { background: radial-gradient(ellipse, rgba(168,85,247,0.4) 0%, transparent 70%); }
+.glow-zone.legendary {
+    background: radial-gradient(ellipse, rgba(245,158,11,0.45) 0%, transparent 70%);
+    animation: legendZone 2s ease-in-out infinite;
+}
+
+@keyframes legendZone {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* Flash when component is installed */
+@keyframes zoneFlash {
+    0% { opacity: 1; filter: brightness(3); }
+    100% { opacity: 1; filter: brightness(1); }
+}
+
+.glow-zone.flash {
+    animation: zoneFlash 0.5s ease;
 }
 
 /* ===== OLD SLOTS (removed) ===== /*
