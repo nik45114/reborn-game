@@ -143,12 +143,14 @@ body {
 
 .hw-ram {
     top: 22%;
-    right: 22%;
+    left: 56%;
     width: 22%;
+    height: auto;
     aspect-ratio: 4 / 1;
     border-radius: 2px;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    border: 2px solid red;
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
