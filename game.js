@@ -537,14 +537,14 @@ function renderRating() {
 // ========== BLUEPRINT ==========
 
 const BLUEPRINT_POINTS = {
-    // {x,y} = dot position inside case, {lx,ly} = label anchor point at edge
-    cpu:  { x: 44, y: 32, lx: 8,  ly: 28, label: "CPU" },
-    cool: { x: 36, y: 28, lx: 8,  ly: 18, label: "Кулер" },
-    ram:  { x: 58, y: 28, lx: 85, ly: 18, label: "RAM" },
-    mb:   { x: 48, y: 40, lx: 85, ly: 38, label: "Плата" },
-    gpu:  { x: 46, y: 52, lx: 8,  ly: 52, label: "GPU" },
-    psu:  { x: 56, y: 68, lx: 85, ly: 68, label: "БП" },
-    case: { x: 38, y: 64, lx: 8,  ly: 68, label: "SSD" }
+    // {x,y} = dot on component, {lx,ly} = label at edge
+    cool: { x: 34, y: 42, lx: 22, ly: 38, label: "Кулер" },
+    cpu:  { x: 42, y: 48, lx: 22, ly: 48, label: "CPU" },
+    ram:  { x: 58, y: 44, lx: 78, ly: 40, label: "RAM" },
+    mb:   { x: 62, y: 52, lx: 78, ly: 52, label: "Плата" },
+    gpu:  { x: 46, y: 60, lx: 22, ly: 60, label: "GPU" },
+    psu:  { x: 56, y: 74, lx: 78, ly: 74, label: "БП" },
+    case: { x: 38, y: 72, lx: 22, ly: 72, label: "SSD" }
 };
 
 function renderBlueprint() {
@@ -557,25 +557,20 @@ function renderBlueprint() {
         const comp = state.currentBuild[slot];
         const rar = comp ? RARITIES[comp.rarity] : null;
         const color = rar ? rar.color : "rgba(147,51,234,0.5)";
-        const dotR = comp ? 3 : 2;
+        const dotR = comp ? 1.5 : 1;
         const labelText = comp ? comp.model : bp.label;
-        const labelColor = rar ? rar.color : "rgba(200,180,255,0.5)";
-        const lineOpacity = comp ? 0.6 : 0.25;
-        const dotGlow = comp ? `<circle cx="${bp.x}" cy="${bp.y}" r="6" fill="none" stroke="${color}" stroke-width="0.3" opacity="0.5"><animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0.1;0.5" dur="2s" repeatCount="indefinite"/></circle>` : '';
-
-        // Midpoint for line bend
-        const mx = bp.lx < 50 ? bp.x - 8 : bp.x + 8;
+        const labelColor = rar ? rar.color : "rgba(200,180,255,0.4)";
+        const lineOpacity = comp ? 0.5 : 0.2;
+        const dotGlow = comp ? `<circle cx="${bp.x}" cy="${bp.y}" r="3" fill="none" stroke="${color}" stroke-width="0.2" opacity="0.4"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite"/></circle>` : '';
 
         html += `
-            <!-- ${slot} -->
             ${dotGlow}
             <circle cx="${bp.x}" cy="${bp.y}" r="${dotR}" fill="${color}" />
-            <path d="M${bp.x},${bp.y} L${mx},${bp.ly} L${bp.lx},${bp.ly}"
-                  fill="none" stroke="${color}" stroke-width="0.3" opacity="${lineOpacity}"
-                  stroke-dasharray="${comp ? 'none' : '1,1'}"/>
-            <circle cx="${bp.lx}" cy="${bp.ly}" r="1" fill="${color}" opacity="${lineOpacity}"/>
-            <text x="${bp.lx < 50 ? bp.lx + 2 : bp.lx - 2}" y="${bp.ly + 0.5}"
-                  font-size="2.8" fill="${labelColor}" font-family="sans-serif" font-weight="600"
+            <line x1="${bp.x}" y1="${bp.y}" x2="${bp.lx}" y2="${bp.ly}"
+                  stroke="${color}" stroke-width="0.2" opacity="${lineOpacity}"
+                  stroke-dasharray="${comp ? 'none' : '0.5,0.5'}"/>
+            <text x="${bp.lx < 50 ? bp.lx + 1.5 : bp.lx - 1.5}" y="${bp.ly + 0.3}"
+                  font-size="2" fill="${labelColor}" font-family="sans-serif" font-weight="600"
                   text-anchor="${bp.lx < 50 ? 'start' : 'end'}"
                   dominant-baseline="middle">${labelText}</text>
         `;
