@@ -142,10 +142,12 @@ body {
 }
 
 .hw-ram {
-    top: 36%;
-    left: 33%;
-    width: 28%;
+    top: 38%;
+    left: 30%;
+    width: 35%;
+    height: auto;
     border-radius: 2px;
+    object-fit: contain;
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
