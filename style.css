@@ -279,11 +279,50 @@ body {
     align-items: center;
     gap: 8px;
     transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.comp-card:active {
+    transform: scale(0.97);
 }
 
 .comp-card.empty {
     border-style: dashed;
     opacity: 0.6;
+}
+
+.comp-card.empty:active {
+    opacity: 1;
+    border-color: rgba(147, 51, 234, 0.6);
+}
+
+/* Install animation flash */
+@keyframes cardInstall {
+    0% { background: rgba(147, 51, 234, 0.4); }
+    100% { background: rgba(21, 13, 42, 0.8); }
+}
+
+.comp-card.installing {
+    animation: cardInstall 0.5s ease;
+}
+
+/* Shine effect on filled cards */
+.comp-card.filled::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    animation: cardShine 3s ease-in-out infinite;
+}
+
+@keyframes cardShine {
+    0% { left: -100%; }
+    50% { left: 150%; }
+    100% { left: 150%; }
 }
 
 .comp-card.filled {
@@ -338,6 +377,20 @@ body {
     font-size: 10px;
     font-weight: 700;
     color: var(--accent2);
+    flex-shrink: 0;
+}
+
+.comp-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--green);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 

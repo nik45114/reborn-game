@@ -235,8 +235,7 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Blueprint annotations on case
-    renderBlueprint();
+    // No overlays on case image
 
     // Update component grid
     const grid = document.getElementById("comp-grid");
@@ -251,13 +250,14 @@ function renderCase() {
                 filledCount++;
                 const rar = RARITIES[comp.rarity];
                 return `
-                    <div class="comp-card filled ${comp.rarity}${isWide ? ' wide' : ''}">
+                    <div class="comp-card filled ${comp.rarity}${isWide ? ' wide' : ''}" data-slot="${slot}">
                         <div class="comp-icon">${cat.icon}</div>
                         <div class="comp-info">
                             <div class="comp-type">${cat.name}</div>
                             <div class="comp-name" style="color:${rar.color}">${comp.model}</div>
                         </div>
                         <div class="comp-power">⚡${comp.power}</div>
+                        <div class="comp-check">✓</div>
                     </div>`;
             }
             return `
@@ -269,6 +269,21 @@ function renderCase() {
                     </div>
                 </div>`;
         }).join("");
+    }
+
+    // Card click — fly to case
+    if (grid) {
+        grid.querySelectorAll(".comp-card.filled").forEach(card => {
+            card.addEventListener("click", () => {
+                const slot = card.dataset.slot;
+                const comp = state.currentBuild[slot];
+                if (comp) {
+                    card.classList.add("installing");
+                    setTimeout(() => card.classList.remove("installing"), 500);
+                    flyFromCardToCase(card, comp);
+                }
+            });
+        });
     }
 
     // Update build bar
@@ -356,9 +371,9 @@ function showDrop(comp) {
 
 function flyComponentToSlot(comp, cat) {
     const flyEl = document.getElementById("flying-comp");
-    const slotEl = document.getElementById("slot-" + comp.category);
+    const caseImg = document.getElementById("pc-bg-image");
 
-    // Start position: center of screen
+    // Start: center of screen
     const startX = window.innerWidth / 2 - 25;
     const startY = window.innerHeight / 2 - 25;
 
@@ -369,11 +384,11 @@ function flyComponentToSlot(comp, cat) {
     flyEl.style.opacity = "1";
     flyEl.classList.remove("hidden");
 
-    // Target position
+    // Target: center of PC case image
     requestAnimationFrame(() => {
-        const slotRect = slotEl.getBoundingClientRect();
-        const targetX = slotRect.left + slotRect.width / 2 - 25;
-        const targetY = slotRect.top + slotRect.height / 2 - 25;
+        const caseRect = caseImg.getBoundingClientRect();
+        const targetX = caseRect.left + caseRect.width * 0.45 - 25;
+        const targetY = caseRect.top + caseRect.height * 0.55 - 25;
 
         flyEl.style.left = targetX + "px";
         flyEl.style.top = targetY + "px";
@@ -383,12 +398,45 @@ function flyComponentToSlot(comp, cat) {
             flyEl.classList.add("hidden");
             flyEl.classList.remove("fly");
 
-            // Flash the slot
-            slotEl.classList.add("slot-flash");
-            setTimeout(() => slotEl.classList.remove("slot-flash"), 400);
+            // Flash the case image
+            if (caseImg) {
+                caseImg.style.filter = "brightness(1.4)";
+                setTimeout(() => caseImg.style.filter = "", 300);
+            }
 
             renderCase();
-        }, 650);
+        }, 700);
+    });
+}
+
+// Fly from card to case when tapping a filled card
+function flyFromCardToCase(cardEl, comp) {
+    const flyEl = document.getElementById("flying-comp");
+    const caseImg = document.getElementById("pc-bg-image");
+    const cat = CATEGORIES[comp.category];
+
+    const cardRect = cardEl.getBoundingClientRect();
+    flyEl.textContent = cat.icon;
+    flyEl.style.left = (cardRect.left + 10) + "px";
+    flyEl.style.top = (cardRect.top + 10) + "px";
+    flyEl.style.transform = "scale(1)";
+    flyEl.style.opacity = "1";
+    flyEl.classList.remove("hidden");
+
+    requestAnimationFrame(() => {
+        const caseRect = caseImg.getBoundingClientRect();
+        flyEl.style.left = (caseRect.left + caseRect.width * 0.45 - 25) + "px";
+        flyEl.style.top = (caseRect.top + caseRect.height * 0.55 - 25) + "px";
+        flyEl.classList.add("fly");
+
+        setTimeout(() => {
+            flyEl.classList.add("hidden");
+            flyEl.classList.remove("fly");
+            if (caseImg) {
+                caseImg.style.filter = "brightness(1.3)";
+                setTimeout(() => caseImg.style.filter = "", 300);
+            }
+        }, 700);
     });
 }
 
