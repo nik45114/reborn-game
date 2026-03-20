@@ -78,18 +78,10 @@ const BUILD_TIERS = [
     { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 500, emoji: "👑" }
 ];
 
-let MAX_TICKETS = 2;
-let TICKET_REGEN_MS = 12 * 60 * 60 * 1000;
-
-// Admin mode for @r9daev
-let IS_ADMIN = false;
-if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe &&
-    Telegram.WebApp.initDataUnsafe.user &&
-    Telegram.WebApp.initDataUnsafe.user.username === "r9daev") {
-    MAX_TICKETS = 99999;
-    TICKET_REGEN_MS = 1000;
-    IS_ADMIN = true;
-}
+// TESTING MODE — unlimited for all (remove later)
+let MAX_TICKETS = 99999;
+let TICKET_REGEN_MS = 1000;
+let IS_ADMIN = true;
 
 // ========== STATE ==========
 
