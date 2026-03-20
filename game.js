@@ -537,14 +537,14 @@ function renderRating() {
 // ========== BLUEPRINT ==========
 
 const BLUEPRINT_POINTS = {
-    // {x,y} = dot on component, {lx,ly} = label at edge
-    cool: { x: 34, y: 42, lx: 22, ly: 38, label: "Кулер" },
-    cpu:  { x: 42, y: 48, lx: 22, ly: 48, label: "CPU" },
-    ram:  { x: 58, y: 44, lx: 78, ly: 40, label: "RAM" },
-    mb:   { x: 62, y: 52, lx: 78, ly: 52, label: "Плата" },
-    gpu:  { x: 46, y: 60, lx: 22, ly: 60, label: "GPU" },
-    psu:  { x: 56, y: 74, lx: 78, ly: 74, label: "БП" },
-    case: { x: 38, y: 72, lx: 22, ly: 72, label: "SSD" }
+    // x,y = dot position (% of image)
+    cool: { x: 32, y: 40 },
+    cpu:  { x: 42, y: 45 },
+    ram:  { x: 56, y: 41 },
+    mb:   { x: 50, y: 50 },
+    gpu:  { x: 44, y: 57 },
+    psu:  { x: 55, y: 73 },
+    case: { x: 36, y: 70 }
 };
 
 function renderBlueprint() {
@@ -557,23 +557,23 @@ function renderBlueprint() {
         const comp = state.currentBuild[slot];
         const rar = comp ? RARITIES[comp.rarity] : null;
         const color = rar ? rar.color : "rgba(147,51,234,0.5)";
-        const dotR = comp ? 1.5 : 1;
-        const labelText = comp ? comp.model : bp.label;
-        const labelColor = rar ? rar.color : "rgba(200,180,255,0.4)";
-        const lineOpacity = comp ? 0.5 : 0.2;
-        const dotGlow = comp ? `<circle cx="${bp.x}" cy="${bp.y}" r="3" fill="none" stroke="${color}" stroke-width="0.2" opacity="0.4"><animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite"/></circle>` : '';
-
-        html += `
-            ${dotGlow}
-            <circle cx="${bp.x}" cy="${bp.y}" r="${dotR}" fill="${color}" />
-            <line x1="${bp.x}" y1="${bp.y}" x2="${bp.lx}" y2="${bp.ly}"
-                  stroke="${color}" stroke-width="0.2" opacity="${lineOpacity}"
-                  stroke-dasharray="${comp ? 'none' : '0.5,0.5'}"/>
-            <text x="${bp.lx < 50 ? bp.lx + 1.5 : bp.lx - 1.5}" y="${bp.ly + 0.3}"
-                  font-size="2" fill="${labelColor}" font-family="sans-serif" font-weight="600"
-                  text-anchor="${bp.lx < 50 ? 'start' : 'end'}"
-                  dominant-baseline="middle">${labelText}</text>
-        `;
+        if (comp) {
+            // Filled: bright dot with pulse
+            html += `
+                <circle cx="${bp.x}" cy="${bp.y}" r="4" fill="none" stroke="${color}" stroke-width="0.3" opacity="0.3">
+                    <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="${bp.x}" cy="${bp.y}" r="1.5" fill="${color}" opacity="0.9"/>
+            `;
+        } else {
+            // Empty: dim small dot
+            html += `
+                <circle cx="${bp.x}" cy="${bp.y}" r="1" fill="rgba(147,51,234,0.4)" opacity="0.5">
+                    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+                </circle>
+            `;
+        }
     }
 
     svg.innerHTML = html;
