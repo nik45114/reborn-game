@@ -441,11 +441,11 @@ function flyComponentToSlot(comp, cat) {
             const hw = document.getElementById("hw-" + comp.category);
             if (hw) {
                 hw.classList.add("flash");
-                setTimeout(() => hw.classList.remove("flash"), 600);
+                setTimeout(() => hw.classList.remove("flash"), 400);
             }
 
             renderCase();
-        }, 700);
+        }, 300);
     });
 }
 
