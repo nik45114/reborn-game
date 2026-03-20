@@ -142,15 +142,13 @@ body {
 }
 
 .hw-ram {
-    top: 25%;
-    left: 56%;
-    width: 30%;
+    top: 22%;
+    right: 22%;
+    width: 22%;
     aspect-ratio: 4 / 1;
     border-radius: 2px;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    transform: rotate(90deg);
-    transform-origin: top left;
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
@@ -249,31 +247,7 @@ body {
     border: 0.5px solid #444;
 }
 
-/* --- RAM: vertical sticks --- */
-#hw-ram {
-    top: 36%; left: 53%;
-    width: 7%; height: 15%;
-    display: flex;
-    gap: 15%;
-}
-
-#hw-ram::before, #hw-ram::after {
-    content: '';
-    flex: 1;
-    background: linear-gradient(180deg, #333 0%, #333 5%, #1e1e28 5%, #1e1e28 95%, #333 95%);
-    border: 0.5px solid #3a3a45;
-    border-radius: 1px;
-}
-
-/* RAM RGB tops */
-#hw-ram.active::before {
-    box-shadow: 0 -2px 4px var(--accent);
-    border-top: 2px solid var(--accent);
-}
-#hw-ram.active::after {
-    box-shadow: 0 -2px 4px var(--accent);
-    border-top: 2px solid var(--accent);
-}
+/* --- RAM: image overlay (old CSS sticks removed) --- */
 
 /* --- PSU: box with grill --- */
 #hw-psu {
