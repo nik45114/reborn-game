@@ -238,13 +238,21 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Swap case image based on installed components
+    // Swap case image based on GPU rarity
     const bgImg = document.getElementById("pc-bg-image");
     if (bgImg) {
-        if (state.currentBuild.gpu) {
-            bgImg.src = "bg-gpu.png";
-        } else {
+        const gpu = state.currentBuild.gpu;
+        if (!gpu) {
             bgImg.src = "bg.png";
+        } else {
+            const gpuImages = {
+                common: "gpu-1.png",
+                uncommon: "gpu-1.png",
+                rare: "gpu-2.png",
+                epic: "gpu-3.png",
+                legendary: "gpu-4.png"
+            };
+            bgImg.src = gpuImages[gpu.rarity] || "bg-gpu.png";
         }
     }
 
