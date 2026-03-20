@@ -142,14 +142,15 @@ body {
 }
 
 .hw-ram {
-    top: 37%;
-    left: 30%;
-    width: 35%;
-    /* Aspect ratio 488:123 = ~4:1 */
+    top: 25%;
+    left: 56%;
+    width: 30%;
     aspect-ratio: 4 / 1;
     border-radius: 2px;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    transform: rotate(90deg);
+    transform-origin: top left;
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
