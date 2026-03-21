@@ -345,16 +345,21 @@ function showDrop(comp) {
     // Glow color
     document.getElementById("drop-glow").style.background = rar.color;
 
+    // Category name (big, first thing you see)
+    const catEl = document.getElementById("drop-category");
+    catEl.textContent = cat.name;
+    catEl.style.color = rar.color;
+
     // Component display
     const compEl = document.getElementById("drop-component");
     compEl.style.borderColor = rar.color;
     document.getElementById("drop-comp-icon").textContent = cat.icon;
 
     // Info
-    document.getElementById("drop-rarity").textContent = rar.name;
-    document.getElementById("drop-rarity").style.color = rar.color;
     document.getElementById("drop-model").textContent = comp.model;
     document.getElementById("drop-model").style.color = rar.color;
+    document.getElementById("drop-rarity").textContent = rar.name;
+    document.getElementById("drop-rarity").style.color = rar.color;
     document.getElementById("drop-power").textContent = "⚡ " + comp.power + " мощности";
 
     // Auto-equip info
