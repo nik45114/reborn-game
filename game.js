@@ -536,33 +536,78 @@ document.getElementById("btn-assemble").addEventListener("click", () => {
 
 // ========== UI: INVENTORY ==========
 
-function renderInventory() {
-    const list = document.getElementById("inventory-list");
-    const items = [...state.inventory];
+let invActiveCategory = "cpu";
 
+function renderInvTabs() {
+    const tabsEl = document.getElementById("inv-tabs");
+    const catKeys = Object.keys(CATEGORIES);
+    tabsEl.innerHTML = catKeys.map(key => {
+        const cat = CATEGORIES[key];
+        const count = state.inventory.filter(i => i.category === key).length;
+        const isActive = key === invActiveCategory;
+        return `<button class="inv-tab ${isActive ? 'active' : ''}" data-cat="${key}">
+            <span class="inv-tab-icon">${cat.icon}</span>
+            <span class="inv-tab-name">${cat.name}</span>
+            ${count > 0 ? `<span class="inv-tab-count">${count}</span>` : ''}
+        </button>`;
+    }).join("");
+
+    tabsEl.querySelectorAll(".inv-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+            invActiveCategory = btn.dataset.cat;
+            renderInvTabs();
+            renderInventoryList();
+        });
+    });
+}
+
+function renderInventoryList() {
+    const list = document.getElementById("inventory-list");
+    const items = state.inventory.filter(i => i.category === invActiveCategory);
     const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
     items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
 
+    const cat = CATEGORIES[invActiveCategory];
+    const current = state.currentBuild[invActiveCategory];
+
     if (!items.length) {
-        list.innerHTML = '<div class="inv-empty">Пока пусто. Выбивайте детали! 📦</div>';
+        list.innerHTML = `<div class="inv-empty">Нет деталей: ${cat.name}. Выбивайте! 📦</div>`;
         return;
     }
 
     list.innerHTML = items.map(item => {
-        const cat = CATEGORIES[item.category];
         const rar = RARITIES[item.rarity];
-        const inBuild = Object.values(state.currentBuild).some(b => b && b.id === item.id);
+        const inBuild = current && current.id === item.id;
         return `
-            <div class="inv-item ${item.rarity}">
+            <div class="inv-item ${item.rarity} ${inBuild ? 'equipped' : ''}" data-item-id="${item.id}">
                 <div class="inv-item-icon">${cat.icon}</div>
                 <div class="inv-item-info">
                     <div class="inv-item-name" style="color:${rar.color}">${item.model}</div>
-                    <div class="inv-item-type">${cat.name} · ${rar.name}${inBuild ? " · 🖥 в сборке" : ""}</div>
+                    <div class="inv-item-type">${rar.name} · ⚡${item.power}${inBuild ? " · 🖥 в сборке" : ""}</div>
                 </div>
-                <div class="inv-item-power">⚡${item.power}</div>
+                <div class="inv-item-action">${inBuild ? "✓" : "⬅️"}</div>
             </div>
         `;
     }).join("");
+
+    // Click to equip
+    list.querySelectorAll(".inv-item:not(.equipped)").forEach(el => {
+        el.addEventListener("click", () => {
+            const itemId = parseFloat(el.dataset.itemId);
+            const item = state.inventory.find(i => i.id === itemId);
+            if (item) {
+                state.currentBuild[invActiveCategory] = item;
+                saveState();
+                renderCase();
+                renderInventoryList();
+            }
+        });
+    });
+}
+
+function renderInventory() {
+    renderInvTabs();
+    renderInventoryList();
 }
 
 // ========== UI: SLOT POPUP ==========

@@ -892,6 +892,51 @@ body {
 .inv-item-name { font-size: 13px; font-weight: 600; }
 .inv-item-type { font-size: 10px; color: var(--text2); }
 .inv-item-power { font-size: 12px; font-weight: 700; color: var(--accent2); }
+/* Inventory tabs */
+.inv-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.inv-tab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px;
+    border: 1px solid var(--bg3);
+    background: transparent;
+    color: var(--text2);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.inv-tab.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.inv-tab:active { transform: scale(0.95); }
+
+.inv-tab-icon { font-size: 14px; }
+.inv-tab-name { font-size: 11px; }
+
+.inv-tab-count {
+    background: rgba(255,255,255,0.2);
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-size: 10px;
+}
+
+.inv-tab.active .inv-tab-count {
+    background: rgba(255,255,255,0.3);
+}
+
 .inv-empty { text-align: center; padding: 40px; color: var(--text2); font-size: 14px; }
 
 /* ===== RATING ===== */
