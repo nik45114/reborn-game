@@ -11,11 +11,11 @@ const CATEGORIES = {
 };
 
 const RARITIES = {
-    common:    { name: "Обычная",    chance: 0.45, color: "#9ca3af", power: [10, 25] },
-    uncommon:  { name: "Необычная",  chance: 0.27, color: "#22c55e", power: [26, 50] },
-    rare:      { name: "Редкая",     chance: 0.16, color: "#3b82f6", power: [51, 75] },
-    epic:      { name: "Эпическая",  chance: 0.08, color: "#a855f7", power: [76, 92] },
-    legendary: { name: "Легендарная", chance: 0.04, color: "#f59e0b", power: [93, 100] }
+    common:    { name: "Обычная",    chance: 0.40, color: "#9ca3af", power: [10, 25] },
+    uncommon:  { name: "Необычная",  chance: 0.25, color: "#22c55e", power: [26, 50] },
+    rare:      { name: "Редкая",     chance: 0.18, color: "#3b82f6", power: [51, 75] },
+    epic:      { name: "Эпическая",  chance: 0.10, color: "#a855f7", power: [76, 92] },
+    legendary: { name: "Легендарная", chance: 0.07, color: "#f59e0b", power: [93, 100] }
 };
 
 const COMPONENTS = {
