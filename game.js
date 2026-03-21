@@ -20,53 +20,53 @@ const RARITIES = {
 
 const COMPONENTS = {
     cpu: {
-        common:    ["Intel i3-12100", "AMD Ryzen 3 4100", "Intel Pentium G7400"],
-        uncommon:  ["Intel i5-12400F", "AMD Ryzen 5 5600", "Intel i5-13400"],
-        rare:      ["Intel i7-13700K", "AMD Ryzen 7 7700X", "Intel i7-14700K"],
-        epic:      ["Intel i9-13900K", "AMD Ryzen 9 7900X"],
-        legendary: ["Intel i9-14900KS", "AMD Ryzen 9 7950X3D"]
+        common:    ["Intel i3-12100", "AMD Ryzen 3 4100"],
+        uncommon:  ["Intel i5-12400F", "AMD Ryzen 5 5600"],
+        rare:      ["Intel i7-13700K", "AMD Ryzen 7 7700X"],
+        epic:      ["Intel i9-13900K"],
+        legendary: ["AMD Ryzen 9 7950X3D"]
     },
     gpu: {
-        common:    ["GTX 1650", "RX 6500 XT", "GTX 1050 Ti"],
-        uncommon:  ["RTX 3060", "RX 6600 XT", "RTX 4060"],
-        rare:      ["RTX 4070 Super", "RX 7800 XT", "RTX 3080"],
-        epic:      ["RTX 4080 Super", "RX 7900 XTX"],
-        legendary: ["RTX 4090", "RTX 4090 Ti"]
+        common:    ["GTX 1650", "GTX 1050 Ti"],
+        uncommon:  ["RTX 3060", "RX 6600 XT"],
+        rare:      ["RTX 4070 Super", "RX 7800 XT"],
+        epic:      ["RTX 4080 Super"],
+        legendary: ["RTX 4090"]
     },
     ram: {
         common:    ["DDR4 8GB 2666MHz", "DDR4 16GB 2666MHz"],
         uncommon:  ["DDR4 16GB 3200MHz", "DDR5 16GB 4800MHz"],
         rare:      ["DDR5 32GB 5600MHz", "DDR4 32GB 3600MHz"],
-        epic:      ["DDR5 32GB 6400MHz", "DDR5 64GB 5600MHz"],
-        legendary: ["DDR5 64GB 7200MHz", "DDR5 48GB 8000MHz"]
+        epic:      ["DDR5 64GB 5600MHz"],
+        legendary: ["DDR5 64GB 7200MHz"]
     },
     mb: {
-        common:    ["ASUS Prime H610", "Gigabyte H510M", "MSI PRO B660"],
-        uncommon:  ["MSI B550 Tomahawk", "ASUS TUF B660", "Gigabyte B550 AORUS"],
-        rare:      ["ASUS ROG Strix B550-F", "MSI MAG X570S", "Gigabyte Z690 AORUS"],
-        epic:      ["ASUS ROG Maximus Z790", "MSI MEG Z690 ACE"],
-        legendary: ["ASUS ROG Crosshair X670E", "MSI MEG Z790 GODLIKE"]
+        common:    ["ASUS Prime H610", "Gigabyte H510M"],
+        uncommon:  ["MSI B550 Tomahawk", "ASUS TUF B660"],
+        rare:      ["ASUS ROG Strix B550-F", "Gigabyte Z690 AORUS"],
+        epic:      ["ASUS ROG Maximus Z790"],
+        legendary: ["MSI MEG Z790 GODLIKE"]
     },
     psu: {
-        common:    ["500W Be Quiet", "550W Corsair CV", "500W Deepcool"],
-        uncommon:  ["650W Corsair RM", "700W Be Quiet Pure", "650W Seasonic Focus"],
+        common:    ["500W Be Quiet", "550W Corsair CV"],
+        uncommon:  ["650W Corsair RM", "700W Be Quiet Pure"],
         rare:      ["850W Corsair RM850x", "850W Seasonic GX"],
-        epic:      ["1000W Corsair HX1000", "1000W Be Quiet Dark"],
-        legendary: ["1200W Corsair AX1200i", "1600W ROG Thor"]
+        epic:      ["1000W Corsair HX1000"],
+        legendary: ["1600W ROG Thor"]
     },
     case: {
-        common:    ["Kingston A400 240GB", "WD Green 480GB", "Crucial BX500 240GB"],
-        uncommon:  ["Samsung 870 EVO 500GB", "WD Blue SN570 500GB", "Crucial P3 500GB"],
-        rare:      ["Samsung 980 Pro 1TB", "WD Black SN770 1TB", "Kingston KC3000 1TB"],
-        epic:      ["Samsung 990 Pro 2TB", "WD Black SN850X 2TB"],
-        legendary: ["Samsung 990 Pro 4TB", "Seagate FireCuda 530 4TB"]
+        common:    ["Kingston A400 240GB", "WD Green 480GB"],
+        uncommon:  ["Samsung 870 EVO 500GB", "WD Blue SN570 500GB"],
+        rare:      ["Samsung 980 Pro 1TB", "WD Black SN770 1TB"],
+        epic:      ["Samsung 990 Pro 2TB"],
+        legendary: ["Seagate FireCuda 530 4TB"]
     },
     cool: {
-        common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400", "Hyper 212"],
-        uncommon:  ["Be Quiet Pure Rock 2", "Noctua NH-U12S", "Arctic Freezer 34"],
-        rare:      ["Noctua NH-D15", "Be Quiet Dark Rock Pro", "Corsair H100i"],
-        epic:      ["NZXT Kraken X73", "Corsair H150i Elite"],
-        legendary: ["ROG RYUJIN III 360", "Kraken Z73 Elite"]
+        common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400"],
+        uncommon:  ["Be Quiet Pure Rock 2", "Noctua NH-U12S"],
+        rare:      ["Noctua NH-D15", "Corsair H100i"],
+        epic:      ["NZXT Kraken X73"],
+        legendary: ["ROG RYUJIN III 360"]
     }
 };
 
