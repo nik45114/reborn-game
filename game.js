@@ -400,6 +400,29 @@ function showDrop(comp) {
         updateTicketTimer();
     };
 
+    // Legendary special effects
+    overlay.classList.remove("legendary");
+    let particles = overlay.querySelector(".drop-particles");
+    if (particles) particles.remove();
+
+    if (comp.rarity === "legendary") {
+        overlay.classList.add("legendary");
+        // Add particles
+        particles = document.createElement("div");
+        particles.className = "drop-particles";
+        for (let i = 0; i < 12; i++) {
+            const p = document.createElement("span");
+            const angle = (i / 12) * 360;
+            const dist = 40 + Math.random() * 60;
+            p.style.left = (100 + Math.cos(angle * Math.PI / 180) * dist) + "px";
+            p.style.top = (100 + Math.sin(angle * Math.PI / 180) * dist) + "px";
+            p.style.animationDelay = (Math.random() * 1) + "s";
+            p.style.animationDuration = (1 + Math.random() * 1) + "s";
+            particles.appendChild(p);
+        }
+        document.getElementById("drop-reveal").appendChild(particles);
+    }
+
     overlay.classList.remove("hidden");
 }
 

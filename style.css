@@ -758,6 +758,68 @@ body {
     to { opacity: 1; transform: scale(1) rotateY(0); }
 }
 
+/* Legendary drop animation */
+@keyframes legendaryAppear {
+    0% { opacity: 0; transform: scale(0.2) rotateY(360deg); filter: brightness(5); }
+    40% { opacity: 1; transform: scale(1.3) rotateY(90deg); filter: brightness(3); }
+    60% { transform: scale(0.9) rotateY(20deg); filter: brightness(1.5); }
+    80% { transform: scale(1.05) rotateY(-5deg); filter: brightness(1.2); }
+    100% { transform: scale(1) rotateY(0); filter: brightness(1); }
+}
+
+@keyframes legendaryBg {
+    0% { background: rgba(245, 158, 11, 0.3); }
+    30% { background: rgba(255, 200, 50, 0.15); }
+    100% { background: rgba(10, 5, 20, 0.94); }
+}
+
+@keyframes legendaryGlowPulse {
+    0%, 100% { width: 250px; height: 250px; opacity: 0.8; }
+    50% { width: 350px; height: 350px; opacity: 0.5; }
+}
+
+@keyframes legendaryParticle {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-120px) scale(0); }
+}
+
+.drop-overlay.legendary {
+    animation: legendaryBg 1.2s ease forwards;
+}
+
+.drop-overlay.legendary .drop-reveal {
+    animation: legendaryAppear 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.drop-overlay.legendary .drop-glow {
+    width: 300px;
+    height: 300px;
+    opacity: 0.9;
+    filter: blur(50px);
+    animation: legendaryGlowPulse 1.5s ease-in-out infinite;
+}
+
+.drop-overlay.legendary .drop-component {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6), 0 0 60px rgba(245, 158, 11, 0.3), inset 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.drop-overlay.legendary .drop-particles {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; height: 200px;
+    pointer-events: none;
+}
+
+.drop-overlay.legendary .drop-particles span {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #f59e0b;
+    border-radius: 50%;
+    animation: legendaryParticle 1.5s ease-out infinite;
+    box-shadow: 0 0 6px #f59e0b;
+}
+
 .drop-glow {
     position: absolute;
     top: 50%; left: 50%;
