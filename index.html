@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=53">
+    <link rel="stylesheet" href="style.css?v=54">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -50,26 +50,19 @@
             <div class="build-bar">
                 <div class="build-bar-label">
                     <span id="build-tier-name">Пустая сборка</span>
-                    <span id="build-stars"></span>
+                    <span id="build-power">⚡0 · 0/7</span>
                 </div>
                 <div class="build-progress-track">
                     <div class="build-progress-fill" id="build-progress"></div>
                 </div>
-                <div class="build-bar-sub">
-                    <span>⚡ <span id="build-power">0</span> мощности</span>
-                    <span id="build-count">0/7</span>
-                </div>
             </div>
         </div>
 
-        <!-- Assemble + Reset -->
+        <!-- Assemble -->
         <div class="action-area">
             <button class="btn-assemble" id="btn-assemble" disabled>
-                <span>⚡ Собрать ПК и получить бонус</span>
+                <span>⚡ Собрать ПК</span>
             </button>
-        </div>
-        <div style="text-align:center;margin-top:8px;">
-            <button onclick="resetAll()" style="padding:6px 16px;background:#ef4444;border:none;border-radius:8px;color:white;font-size:12px;font-weight:600;cursor:pointer;">🗑 Сбросить все детали</button>
         </div>
 
         <!-- Bottom tabs -->

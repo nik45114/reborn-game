@@ -276,45 +276,35 @@ function renderCase() {
         }
     }
 
-    // Update component grid
+    // Update component grid (compact)
     const grid = document.getElementById("comp-grid");
     if (grid) {
-        const slotOrder = ["cpu", "cool", "ram", "mb", "gpu", "psu", "case"];
+        const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "case", "cool"];
         grid.innerHTML = slotOrder.map(slot => {
             const comp = state.currentBuild[slot];
             const cat = CATEGORIES[slot];
-            const isWide = slot === "gpu";
 
             if (comp) {
                 filledCount++;
                 const rar = RARITIES[comp.rarity];
                 return `
-                    <div class="comp-card filled ${comp.rarity}${isWide ? ' wide' : ''}" data-slot="${slot}">
-                        <div class="comp-icon">${cat.icon}</div>
-                        <div class="comp-info">
-                            <div class="comp-type">${cat.name}</div>
-                            <div class="comp-name" style="color:${rar.color}">${comp.model}</div>
-                        </div>
-                        <div class="comp-power">⚡${comp.power}</div>
-                        <div class="comp-check">✓</div>
+                    <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}">
+                        <div class="comp-slot-icon">${cat.icon}</div>
+                        <div class="comp-slot-power" style="color:${rar.color}">⚡${comp.power}</div>
                     </div>`;
             }
             return `
-                <div class="comp-card empty${isWide ? ' wide' : ''}" data-slot="${slot}">
-                    <div class="comp-icon">${cat.icon}</div>
-                    <div class="comp-info">
-                        <div class="comp-type">${cat.name}</div>
-                        <div class="comp-name">Пусто</div>
-                    </div>
+                <div class="comp-slot empty" data-slot="${slot}">
+                    <div class="comp-slot-icon">${cat.icon}</div>
                 </div>`;
         }).join("");
     }
 
-    // Card click — open slot inventory popup
+    // Slot click — open slot inventory popup
     if (grid) {
-        grid.querySelectorAll(".comp-card").forEach(card => {
-            card.addEventListener("click", () => {
-                const slot = card.dataset.slot;
+        grid.querySelectorAll(".comp-slot").forEach(el => {
+            el.addEventListener("click", () => {
+                const slot = el.dataset.slot;
                 if (slot) openSlotPopup(slot);
             });
         });
@@ -322,9 +312,7 @@ function renderCase() {
 
     // Update build bar
     document.getElementById("build-tier-name").textContent = tier.emoji + " " + tier.name;
-    document.getElementById("build-stars").textContent = "⭐".repeat(tier.stars);
-    document.getElementById("build-power").textContent = power;
-    document.getElementById("build-count").textContent = filledCount + "/7";
+    document.getElementById("build-power").textContent = "⚡" + power + " · " + filledCount + "/7";
 
     const maxPower = 700;
     document.getElementById("build-progress").style.width = Math.min(100, (power / maxPower) * 100) + "%";
