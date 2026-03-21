@@ -286,6 +286,26 @@ function renderCase() {
         }
     }
 
+    // Cooler overlay
+    const coolEl = document.getElementById("hw-cool");
+    if (coolEl) {
+        const cool = state.currentBuild.cool;
+        if (cool) {
+            const coolImages = {
+                common: "cool-1.png",
+                uncommon: "cool-1.png",
+                rare: "cool-2.png",
+                epic: "cool-3.png",
+                legendary: "cool-4.png"
+            };
+            coolEl.style.backgroundImage = `url(${coolImages[cool.rarity] || "cool-1.png"})`;
+            coolEl.classList.add("active");
+        } else {
+            coolEl.classList.remove("active");
+            coolEl.style.backgroundImage = "";
+        }
+    }
+
     // PSU overlay
     const psuEl = document.getElementById("hw-psu");
     if (psuEl) {

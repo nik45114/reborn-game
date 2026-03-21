@@ -251,6 +251,20 @@ body {
     border: 0.5px solid #444;
 }
 
+/* --- Cooler: image overlay --- */
+.hw-cool {
+    top: 38%;
+    left: 22%;
+    width: 16%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 3px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.5))
+           drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8));
+}
+
 /* --- RAM: image overlay --- */
 
 /* --- PSU: image overlay --- */
