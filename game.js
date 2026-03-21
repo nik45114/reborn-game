@@ -398,6 +398,9 @@ function showDrop(comp) {
         }
 
         updateTicketTimer();
+
+        // Check for 3 duplicates → recycle
+        setTimeout(() => checkRecycle(comp.model), 400);
     };
 
     // Legendary special effects
@@ -779,6 +782,58 @@ function renderBlueprint() {
     }
 
     svg.innerHTML = html;
+}
+
+// ========== RECYCLE (3 duplicates → +1 ticket) ==========
+
+function checkRecycle(model) {
+    const dupes = state.inventory.filter(i => i.model === model);
+    if (dupes.length < 3) return;
+
+    // Don't recycle items currently in build
+    const buildIds = Object.values(state.currentBuild).filter(b => b).map(b => b.id);
+    const recyclable = dupes.filter(d => !buildIds.includes(d.id));
+    if (recyclable.length < 3) return;
+
+    // Remove 3 duplicates
+    const toRemove = recyclable.slice(0, 3);
+    for (const item of toRemove) {
+        const idx = state.inventory.findIndex(i => i.id === item.id);
+        if (idx !== -1) state.inventory.splice(idx, 1);
+    }
+
+    // Grant ticket
+    state.tickets++;
+    saveState();
+    updateTicketTimer();
+    renderCase();
+
+    // Show recycle animation
+    showRecycleAnimation(model, toRemove[0]);
+}
+
+function showRecycleAnimation(model, sample) {
+    const cat = CATEGORIES[sample.category];
+    const rar = RARITIES[sample.rarity];
+
+    const modal = document.createElement("div");
+    modal.className = "recycle-modal";
+    modal.innerHTML = `
+        <div class="recycle-content">
+            <div class="recycle-icons">
+                <div class="recycle-icon r1">${cat.icon}</div>
+                <div class="recycle-icon r2">${cat.icon}</div>
+                <div class="recycle-icon r3">${cat.icon}</div>
+            </div>
+            <div class="recycle-arrow">⚡</div>
+            <div class="recycle-result">🎫</div>
+            <div class="recycle-title">Переработка!</div>
+            <div class="recycle-desc">3× <span style="color:${rar.color}">${model}</span></div>
+            <div class="recycle-bonus">+1 попытка</div>
+            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Отлично!</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // ========== INIT ==========
