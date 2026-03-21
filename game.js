@@ -191,8 +191,16 @@ function getBuildPower() {
 }
 
 function getBuildTier(power) {
+    // Ultimate only if ALL 7 components are legendary
+    const allLegendary = isBuildComplete() &&
+        Object.values(state.currentBuild).every(c => c && c.rarity === "legendary");
+    if (allLegendary) return BUILD_TIERS[BUILD_TIERS.length - 1];
+
     let tier = BUILD_TIERS[0];
-    for (const t of BUILD_TIERS) if (power >= t.minPower) tier = t;
+    for (const t of BUILD_TIERS) {
+        if (t.name === "Ultimate ПК") continue; // skip, only via all legendary
+        if (power >= t.minPower) tier = t;
+    }
     return tier;
 }
 
