@@ -286,6 +286,26 @@ function renderCase() {
         }
     }
 
+    // PSU overlay
+    const psuEl = document.getElementById("hw-psu");
+    if (psuEl) {
+        const psu = state.currentBuild.psu;
+        if (psu) {
+            const psuImages = {
+                common: "psu-1.png",
+                uncommon: "psu-1.png",
+                rare: "psu-2.png",
+                epic: "psu-3.png",
+                legendary: "psu-4.png"
+            };
+            psuEl.style.backgroundImage = `url(${psuImages[psu.rarity] || "psu-1.png"})`;
+            psuEl.classList.add("active");
+        } else {
+            psuEl.classList.remove("active");
+            psuEl.style.backgroundImage = "";
+        }
+    }
+
     // Update component grid (compact)
     const grid = document.getElementById("comp-grid");
     if (grid) {
