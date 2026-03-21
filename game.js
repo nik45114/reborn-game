@@ -94,7 +94,9 @@ function defaultState() {
         bonusPoints: 0,
         inventory: [],
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, case: null, cool: null },
-        buildsHistory: []
+        buildsHistory: [],
+        lastLoginDate: null,
+        loginStreak: 0
     };
 }
 
@@ -837,6 +839,94 @@ function showRecycleAnimation(model, sample) {
     document.body.appendChild(modal);
 }
 
+// ========== DAILY LOGIN ==========
+
+const DAILY_REWARDS = [
+    { day: 1, tickets: 1, label: "+1 попытка" },
+    { day: 2, tickets: 1, label: "+1 попытка" },
+    { day: 3, tickets: 2, label: "+2 попытки" },
+    { day: 4, tickets: 1, label: "+1 попытка" },
+    { day: 5, tickets: 2, label: "+2 попытки" },
+    { day: 6, tickets: 2, label: "+2 попытки" },
+    { day: 7, tickets: 0, label: "Легендарная деталь!", legendary: true }
+];
+
+function getToday() {
+    return new Date().toISOString().split("T")[0];
+}
+
+function checkDailyLogin() {
+    const today = getToday();
+    if (state.lastLoginDate === today) return; // already claimed
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+    if (state.lastLoginDate === yesterdayStr) {
+        state.loginStreak = Math.min(state.loginStreak + 1, 7);
+    } else {
+        state.loginStreak = 1;
+    }
+
+    state.lastLoginDate = today;
+    const reward = DAILY_REWARDS[state.loginStreak - 1];
+
+    // Give tickets
+    if (reward.tickets > 0) {
+        state.tickets += reward.tickets;
+    }
+
+    // Give legendary on day 7
+    let legendaryComp = null;
+    if (reward.legendary) {
+        const catKeys = Object.keys(CATEGORIES);
+        const category = catKeys[Math.floor(Math.random() * catKeys.length)];
+        const models = COMPONENTS[category].legendary;
+        const model = models[Math.floor(Math.random() * models.length)];
+        const [minP, maxP] = RARITIES.legendary.power;
+        const power = minP + Math.floor(Math.random() * (maxP - minP + 1));
+        legendaryComp = { id: Date.now() + Math.random(), category, rarity: "legendary", model, power };
+        state.inventory.push(legendaryComp);
+        // Auto-equip if upgrade
+        const current = state.currentBuild[category];
+        if (!current || legendaryComp.power > current.power) {
+            state.currentBuild[category] = legendaryComp;
+        }
+        state.loginStreak = 0; // reset streak after legendary
+    }
+
+    saveState();
+    showDailyReward(reward, legendaryComp);
+}
+
+function showDailyReward(reward, legendaryComp) {
+    const streakDots = DAILY_REWARDS.map((r, i) => {
+        const done = i < state.loginStreak || (reward.legendary && i <= 6);
+        const current = i === state.loginStreak - 1 || (reward.legendary && i === 6);
+        const isLegendary = i === 6;
+        return `<div class="streak-dot ${done ? 'done' : ''} ${current ? 'current' : ''} ${isLegendary ? 'legendary' : ''}">
+            <span class="streak-day">${i + 1}</span>
+            ${isLegendary ? '👑' : '🎫'}
+        </div>`;
+    }).join("");
+
+    const modal = document.createElement("div");
+    modal.className = "daily-modal";
+    modal.innerHTML = `
+        <div class="daily-content">
+            <div class="daily-title">Ежедневный бонус!</div>
+            <div class="daily-streak">${streakDots}</div>
+            <div class="daily-day">День ${reward.legendary ? 7 : state.loginStreak}</div>
+            <div class="daily-reward-icon">${reward.legendary ? '👑' : '🎫'}</div>
+            <div class="daily-reward-text">${reward.label}</div>
+            ${legendaryComp ? `<div class="daily-legendary">${CATEGORIES[legendaryComp.category].icon} ${legendaryComp.model}<br><span style="color:#f59e0b">⚡${legendaryComp.power}</span></div>` : ''}
+            <button class="daily-btn" onclick="this.closest('.daily-modal').remove()">Забрать!</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
 // ========== INIT ==========
 
 // Reset button for admin
@@ -866,6 +956,9 @@ function init() {
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
     }
+
+    // Check daily login bonus
+    setTimeout(() => checkDailyLogin(), 500);
 }
 
 init();
