@@ -170,82 +170,7 @@ body {
 }
 .hw.flash { animation: hwFlash 0.6s ease; }
 
-/* --- GPU: two-fan card --- */
-#hw-gpu {
-    top: 52%; left: 28%;
-    width: 34%; height: 8%;
-    background: linear-gradient(180deg, #1a1a22, #111118);
-    border: 1px solid #2a2a35;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-}
-
-#hw-gpu::before, #hw-gpu::after {
-    content: '';
-    width: 28%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 1.5px solid #333;
-    background: radial-gradient(circle, #1a1a22 30%, transparent 31%),
-                conic-gradient(from 0deg, #222 0deg, #333 30deg, #222 60deg, #333 90deg,
-                    #222 120deg, #333 150deg, #222 180deg, #333 210deg,
-                    #222 240deg, #333 270deg, #222 300deg, #333 330deg);
-}
-
-#hw-gpu.active::before, #hw-gpu.active::after {
-    animation: fanSpin 1.2s linear infinite;
-}
-
-@keyframes fanSpin { to { transform: rotate(360deg); } }
-
-/* GPU backplate label */
-#hw-gpu .gpu-label {
-    position: absolute;
-    bottom: 2px; left: 8px;
-    font-size: 5px;
-    color: rgba(147,51,234,0.6);
-    font-weight: 700;
-    font-family: sans-serif;
-    letter-spacing: 1px;
-}
-
-/* --- COOLER: fan circle --- */
-#hw-cool {
-    top: 36%; left: 28%;
-    width: 11%; aspect-ratio: 1;
-    border-radius: 50%;
-    border: 1.5px solid #2a2a35;
-    background: radial-gradient(circle, #1a1a22 25%, transparent 26%),
-                conic-gradient(from 0deg, #1e1e28 0deg, #2a2a35 40deg, #1e1e28 80deg,
-                    #2a2a35 120deg, #1e1e28 160deg, #2a2a35 200deg,
-                    #1e1e28 240deg, #2a2a35 280deg, #1e1e28 320deg);
-    box-shadow: 0 0 6px rgba(0,0,0,0.4);
-}
-
-#hw-cool.active {
-}
-
-/* --- CPU: square chip --- */
-#hw-cpu {
-    top: 40%; left: 38%;
-    width: 10%; aspect-ratio: 1;
-    background: linear-gradient(135deg, #2a2a30, #1e1e24);
-    border: 1px solid #3a3a45;
-    border-radius: 2px;
-    box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
-}
-
-#hw-cpu::after {
-    content: '';
-    position: absolute;
-    inset: 20%;
-    background: #333;
-    border-radius: 1px;
-    border: 0.5px solid #444;
-}
+/* old CSS hardware drawings removed */
 
 /* --- Cooler: image overlay --- */
 .hw-cool {
@@ -282,53 +207,8 @@ body {
     background-repeat: no-repeat;
 }
 
-/* --- PSU: box with grill --- */
-#hw-psu {
-    top: 70%; left: 44%;
-    width: 22%; height: 10%;
-    background: linear-gradient(180deg, #1a1a22, #141418);
-    border: 1px solid #2a2a35;
-    border-radius: 2px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
+/* old CSS PSU/SSD/MB drawings removed */
 
-#hw-psu::after {
-    content: '';
-    position: absolute;
-    right: 10%; top: 15%;
-    width: 35%; height: 70%;
-    border-radius: 50%;
-    border: 1px solid #2a2a35;
-    background: repeating-conic-gradient(#1a1a22 0deg, #222 20deg, #1a1a22 40deg);
-}
-
-/* --- SSD: small rectangle --- */
-#hw-case {
-    top: 67%; left: 30%;
-    width: 12%; height: 5%;
-    background: linear-gradient(90deg, #1e1e28, #252530);
-    border: 0.5px solid #3a3a45;
-    border-radius: 2px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-
-#hw-case::after {
-    content: '';
-    position: absolute;
-    left: 5%; top: 25%;
-    width: 30%; height: 50%;
-    background: #333;
-    border-radius: 1px;
-}
-
-/* --- Motherboard: subtle PCB glow --- */
-#hw-mb {
-    top: 34%; left: 26%;
-    width: 37%; height: 28%;
-    border: 1px solid rgba(30, 60, 40, 0.4);
-    border-radius: 3px;
-    background: rgba(20, 30, 25, 0.2);
-}
 
 /* Rarity glow on all hardware */
 .hw.common   { box-shadow: 0 0 6px rgba(156,163,175,0.3); }
