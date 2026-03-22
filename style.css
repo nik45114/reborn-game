@@ -226,7 +226,6 @@ body {
 }
 
 #hw-cool.active {
-    animation: fanSpin 1.5s linear infinite;
 }
 
 /* --- CPU: square chip --- */
