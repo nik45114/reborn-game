@@ -143,7 +143,7 @@ body {
 
 .hw-ram {
     top: 43%;
-    left: 55%;
+    left: 52%;
     width: 5%;
     height: auto;
     aspect-ratio: 1 / 5;
@@ -173,8 +173,8 @@ body {
 
 /* --- Cooler: image overlay --- */
 .hw-cool {
-    top: 48%;
-    left: 28%;
+    top: 50%;
+    left: 24%;
     width: 10%;
     height: auto;
     aspect-ratio: 1 / 1;
@@ -185,7 +185,7 @@ body {
 /* --- SSD: image overlay --- */
 .hw-ssd {
     top: 66%;
-    left: 25%;
+    left: 20%;
     width: 12%;
     height: auto;
     aspect-ratio: 4 / 1;
