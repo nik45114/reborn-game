@@ -286,9 +286,9 @@ function renderCase() {
         }
     }
 
-    // Cooler overlay
-    const coolEl = document.getElementById("hw-cool");
-    if (coolEl) {
+    // Cooler: full-frame image swap (like GPU)
+    const coolImg = document.getElementById("pc-cool-image");
+    if (coolImg) {
         const cool = state.currentBuild.cool;
         if (cool) {
             const coolImages = {
@@ -298,51 +298,11 @@ function renderCase() {
                 epic: "cool-3.png",
                 legendary: "cool-4.png"
             };
-            coolEl.style.backgroundImage = `url(${coolImages[cool.rarity] || "cool-1.png"})`;
-            coolEl.classList.add("active");
+            coolImg.src = coolImages[cool.rarity] || "cool-1.png";
+            coolImg.style.display = "block";
         } else {
-            coolEl.classList.remove("active");
-            coolEl.style.backgroundImage = "";
-        }
-    }
-
-    // SSD overlay (category "case" in code)
-    const ssdEl = document.getElementById("hw-ssd");
-    if (ssdEl) {
-        const ssd = state.currentBuild.case;
-        if (ssd) {
-            const ssdImages = {
-                common: "ssd-1.png",
-                uncommon: "ssd-1.png",
-                rare: "ssd-2.png",
-                epic: "ssd-3.png",
-                legendary: "ssd-4.png"
-            };
-            ssdEl.style.backgroundImage = `url(${ssdImages[ssd.rarity] || "ssd-1.png"})`;
-            ssdEl.classList.add("active");
-        } else {
-            ssdEl.classList.remove("active");
-            ssdEl.style.backgroundImage = "";
-        }
-    }
-
-    // PSU overlay
-    const psuEl = document.getElementById("hw-psu");
-    if (psuEl) {
-        const psu = state.currentBuild.psu;
-        if (psu) {
-            const psuImages = {
-                common: "psu-1.png",
-                uncommon: "psu-1.png",
-                rare: "psu-2.png",
-                epic: "psu-3.png",
-                legendary: "psu-4.png"
-            };
-            psuEl.style.backgroundImage = `url(${psuImages[psu.rarity] || "psu-1.png"})`;
-            psuEl.classList.add("active");
-        } else {
-            psuEl.classList.remove("active");
-            psuEl.style.backgroundImage = "";
+            coolImg.style.display = "none";
+            coolImg.src = "";
         }
     }
 
