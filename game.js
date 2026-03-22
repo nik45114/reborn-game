@@ -306,6 +306,26 @@ function renderCase() {
         }
     }
 
+    // SSD overlay (category "case" in code)
+    const ssdEl = document.getElementById("hw-ssd");
+    if (ssdEl) {
+        const ssd = state.currentBuild.case;
+        if (ssd) {
+            const ssdImages = {
+                common: "ssd-1.png",
+                uncommon: "ssd-1.png",
+                rare: "ssd-2.png",
+                epic: "ssd-3.png",
+                legendary: "ssd-4.png"
+            };
+            ssdEl.style.backgroundImage = `url(${ssdImages[ssd.rarity] || "ssd-1.png"})`;
+            ssdEl.classList.add("active");
+        } else {
+            ssdEl.classList.remove("active");
+            ssdEl.style.backgroundImage = "";
+        }
+    }
+
     // PSU overlay
     const psuEl = document.getElementById("hw-psu");
     if (psuEl) {

@@ -265,6 +265,20 @@ body {
            drop-shadow(0 3px 6px rgba(0, 0, 0, 0.8));
 }
 
+/* --- SSD: image overlay --- */
+.hw-ssd {
+    top: 62%;
+    left: 28%;
+    width: 20%;
+    height: auto;
+    aspect-ratio: 5 / 1;
+    border-radius: 2px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 6px rgba(147, 51, 234, 0.5))
+           drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+}
+
 /* --- RAM: image overlay --- */
 
 /* --- PSU: image overlay --- */
