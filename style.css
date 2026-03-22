@@ -142,8 +142,8 @@ body {
 }
 
 .hw-ram {
-    top: 43%;
-    left: 52%;
+    top: 48%;
+    left: 58%;
     width: 5%;
     height: auto;
     aspect-ratio: 1 / 5;
@@ -173,9 +173,9 @@ body {
 
 /* --- Cooler: image overlay --- */
 .hw-cool {
-    top: 50%;
-    left: 24%;
-    width: 10%;
+    top: 40%;
+    left: 18%;
+    width: 11%;
     height: auto;
     aspect-ratio: 1 / 1;
     background-size: 100% 100%;
@@ -197,8 +197,8 @@ body {
 
 /* --- PSU: image overlay --- */
 .hw-psu {
-    top: 72%;
-    left: 22%;
+    top: 76%;
+    left: 15%;
     width: 15%;
     height: auto;
     aspect-ratio: 2.5 / 1;
