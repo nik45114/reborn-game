@@ -266,65 +266,30 @@ function renderCase() {
         }
     }
 
-    // RAM overlay
-    const ramEl = document.getElementById("hw-ram");
-    if (ramEl) {
-        const ram = state.currentBuild.ram;
-        if (ram) {
-            const ramImages = {
-                common: "ram-1.png",
-                uncommon: "ram-1.png",
-                rare: "ram-2.png",
-                epic: "ram-3.png",
-                legendary: "ram-4.png"
-            };
-            ramEl.style.backgroundImage = `url(${ramImages[ram.rarity] || "ram-1.png"})`;
-            ramEl.classList.add("active");
+    // Helper: update overlay image
+    function updateLayer(elId, comp, images) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        if (comp) {
+            el.src = images[comp.rarity] || images.common;
+            el.style.display = "block";
         } else {
-            ramEl.classList.remove("active");
-            ramEl.style.backgroundImage = "";
+            el.style.display = "none";
+            el.src = "";
         }
     }
 
-    // Cooler: full-frame image swap (like GPU)
-    const coolImg = document.getElementById("pc-cool-image");
-    if (coolImg) {
-        const cool = state.currentBuild.cool;
-        if (cool) {
-            const coolImages = {
-                common: "cool-1.png",
-                uncommon: "cool-1.png",
-                rare: "cool-2.png",
-                epic: "cool-3.png",
-                legendary: "cool-4.png"
-            };
-            coolImg.src = coolImages[cool.rarity] || "cool-1.png";
-            coolImg.style.display = "block";
-        } else {
-            coolImg.style.display = "none";
-            coolImg.src = "";
-        }
-    }
+    const imgMap = { common: "1", uncommon: "1", rare: "2", epic: "3", legendary: "4" };
+    const mkImages = (prefix) => {
+        const m = {};
+        for (const [r, n] of Object.entries(imgMap)) m[r] = `${prefix}-${n}.png`;
+        return m;
+    };
 
-    // PSU: full-frame image swap (pinned to bottom)
-    const psuImg = document.getElementById("pc-psu-image");
-    if (psuImg) {
-        const psu = state.currentBuild.psu;
-        if (psu) {
-            const psuImages = {
-                common: "psu-1.png",
-                uncommon: "psu-1.png",
-                rare: "psu-2.png",
-                epic: "psu-3.png",
-                legendary: "psu-4.png"
-            };
-            psuImg.src = psuImages[psu.rarity] || "psu-1.png";
-            psuImg.style.display = "block";
-        } else {
-            psuImg.style.display = "none";
-            psuImg.src = "";
-        }
-    }
+    updateLayer("pc-cool-image", state.currentBuild.cool, mkImages("cool"));
+    updateLayer("pc-ram-image", state.currentBuild.ram, mkImages("ram"));
+    updateLayer("pc-psu-image", state.currentBuild.psu, mkImages("psu"));
+    updateLayer("pc-ssd-image", state.currentBuild.case, mkImages("ssd"));
 
     // Update component grid (compact)
     const grid = document.getElementById("comp-grid");

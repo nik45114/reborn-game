@@ -27,12 +27,11 @@
                 <div class="pc-case-area" id="pc-case">
                     <img src="bg.png" class="pc-bg-image" id="pc-bg-image" alt="PC">
                     <div class="case-glow" id="case-glow"></div>
-                    <!-- RAM overlay -->
-                    <div class="hw-overlay hw-ram" id="hw-ram"></div>
-                    <!-- Cooler: full-frame overlay matching bg -->
-                    <img src="" id="pc-cool-image" alt="" style="display:none;position:absolute;top:0;left:0;width:100%;min-height:70vh;object-fit:cover;object-position:center 45%;z-index:2;pointer-events:none;">
-                    <!-- PSU: full-frame overlay matching bg, pinned to bottom -->
-                    <img src="" id="pc-psu-image" alt="" style="display:none;position:absolute;top:0;left:0;width:100%;min-height:70vh;object-fit:cover;object-position:center 45%;z-index:2;pointer-events:none;">
+                    <!-- Component overlays: same size as bg, same object-fit -->
+                    <img src="" id="pc-cool-image" class="pc-bg-image hw-layer" alt="">
+                    <img src="" id="pc-ram-image" class="pc-bg-image hw-layer" alt="">
+                    <img src="" id="pc-psu-image" class="pc-bg-image hw-layer" alt="">
+                    <img src="" id="pc-ssd-image" class="pc-bg-image hw-layer" alt="">
                 </div>
                 <div class="pc-desk"></div>
             </div>

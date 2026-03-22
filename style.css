@@ -94,6 +94,15 @@ body {
     transition: filter 0.5s ease;
 }
 
+.hw-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+    display: none;
+}
+
 /* Tier visual effects on image */
 .pc-case-area.tier-1 .pc-bg-image { filter: none; }
 .pc-case-area.tier-2 .pc-bg-image { filter: none; }
@@ -126,29 +135,6 @@ body {
 
 .pc-desk {
     display: none;
-}
-
-/* ===== COMPONENT OVERLAYS ===== */
-.hw-overlay {
-    position: absolute;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-}
-
-.hw-overlay.active {
-    opacity: 1;
-}
-
-.hw-ram {
-    top: 48%;
-    left: 58%;
-    width: 5%;
-    height: auto;
-    aspect-ratio: 1 / 5;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
 }
 
 /* ===== HARDWARE VISUALS INSIDE CASE ===== */
