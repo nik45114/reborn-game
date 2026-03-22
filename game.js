@@ -306,6 +306,26 @@ function renderCase() {
         }
     }
 
+    // PSU: full-frame image swap (pinned to bottom)
+    const psuImg = document.getElementById("pc-psu-image");
+    if (psuImg) {
+        const psu = state.currentBuild.psu;
+        if (psu) {
+            const psuImages = {
+                common: "psu-1.png",
+                uncommon: "psu-1.png",
+                rare: "psu-2.png",
+                epic: "psu-3.png",
+                legendary: "psu-4.png"
+            };
+            psuImg.src = psuImages[psu.rarity] || "psu-1.png";
+            psuImg.style.display = "block";
+        } else {
+            psuImg.style.display = "none";
+            psuImg.src = "";
+        }
+    }
+
     // Update component grid (compact)
     const grid = document.getElementById("comp-grid");
     if (grid) {
