@@ -199,8 +199,8 @@ body {
 /* --- PSU: image overlay --- */
 .hw-psu {
     top: 72%;
-    left: 30%;
-    width: 20%;
+    left: 22%;
+    width: 15%;
     height: auto;
     aspect-ratio: 2.5 / 1;
     background-size: 100% 100%;
