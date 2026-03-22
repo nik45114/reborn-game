@@ -138,7 +138,7 @@ body {
 }
 
 .hw-overlay.active {
-    opacity: 0.85;
+    opacity: 1;
 }
 
 .hw-ram {
