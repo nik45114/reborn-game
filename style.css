@@ -87,9 +87,6 @@ body {
 
 .pc-bg-image {
     width: 100%;
-    min-height: 70vh;
-    object-fit: cover;
-    object-position: center 45%;
     display: block;
     transition: filter 0.5s ease;
 }
@@ -102,47 +99,53 @@ body {
     object-fit: contain;
 }
 
-/* GPU — center of case, horizontal card */
+/* GPU: top-left=(600, 535), h=160 */
 #pc-gpu-image {
-    top: 53%;
-    left: 39%;
-    width: 13%;
+    top: 52.2%;
+    left: 39.1%;
+    height: 15.6%;
+    width: auto;
 }
 
-/* CPU — small chip on motherboard */
+/* CPU: top-left=(609, 478), h=46 */
 #pc-cpu-image {
-    top: 47%;
-    left: 40%;
-    width: 3%;
+    top: 46.7%;
+    left: 39.6%;
+    height: 4.5%;
+    width: auto;
 }
 
-/* Cooler — over CPU area */
+/* Cool: top-left=(615, 365), h=155 */
 #pc-cool-image {
-    top: 35%;
+    top: 35.6%;
     left: 40%;
-    width: 12%;
+    height: 15.1%;
+    width: auto;
     z-index: 3;
 }
 
-/* RAM — right side, vertical sticks */
+/* RAM: top-left=(1230, 617), h=111 */
 #pc-ram-image {
-    top: 60%;
-    left: 80%;
-    width: 1.5%;
+    top: 60.3%;
+    left: 80.1%;
+    height: 10.8%;
+    width: auto;
 }
 
-/* PSU — bottom behind shroud */
+/* PSU: top-left=(525, 700), h=60 */
 #pc-psu-image {
-    top: 68%;
-    left: 34%;
-    width: 4.5%;
+    top: 68.4%;
+    left: 34.2%;
+    height: 5.9%;
+    width: auto;
 }
 
-/* SSD — middle right area */
+/* SSD: top-left=(1114, 512), h=39 */
 #pc-ssd-image {
     top: 50%;
-    left: 72%;
-    width: 8%;
+    left: 72.5%;
+    height: 3.8%;
+    width: auto;
 }
 
 /* Tier visual effects on image */
