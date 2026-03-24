@@ -102,50 +102,50 @@ body {
     object-fit: contain;
 }
 
-/* GPU: top-left=(600, 535), h=160 */
+/* GPU: avg top-left=(600, 535), avg h=159 */
 #pc-gpu-image {
     top: 52.2%;
     left: 39.1%;
-    height: 15.6%;
+    height: 15.5%;
     width: auto;
 }
 
-/* CPU: top-left=(609, 478), h=46 */
+/* CPU: avg top-left=(610, 477), avg h=46 */
 #pc-cpu-image {
-    top: 46.7%;
-    left: 39.6%;
+    top: 46.6%;
+    left: 39.7%;
     height: 4.5%;
     width: auto;
 }
 
-/* Cool: top-left=(615, 365), h=155 */
+/* Cool: avg top-left=(616, 364), avg h=155 */
 #pc-cool-image {
-    top: 35.6%;
-    left: 40%;
+    top: 35.5%;
+    left: 40.1%;
     height: 15.1%;
     width: auto;
     z-index: 3;
 }
 
-/* RAM: top-left=(1230, 617), h=111 */
+/* RAM: top-left=(1231, 618), h=111 */
 #pc-ram-image {
-    top: 60.3%;
+    top: 60.4%;
     left: 80.1%;
     height: 10.8%;
     width: auto;
 }
 
-/* PSU: top-left=(525, 700), h=60 */
+/* PSU: avg top-left=(526, 700), avg h=71 */
 #pc-psu-image {
-    top: 68.4%;
+    top: 68.3%;
     left: 34.2%;
-    height: 5.9%;
+    height: 6.9%;
     width: auto;
 }
 
 /* SSD: top-left=(1114, 512), h=39 */
 #pc-ssd-image {
-    top: 50%;
+    top: 50.0%;
     left: 72.5%;
     height: 3.8%;
     width: auto;
