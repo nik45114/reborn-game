@@ -248,22 +248,10 @@ function renderCase() {
         caseArea.className = "pc-case-area tier-" + tier.stars;
     }
 
-    // Swap case image based on GPU rarity
+    // Background always stays as bg.png
     const bgImg = document.getElementById("pc-bg-image");
-    if (bgImg) {
-        const gpu = state.currentBuild.gpu;
-        if (!gpu) {
-            bgImg.src = "bg.png";
-        } else {
-            const gpuImages = {
-                common: "gpu-1.png",
-                uncommon: "gpu-1.png",
-                rare: "gpu-2.png",
-                epic: "gpu-3.png",
-                legendary: "gpu-4.png"
-            };
-            bgImg.src = gpuImages[gpu.rarity] || "bg-gpu.png";
-        }
+    if (bgImg && bgImg.src.indexOf("bg.png") === -1) {
+        bgImg.src = "bg.png";
     }
 
     // Helper: update overlay image
@@ -286,6 +274,8 @@ function renderCase() {
         return m;
     };
 
+    updateLayer("pc-gpu-image", state.currentBuild.gpu, mkImages("gpu"));
+    updateLayer("pc-cpu-image", state.currentBuild.cpu, mkImages("cpu"));
     updateLayer("pc-cool-image", state.currentBuild.cool, mkImages("cool"));
     updateLayer("pc-ram-image", state.currentBuild.ram, mkImages("ram"));
     updateLayer("pc-psu-image", state.currentBuild.psu, mkImages("psu"));
