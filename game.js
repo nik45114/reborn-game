@@ -10,53 +10,46 @@ const CATEGORIES = {
 };
 
 const RARITIES = {
-    common:    { name: "Обычная",    chance: 0.40, color: "#9ca3af", power: [10, 25] },
-    uncommon:  { name: "Необычная",  chance: 0.25, color: "#22c55e", power: [26, 50] },
-    rare:      { name: "Редкая",     chance: 0.18, color: "#3b82f6", power: [51, 75] },
-    epic:      { name: "Эпическая",  chance: 0.10, color: "#a855f7", power: [76, 92] },
-    legendary: { name: "Легендарная", chance: 0.07, color: "#f59e0b", power: [93, 100] }
+    common:    { name: "Обычная",    chance: 0.45, color: "#9ca3af", power: [10, 30] },
+    rare:      { name: "Редкая",     chance: 0.30, color: "#3b82f6", power: [31, 60] },
+    epic:      { name: "Эпическая",  chance: 0.18, color: "#a855f7", power: [61, 85] },
+    legendary: { name: "Легендарная", chance: 0.07, color: "#f59e0b", power: [86, 100] }
 };
 
 const COMPONENTS = {
     cpu: {
-        common:    ["Intel i3-12100", "AMD Ryzen 3 4100"],
-        uncommon:  ["Intel i5-12400F", "AMD Ryzen 5 5600"],
-        rare:      ["Intel i7-13700K", "AMD Ryzen 7 7700X"],
+        common:    ["Intel i3-12100"],
+        rare:      ["Intel i7-13700K"],
         epic:      ["Intel i9-13900K"],
         legendary: ["AMD Ryzen 9 7950X3D"]
     },
     gpu: {
-        common:    ["GTX 1650", "GTX 1050 Ti"],
-        uncommon:  ["RTX 3060", "RX 6600 XT"],
-        rare:      ["RTX 4070 Super", "RX 7800 XT"],
+        common:    ["GTX 1650"],
+        rare:      ["RTX 4070 Super"],
         epic:      ["RTX 4080 Super"],
         legendary: ["RTX 4090"]
     },
     ram: {
-        common:    ["DDR4 8GB 2666MHz", "DDR4 16GB 2666MHz"],
-        uncommon:  ["DDR4 16GB 3200MHz", "DDR5 16GB 4800MHz"],
-        rare:      ["DDR5 32GB 5600MHz", "DDR4 32GB 3600MHz"],
+        common:    ["DDR4 16GB 2666MHz"],
+        rare:      ["DDR5 32GB 5600MHz"],
         epic:      ["DDR5 64GB 5600MHz"],
         legendary: ["DDR5 64GB 7200MHz"]
     },
     mb: {
-        common:    ["ASUS Prime H610", "Gigabyte H510M"],
-        uncommon:  ["MSI B550 Tomahawk", "ASUS TUF B660"],
-        rare:      ["ASUS ROG Strix B550-F", "Gigabyte Z690 AORUS"],
+        common:    ["ASUS Prime H610"],
+        rare:      ["ASUS ROG Strix B550-F"],
         epic:      ["ASUS ROG Maximus Z790"],
         legendary: ["MSI MEG Z790 GODLIKE"]
     },
     psu: {
-        common:    ["500W Be Quiet", "550W Corsair CV"],
-        uncommon:  ["650W Corsair RM", "700W Be Quiet Pure"],
-        rare:      ["850W Corsair RM850x", "850W Seasonic GX"],
+        common:    ["500W Be Quiet"],
+        rare:      ["850W Corsair RM850x"],
         epic:      ["1000W Corsair HX1000"],
         legendary: ["1600W ROG Thor"]
     },
     cool: {
-        common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400"],
-        uncommon:  ["Be Quiet Pure Rock 2", "Noctua NH-U12S"],
-        rare:      ["Noctua NH-D15", "Corsair H100i"],
+        common:    ["ID-Cooling SE-214"],
+        rare:      ["Noctua NH-D15"],
         epic:      ["NZXT Kraken X73"],
         legendary: ["ROG RYUJIN III 360"]
     }
@@ -259,7 +252,7 @@ function renderCase() {
         }
     }
 
-    const imgMap = { common: "1", uncommon: "1", rare: "2", epic: "3", legendary: "4" };
+    const imgMap = { common: "1", rare: "2", epic: "3", legendary: "4" };
     const mkImages = (prefix) => {
         const m = {};
         for (const [r, n] of Object.entries(imgMap)) m[r] = `${prefix}-${n}.png`;
@@ -579,7 +572,7 @@ function renderInvTabs() {
 function renderInventoryList() {
     const list = document.getElementById("inventory-list");
     const items = state.inventory.filter(i => i.category === invActiveCategory);
-    const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
+    const rarOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
     items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
 
     const cat = CATEGORIES[invActiveCategory];
@@ -636,7 +629,7 @@ function openSlotPopup(slot) {
     title.textContent = cat.icon + " " + cat.name;
 
     const items = state.inventory.filter(i => i.category === slot);
-    const rarOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
+    const rarOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
     items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
 
     const current = state.currentBuild[slot];
