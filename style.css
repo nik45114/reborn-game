@@ -102,28 +102,25 @@ body {
     object-fit: contain;
 }
 
-/* GPU — middle of the case, horizontal */
+/* GPU — center of case, horizontal card */
 #pc-gpu-image {
-    top: 52%;
+    top: 53%;
     left: 39%;
-    height: 16%;
-    width: auto;
+    width: 13%;
 }
 
-/* CPU — on the motherboard, under cooler */
+/* CPU — small chip on motherboard */
 #pc-cpu-image {
     top: 47%;
-    left: 39.6%;
-    height: 4.5%;
-    width: auto;
+    left: 40%;
+    width: 3%;
 }
 
 /* Cooler — over CPU area */
 #pc-cool-image {
     top: 35%;
     left: 40%;
-    height: 15%;
-    width: auto;
+    width: 12%;
     z-index: 3;
 }
 
@@ -131,24 +128,21 @@ body {
 #pc-ram-image {
     top: 60%;
     left: 80%;
-    height: 11%;
-    width: auto;
+    width: 1.5%;
 }
 
-/* PSU — bottom, behind shroud */
+/* PSU — bottom behind shroud */
 #pc-psu-image {
     top: 68%;
     left: 34%;
-    height: 6%;
-    width: auto;
+    width: 4.5%;
 }
 
 /* SSD — middle right area */
 #pc-ssd-image {
     top: 50%;
-    left: 72.5%;
-    height: 4%;
-    width: auto;
+    left: 72%;
+    width: 8%;
 }
 
 /* Tier visual effects on image */
