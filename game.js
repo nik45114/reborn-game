@@ -6,7 +6,6 @@ const CATEGORIES = {
     ram:  { name: "Оперативная",  icon: "💾" },
     mb:   { name: "Мат. плата",   icon: "🔲" },
     psu:  { name: "Блок питания", icon: "🔌" },
-    case: { name: "Накопитель",    icon: "💿" },
     cool: { name: "Охлаждение",   icon: "❄️" }
 };
 
@@ -54,13 +53,6 @@ const COMPONENTS = {
         epic:      ["1000W Corsair HX1000"],
         legendary: ["1600W ROG Thor"]
     },
-    case: {
-        common:    ["Kingston A400 240GB", "WD Green 480GB"],
-        uncommon:  ["Samsung 870 EVO 500GB", "WD Blue SN570 500GB"],
-        rare:      ["Samsung 980 Pro 1TB", "WD Black SN770 1TB"],
-        epic:      ["Samsung 990 Pro 2TB"],
-        legendary: ["Seagate FireCuda 530 4TB"]
-    },
     cool: {
         common:    ["ID-Cooling SE-214", "Deepcool GAMMAXX 400"],
         uncommon:  ["Be Quiet Pure Rock 2", "Noctua NH-U12S"],
@@ -93,7 +85,7 @@ function defaultState() {
         lastTicketTime: Date.now(),
         bonusPoints: 0,
         inventory: [],
-        currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, case: null, cool: null },
+        currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
         buildsHistory: [],
         lastLoginDate: null,
         loginStreak: 0
@@ -193,7 +185,7 @@ function getBuildPower() {
 }
 
 function getBuildTier(power) {
-    // Ultimate only if ALL 7 components are legendary
+    // Ultimate only if ALL 6 components are legendary
     const allLegendary = isBuildComplete() &&
         Object.values(state.currentBuild).every(c => c && c.rarity === "legendary");
     if (allLegendary) return BUILD_TIERS[BUILD_TIERS.length - 1];
@@ -279,12 +271,11 @@ function renderCase() {
     updateLayer("pc-cool-image", state.currentBuild.cool, mkImages("cool"));
     updateLayer("pc-ram-image", state.currentBuild.ram, mkImages("ram"));
     updateLayer("pc-psu-image", state.currentBuild.psu, mkImages("psu"));
-    updateLayer("pc-ssd-image", state.currentBuild.case, mkImages("ssd"));
 
     // Update component grid (compact)
     const grid = document.getElementById("comp-grid");
     if (grid) {
-        const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "case", "cool"];
+        const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "cool"];
         grid.innerHTML = slotOrder.map(slot => {
             const comp = state.currentBuild[slot];
             const cat = CATEGORIES[slot];
@@ -317,7 +308,7 @@ function renderCase() {
 
     // Update build bar
     document.getElementById("build-tier-name").textContent = tier.emoji + " " + tier.name;
-    document.getElementById("build-power").textContent = "⚡" + power + " · " + filledCount + "/7";
+    document.getElementById("build-power").textContent = "⚡" + power + " · " + filledCount + "/6";
 
     const maxPower = 700;
     document.getElementById("build-progress").style.width = Math.min(100, (power / maxPower) * 100) + "%";
@@ -746,8 +737,7 @@ const BLUEPRINT_POINTS = {
     ram:  { x: 56, y: 41 },
     mb:   { x: 50, y: 50 },
     gpu:  { x: 44, y: 57 },
-    psu:  { x: 55, y: 73 },
-    case: { x: 36, y: 70 }
+    psu:  { x: 55, y: 73 }
 };
 
 function renderBlueprint() {
@@ -759,7 +749,7 @@ function renderBlueprint() {
     for (const [slot, bp] of Object.entries(BLUEPRINT_POINTS)) {
         const comp = state.currentBuild[slot];
         const rar = comp ? RARITIES[comp.rarity] : null;
-        const color = rar ? rar.color : "rgba(147,51,234,0.5)";
+        const color = rar ? rar.color : "rgba(255,255,255,0.5)";
         if (comp) {
             // Filled: bright dot with pulse
             html += `
@@ -772,7 +762,7 @@ function renderBlueprint() {
         } else {
             // Empty: dim small dot
             html += `
-                <circle cx="${bp.x}" cy="${bp.y}" r="1" fill="rgba(147,51,234,0.4)" opacity="0.5">
+                <circle cx="${bp.x}" cy="${bp.y}" r="1" fill="rgba(255,255,255,0.4)" opacity="0.5">
                     <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
                 </circle>
             `;

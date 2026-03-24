@@ -6,15 +6,15 @@
 }
 
 :root {
-    --bg: #0e0820;
-    --bg2: #150d2a;
-    --bg3: #1e1440;
-    --text: #e2e8f0;
-    --text2: #a78bda;
-    --accent: #9333ea;
-    --accent2: #a855f7;
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --text: #e5e5e5;
+    --text2: #888888;
+    --accent: #ffffff;
+    --accent2: #cccccc;
     --green: #22c55e;
-    --common: #9ca3af;
+    --common: #666666;
     --uncommon: #22c55e;
     --rare: #3b82f6;
     --epic: #a855f7;
@@ -39,23 +39,23 @@ body {
 
 /* ===== HEADER ===== */
 .header {
-    background: linear-gradient(135deg, #1a0a35, #0e0820);
+    background: linear-gradient(135deg, #0d0d0d, #0a0a0a);
     padding: 10px 12px;
-    border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: absolute;
     top: 0; left: 0; right: 0;
     z-index: 10;
-    background: rgba(14, 8, 32, 0.7);
+    background: rgba(10, 10, 10, 0.7);
     backdrop-filter: blur(8px);
 }
 
 .header-title {
     font-size: 15px;
     font-weight: 700;
-    background: linear-gradient(90deg, #c084fc, #e879f9);
+    background: linear-gradient(90deg, #ffffff, #cccccc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -127,8 +127,8 @@ body {
 
 .pc-case-area.tier-1 .case-glow { box-shadow: none; }
 .pc-case-area.tier-2 .case-glow { box-shadow: none; }
-.pc-case-area.tier-3 .case-glow { box-shadow: inset 0 0 40px rgba(59,130,246,0.15), 0 0 20px rgba(59,130,246,0.1); }
-.pc-case-area.tier-4 .case-glow { box-shadow: inset 0 0 50px rgba(147,51,234,0.2), 0 0 30px rgba(147,51,234,0.15); }
+.pc-case-area.tier-3 .case-glow { box-shadow: inset 0 0 40px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,0.1); }
+.pc-case-area.tier-4 .case-glow { box-shadow: inset 0 0 50px rgba(255,255,255,0.15), 0 0 30px rgba(255,255,255,0.15); }
 .pc-case-area.tier-5 .case-glow {
     box-shadow: inset 0 0 60px rgba(245,158,11,0.2), 0 0 40px rgba(245,158,11,0.2);
     animation: goldenPulse 2s ease-in-out infinite;
@@ -246,20 +246,20 @@ body {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: rgba(147, 51, 234, 0.15);
-    border: 1.5px solid rgba(147, 51, 234, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
-    box-shadow: 0 0 8px rgba(147, 51, 234, 0.3);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
     animation: markerPulse 2s ease-in-out infinite;
     transition: all 0.3s;
 }
 
 @keyframes markerPulse {
-    0%, 100% { box-shadow: 0 0 6px rgba(147,51,234,0.2); }
-    50% { box-shadow: 0 0 14px rgba(147,51,234,0.5); }
+    0%, 100% { box-shadow: 0 0 6px rgba(255,255,255,0.15); }
+    50% { box-shadow: 0 0 14px rgba(255,255,255,0.35); }
 }
 
 .slot-label {
@@ -281,7 +281,7 @@ body {
 }
 
 .pc-slot.filled .slot-marker {
-    background: rgba(14, 8, 32, 0.7);
+    background: rgba(10, 10, 10, 0.7);
     transform: scale(1.1);
 }
 
@@ -307,7 +307,7 @@ body {
     position: absolute;
     width: 1px;
     height: 8px;
-    background: rgba(147, 51, 234, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     top: -8px;
 }
 
@@ -373,8 +373,8 @@ body {
     gap: 2px;
     cursor: pointer;
     transition: all 0.2s;
-    border: 1.5px solid rgba(147, 51, 234, 0.2);
-    background: rgba(21, 13, 42, 0.6);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: rgba(17, 17, 17, 0.6);
 }
 
 .comp-slot:active { transform: scale(0.92); }
@@ -408,7 +408,7 @@ body {
     position: relative;
     z-index: 5;
     background: var(--bg2);
-    border: 1px solid rgba(147, 51, 234, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     padding: 10px 12px;
 }
@@ -434,7 +434,7 @@ body {
     height: 100%;
     width: 0%;
     border-radius: 3px;
-    background: linear-gradient(90deg, #9333ea, #c084fc);
+    background: linear-gradient(90deg, #ffffff, #cccccc);
     transition: width 0.5s ease;
 }
 
@@ -452,7 +452,7 @@ body {
     align-items: center;
     gap: 12px;
     padding: 13px 16px;
-    background: linear-gradient(135deg, #1a0a35, #2d1060);
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
     border: 1px solid var(--accent);
     border-radius: 14px;
     color: white;
@@ -468,7 +468,7 @@ body {
     content: '';
     position: absolute;
     inset: -1px;
-    background: conic-gradient(from 0deg, #9333ea, #c084fc, #9333ea);
+    background: conic-gradient(from 0deg, #ffffff, #666666, #ffffff);
     border-radius: 14px;
     z-index: -1;
     animation: rotate 3s linear infinite;
@@ -509,7 +509,7 @@ body {
 .drop-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(10, 5, 20, 0.94);
+    background: rgba(10, 10, 10, 0.94);
     z-index: 200;
     display: flex;
     align-items: center;
@@ -539,7 +539,7 @@ body {
 @keyframes legendaryBg {
     0% { background: rgba(245, 158, 11, 0.3); }
     30% { background: rgba(255, 200, 50, 0.15); }
-    100% { background: rgba(10, 5, 20, 0.94); }
+    100% { background: rgba(10, 10, 10, 0.94); }
 }
 
 @keyframes legendaryGlowPulse {
@@ -640,7 +640,7 @@ body {
     background: var(--accent);
     border: none;
     border-radius: 12px;
-    color: white;
+    color: #0a0a0a;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -659,7 +659,7 @@ body {
     z-index: 300;
     pointer-events: none;
     transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    filter: drop-shadow(0 0 12px rgba(147,51,234,0.9));
+    filter: drop-shadow(0 0 12px rgba(255,255,255,0.9));
 }
 
 .flying-comp.fly { transform: scale(0.4); opacity: 0.7; }
@@ -669,7 +669,7 @@ body {
     position: fixed;
     bottom: 0; left: 0; right: 0;
     background: var(--bg2);
-    border-top: 1px solid rgba(147,51,234,0.2);
+    border-top: 1px solid rgba(255,255,255,0.15);
     display: flex;
     padding: 6px;
     z-index: 50;
@@ -689,7 +689,7 @@ body {
     cursor: pointer;
 }
 
-.btab.active { background: var(--accent); color: white; }
+.btab.active { background: var(--accent); color: #0a0a0a; }
 
 /* ===== PAGES ===== */
 .page { display: none; padding: 16px; }
@@ -708,7 +708,7 @@ body {
     cursor: pointer;
 }
 
-.filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+.filter-btn.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
 
 .inventory-list { display: flex; flex-direction: column; gap: 6px; }
 
@@ -725,7 +725,7 @@ body {
 .inv-item.uncommon { border-left-color: var(--uncommon); }
 .inv-item.rare { border-left-color: var(--rare); }
 .inv-item.epic { border-left-color: var(--epic); }
-.inv-item.legendary { border-left-color: var(--legendary); background: linear-gradient(135deg, #1a1000, #1e1440); }
+.inv-item.legendary { border-left-color: var(--legendary); background: linear-gradient(135deg, #1a1000, #1a1a1a); }
 
 .inv-item-icon { font-size: 24px; width: 32px; text-align: center; }
 .inv-item-info { flex: 1; }
@@ -757,7 +757,7 @@ body {
 
 .inv-tab.active {
     background: var(--accent);
-    color: white;
+    color: #0a0a0a;
     border-color: var(--accent);
 }
 
@@ -792,13 +792,13 @@ body {
 .history-empty { text-align: center; padding: 30px; color: var(--text2); font-size: 13px; }
 
 /* ===== RESULT MODAL ===== */
-.result-modal { position: fixed; inset: 0; background: rgba(10,5,20,0.9); z-index: 250; display: flex; align-items: center; justify-content: center; }
+.result-modal { position: fixed; inset: 0; background: rgba(10,10,10,0.9); z-index: 250; display: flex; align-items: center; justify-content: center; }
 .result-content { text-align: center; padding: 30px; animation: dropAppear 0.4s ease; }
 .result-emoji { font-size: 56px; margin-bottom: 12px; }
 .result-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
 .result-stars { font-size: 32px; letter-spacing: 4px; }
 .result-bonus { font-size: 18px; color: var(--green); font-weight: 700; margin-top: 10px; }
-.result-btn { margin-top: 20px; padding: 12px 40px; background: var(--accent); border: none; border-radius: 12px; color: white; font-size: 15px; font-weight: 700; cursor: pointer; }
+.result-btn { margin-top: 20px; padding: 12px 40px; background: var(--accent); border: none; border-radius: 12px; color: #0a0a0a; font-size: 15px; font-weight: 700; cursor: pointer; }
 
 @keyframes slotFlash {
     0% { filter: brightness(3); transform: scale(1.1); }
@@ -810,7 +810,7 @@ body {
 .recycle-modal {
     position: fixed;
     inset: 0;
-    background: rgba(10, 5, 20, 0.92);
+    background: rgba(10, 10, 10, 0.92);
     z-index: 250;
     display: flex;
     align-items: center;
@@ -841,7 +841,7 @@ body {
     height: 50px;
     border-radius: 12px;
     background: var(--bg3);
-    border: 1px solid rgba(147, 51, 234, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -886,7 +886,7 @@ body {
 .recycle-title {
     font-size: 22px;
     font-weight: 700;
-    background: linear-gradient(90deg, #a855f7, #c084fc);
+    background: linear-gradient(90deg, #ffffff, #cccccc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 6px;
@@ -919,7 +919,7 @@ body {
     background: var(--accent);
     border: none;
     border-radius: 12px;
-    color: white;
+    color: #0a0a0a;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -934,7 +934,7 @@ body {
 .daily-modal {
     position: fixed;
     inset: 0;
-    background: rgba(10, 5, 20, 0.95);
+    background: rgba(10, 10, 10, 0.95);
     z-index: 260;
     display: flex;
     align-items: center;
@@ -951,7 +951,7 @@ body {
 .daily-title {
     font-size: 22px;
     font-weight: 800;
-    background: linear-gradient(90deg, #c084fc, #e879f9);
+    background: linear-gradient(90deg, #ffffff, #cccccc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 16px;
@@ -969,7 +969,7 @@ body {
     height: 44px;
     border-radius: 8px;
     background: var(--bg3);
-    border: 1.5px solid rgba(147, 51, 234, 0.2);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -994,9 +994,9 @@ body {
 .streak-dot.current {
     opacity: 1;
     border-color: var(--accent);
-    background: rgba(147, 51, 234, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     transform: scale(1.15);
-    box-shadow: 0 0 10px rgba(147, 51, 234, 0.4);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .streak-dot.legendary {
@@ -1045,7 +1045,7 @@ body {
     background: var(--accent);
     border: none;
     border-radius: 12px;
-    color: white;
+    color: #0a0a0a;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
@@ -1058,7 +1058,7 @@ body {
 .slot-popup {
     position: fixed;
     inset: 0;
-    background: rgba(10, 5, 20, 0.92);
+    background: rgba(10, 10, 10, 0.92);
     z-index: 150;
     display: flex;
     align-items: flex-end;
@@ -1071,7 +1071,7 @@ body {
     max-height: 70vh;
     background: var(--bg2);
     border-radius: 16px 16px 0 0;
-    border-top: 1px solid rgba(147, 51, 234, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
     padding: 16px;
     animation: slideUp 0.25s ease;
     overflow-y: auto;
@@ -1098,7 +1098,7 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid rgba(147, 51, 234, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     background: var(--bg3);
     color: var(--text);
     font-size: 14px;
