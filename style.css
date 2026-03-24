@@ -89,7 +89,7 @@ body {
     width: 100%;
     min-height: 70vh;
     object-fit: cover;
-    object-position: center 30%;
+    object-position: center 20%;
     display: block;
     transition: filter 0.5s ease;
 }
@@ -101,7 +101,7 @@ body {
     width: 100%;
     min-height: 70vh;
     object-fit: cover;
-    object-position: center 30%;
+    object-position: center 20%;
     z-index: 2;
     pointer-events: none;
     display: none;
