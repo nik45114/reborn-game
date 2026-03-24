@@ -398,7 +398,7 @@ function showDrop(comp) {
         updateTicketTimer();
 
         // Check for 3 duplicates → recycle
-        setTimeout(() => checkRecycle(comp.model), 400);
+        setTimeout(() => checkRecycle(comp.model), 100);
     };
 
     // Legendary special effects
@@ -460,11 +460,11 @@ function flyComponentToSlot(comp, cat) {
             const hw = document.getElementById("hw-" + comp.category);
             if (hw) {
                 hw.classList.add("flash");
-                setTimeout(() => hw.classList.remove("flash"), 400);
+                setTimeout(() => hw.classList.remove("flash"), 150);
             }
 
             renderCase();
-        }, 300);
+        }, 100);
     });
 }
 
@@ -494,9 +494,9 @@ function flyFromCardToCase(cardEl, comp) {
             const hw = document.getElementById("hw-" + comp.category);
             if (hw) {
                 hw.classList.add("flash");
-                setTimeout(() => hw.classList.remove("flash"), 600);
+                setTimeout(() => hw.classList.remove("flash"), 150);
             }
-        }, 700);
+        }, 100);
     });
 }
 
