@@ -88,7 +88,19 @@ function defaultState() {
 function loadState() {
     try {
         const s = localStorage.getItem("reborn_pc_game_v2");
-        if (s) return JSON.parse(s);
+        if (s) {
+            const loaded = JSON.parse(s);
+            const def = defaultState();
+            // Backfill missing top-level keys from defaults (for saves from older versions)
+            for (const k of Object.keys(def)) {
+                if (loaded[k] === undefined) loaded[k] = def[k];
+            }
+            // Backfill missing build slots (e.g. 'mb' added later)
+            for (const slot of Object.keys(def.currentBuild)) {
+                if (!(slot in loaded.currentBuild)) loaded.currentBuild[slot] = null;
+            }
+            return loaded;
+        }
     } catch(e) {}
     return defaultState();
 }
@@ -259,6 +271,7 @@ function renderCase() {
         return m;
     };
 
+    updateLayer("pc-mb-image", state.currentBuild.mb, mkImages("mb"));
     updateLayer("pc-gpu-image", state.currentBuild.gpu, mkImages("gpu"));
     updateLayer("pc-cpu-image", state.currentBuild.cpu, mkImages("cpu"));
     updateLayer("pc-cool-image", state.currentBuild.cool, mkImages("cool"));
