@@ -107,8 +107,6 @@ body {
     display: none;
 }
 
-#pc-cool-image { z-index: 3; }
-
 /* Tier visual effects on image */
 .pc-case-area.tier-1 .pc-bg-image { filter: none; }
 .pc-case-area.tier-2 .pc-bg-image { filter: none; }

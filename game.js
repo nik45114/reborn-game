@@ -5,8 +5,7 @@ const CATEGORIES = {
     gpu:  { name: "Видеокарта",   icon: "🎮" },
     ram:  { name: "Оперативная",  icon: "💾" },
     mb:   { name: "Мат. плата",   icon: "🔲" },
-    psu:  { name: "Блок питания", icon: "🔌" },
-    cool: { name: "Охлаждение",   icon: "❄️" }
+    psu:  { name: "Блок питания", icon: "🔌" }
 };
 
 const RARITIES = {
@@ -46,21 +45,15 @@ const COMPONENTS = {
         rare:      ["850W Corsair RM850x"],
         epic:      ["1000W Corsair HX1000"],
         legendary: ["1600W ROG Thor"]
-    },
-    cool: {
-        common:    ["ID-Cooling SE-214"],
-        rare:      ["Noctua NH-D15"],
-        epic:      ["NZXT Kraken X73"],
-        legendary: ["ROG RYUJIN III 360"]
     }
 };
 
 const BUILD_TIERS = [
     { name: "Офисный ПК",      stars: 1, minPower: 0,   bonus: 10,  emoji: "🖨" },
-    { name: "Домашний ПК",     stars: 2, minPower: 150, bonus: 30,  emoji: "🏠" },
-    { name: "Игровой ПК",      stars: 3, minPower: 300, bonus: 75,  emoji: "🎮" },
-    { name: "Pro Gaming ПК",   stars: 4, minPower: 470, bonus: 200, emoji: "🔥" },
-    { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 500, emoji: "👑" }
+    { name: "Домашний ПК",     stars: 2, minPower: 125, bonus: 30,  emoji: "🏠" },
+    { name: "Игровой ПК",      stars: 3, minPower: 250, bonus: 75,  emoji: "🎮" },
+    { name: "Pro Gaming ПК",   stars: 4, minPower: 390, bonus: 200, emoji: "🔥" },
+    { name: "Ultimate ПК",     stars: 5, minPower: 500, bonus: 500, emoji: "👑" }
 ];
 
 // TESTING MODE — unlimited for all (remove later)
@@ -78,7 +71,7 @@ function defaultState() {
         lastTicketTime: Date.now(),
         bonusPoints: 0,
         inventory: [],
-        currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
+        currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null },
         buildsHistory: [],
         lastLoginDate: null,
         loginStreak: 0
@@ -99,6 +92,16 @@ function loadState() {
             for (const slot of Object.keys(def.currentBuild)) {
                 if (!(slot in loaded.currentBuild)) loaded.currentBuild[slot] = null;
             }
+            // Drop obsolete build slots (e.g. 'cool' removed later) so
+            // Object.values(currentBuild) doesn't count them in isBuildComplete
+            for (const slot of Object.keys(loaded.currentBuild)) {
+                if (!(slot in def.currentBuild)) delete loaded.currentBuild[slot];
+            }
+            // Drop obsolete items from inventory so the removed category's
+            // tab disappears and user's storage doesn't accumulate dead stuff
+            loaded.inventory = (loaded.inventory || []).filter(
+                item => item && item.category in CATEGORIES
+            );
             return loaded;
         }
     } catch(e) {}
@@ -274,14 +277,13 @@ function renderCase() {
     updateLayer("pc-mb-image", state.currentBuild.mb, mkImages("mb"));
     updateLayer("pc-gpu-image", state.currentBuild.gpu, mkImages("gpu"));
     updateLayer("pc-cpu-image", state.currentBuild.cpu, mkImages("cpu"));
-    updateLayer("pc-cool-image", state.currentBuild.cool, mkImages("cool"));
     updateLayer("pc-ram-image", state.currentBuild.ram, mkImages("ram"));
     updateLayer("pc-psu-image", state.currentBuild.psu, mkImages("psu"));
 
     // Update component grid (compact)
     const grid = document.getElementById("comp-grid");
     if (grid) {
-        const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "cool"];
+        const slotOrder = ["cpu", "gpu", "ram", "mb", "psu"];
         grid.innerHTML = slotOrder.map(slot => {
             const comp = state.currentBuild[slot];
             const cat = CATEGORIES[slot];
@@ -738,7 +740,6 @@ function renderRating() {
 
 const BLUEPRINT_POINTS = {
     // x,y = dot position (% of image)
-    cool: { x: 32, y: 40 },
     cpu:  { x: 42, y: 45 },
     ram:  { x: 56, y: 41 },
     mb:   { x: 50, y: 50 },
