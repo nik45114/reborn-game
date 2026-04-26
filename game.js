@@ -62,7 +62,7 @@ const COMPONENTS = {
 const SLOT_POSITIONS = {
     cpu:  { xp: 47.8, yp: 44.9 },
     gpu:  { xp: 46.4, yp: 59.8 },
-    ram:  { xp: 52.5, yp: 60.5 },
+    ram:  { xp: 52.5, yp: 46.1 },
     mb:   { xp: 47.3, yp: 50.4 },
     psu:  { xp: 39.5, yp: 70.8 },
     cool: { xp: 48.2, yp: 44.7 }
