@@ -42,10 +42,10 @@ const COMPONENTS = {
         legendary: ["MSI MEG Z790 GODLIKE"]
     },
     psu: {
-        common:    ["500W Be Quiet"],
-        rare:      ["850W Corsair RM850x"],
-        epic:      ["1000W Corsair HX1000"],
-        legendary: ["1600W ROG Thor"]
+        common:    ["200W Switching"],
+        rare:      ["400W Switching"],
+        epic:      ["600W Switching"],
+        legendary: ["850W Switching"]
     },
     cool: {
         common:    ["ID-Cooling SE-214"],
@@ -62,7 +62,7 @@ const COMPONENTS = {
 const SLOT_POSITIONS = {
     cpu:  { xp: 47.8, yp: 44.9 },
     gpu:  { xp: 46.4, yp: 59.8 },
-    ram:  { xp: 52.5, yp: 46.1 },
+    ram:  { xp: 52.8, yp: 45.8 },
     mb:   { xp: 47.3, yp: 50.4 },
     psu:  { xp: 39.5, yp: 70.8 },
     cool: { xp: 48.2, yp: 44.7 }
