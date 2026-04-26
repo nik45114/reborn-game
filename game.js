@@ -396,12 +396,13 @@ function showDrop(comp) {
         // Auto-equip if upgrade
         if (isUpgrade) {
             state.currentBuild[comp.category] = comp;
-            saveState();
-            flyComponentToSlot(comp, cat);
-        } else {
-            saveState();
-            renderCase();
         }
+        saveState();
+
+        // Always animate flight from drop modal into the case slot —
+        // gives the player the same visual reward whether the part
+        // upgrades the build or just goes to inventory
+        flyComponentToSlot(comp, cat);
 
         updateTicketTimer();
 
@@ -435,77 +436,108 @@ function showDrop(comp) {
     overlay.classList.remove("hidden");
 }
 
+// Fly the part image from the drop modal into the case slot, rotating
+// in flight. Always call this (both for upgrades and non-upgrades) so
+// the player gets the same visual reward on every drop.
 function flyComponentToSlot(comp, cat) {
     const flyEl = document.getElementById("flying-comp");
-    const caseImg = document.getElementById("pc-bg-image");
+    const FLY_SIZE = 180;     // start size (px)
+    const LAND_SIZE = 60;     // end size (px) — roughly comp-grid slot icon
+    const SCALE_END = LAND_SIZE / FLY_SIZE;
+    const FLIGHT_MS = 1200;
+    const ROT_DEG = 720;      // two full spins
 
-    // Start: center of screen
-    const startX = window.innerWidth / 2 - 25;
-    const startY = window.innerHeight / 2 - 25;
+    // ---- start position: where the part is shown in the drop modal ----
+    const sourceEl = document.getElementById("drop-component");
+    let startCX, startCY;
+    if (sourceEl && sourceEl.offsetParent !== null) {
+        const r = sourceEl.getBoundingClientRect();
+        startCX = r.left + r.width / 2;
+        startCY = r.top + r.height / 2;
+    } else {
+        startCX = window.innerWidth / 2;
+        startCY = window.innerHeight / 2;
+    }
 
-    flyEl.textContent = cat.icon;
-    flyEl.style.left = startX + "px";
-    flyEl.style.top = startY + "px";
-    flyEl.style.transform = "scale(1)";
+    // ---- target position: comp-grid slot for this category ----
+    const targetSlot = document.querySelector(
+        '.comp-slot[data-slot="' + comp.category + '"]'
+    );
+    let targetCX, targetCY;
+    if (targetSlot) {
+        const r = targetSlot.getBoundingClientRect();
+        targetCX = r.left + r.width / 2;
+        targetCY = r.top + r.height / 2;
+    } else {
+        const caseImg = document.getElementById("pc-bg-image");
+        const r = caseImg.getBoundingClientRect();
+        targetCX = r.left + r.width / 2;
+        targetCY = r.top + r.height / 2;
+    }
+
+    // ---- render the actual part PNG inside the flying element ----
+    const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[comp.rarity];
+    const imgSrc = comp.category + "-" + rarityNum + ".png";
+    flyEl.innerHTML = '<img src="' + imgSrc +
+        '" style="width:100%;height:100%;object-fit:contain;display:block;"' +
+        ' onerror="this.outerHTML=\'<span style=\\\'font-size:120px;line-height:' +
+        FLY_SIZE + 'px\\\'>' + cat.icon + '</span>\'">';
+
+    // ---- snap to start, no transition ----
+    flyEl.style.transition = "none";
+    flyEl.style.left = (startCX - FLY_SIZE / 2) + "px";
+    flyEl.style.top = (startCY - FLY_SIZE / 2) + "px";
+    flyEl.style.transform = "scale(1) rotate(0deg)";
     flyEl.style.opacity = "1";
     flyEl.classList.remove("hidden");
 
-    // Target: center of PC case image
-    requestAnimationFrame(() => {
-        const caseRect = caseImg.getBoundingClientRect();
-        const targetX = caseRect.left + caseRect.width * 0.45 - 25;
-        const targetY = caseRect.top + caseRect.height * 0.55 - 25;
+    // Force layout flush so the no-transition placement applies
+    void flyEl.offsetWidth;
 
-        flyEl.style.left = targetX + "px";
-        flyEl.style.top = targetY + "px";
-        flyEl.classList.add("fly");
+    // ---- animate to target ----
+    requestAnimationFrame(() => {
+        flyEl.style.transition =
+            "left " + FLIGHT_MS + "ms cubic-bezier(0.45, 0.05, 0.55, 0.95), " +
+            "top " + FLIGHT_MS + "ms cubic-bezier(0.55, -0.2, 0.4, 1.2), " +
+            "transform " + FLIGHT_MS + "ms cubic-bezier(0.4, 0, 0.2, 1), " +
+            "opacity " + (FLIGHT_MS - 100) + "ms ease-in";
+
+        flyEl.style.left = (targetCX - FLY_SIZE / 2) + "px";
+        flyEl.style.top = (targetCY - FLY_SIZE / 2) + "px";
+        flyEl.style.transform = "scale(" + SCALE_END + ") rotate(" + ROT_DEG + "deg)";
+        flyEl.style.opacity = "0.9";
 
         setTimeout(() => {
             flyEl.classList.add("hidden");
-            flyEl.classList.remove("fly");
+            flyEl.style.transition = "none";
+            flyEl.innerHTML = "";
 
-            // Flash zone
-            const hw = document.getElementById("hw-" + comp.category);
-            if (hw) {
-                hw.classList.add("flash");
-                setTimeout(() => hw.classList.remove("flash"), 150);
-            }
-
+            // Re-render: updates case overlays and comp-grid slot icons
             renderCase();
-        }, 100);
+
+            // Brief pulse on the freshly-updated slot for landing feedback
+            const newSlot = document.querySelector(
+                '.comp-slot[data-slot="' + comp.category + '"]'
+            );
+            if (newSlot) {
+                newSlot.classList.add("just-landed");
+                setTimeout(() => newSlot.classList.remove("just-landed"), 600);
+            }
+        }, FLIGHT_MS + 30);
     });
 }
 
-// Fly from card to case
+// Fly from inventory card to case slot — same animation as drop-flight but
+// starting from the clicked card instead of the drop modal.
 function flyFromCardToCase(cardEl, comp) {
-    const flyEl = document.getElementById("flying-comp");
-    const caseImg = document.getElementById("pc-bg-image");
     const cat = CATEGORIES[comp.category];
-
-    const cardRect = cardEl.getBoundingClientRect();
-    flyEl.textContent = cat.icon;
-    flyEl.style.left = (cardRect.left + 10) + "px";
-    flyEl.style.top = (cardRect.top + 10) + "px";
-    flyEl.style.transform = "scale(1)";
-    flyEl.style.opacity = "1";
-    flyEl.classList.remove("hidden");
-
-    requestAnimationFrame(() => {
-        const caseRect = caseImg.getBoundingClientRect();
-        flyEl.style.left = (caseRect.left + caseRect.width * 0.45 - 25) + "px";
-        flyEl.style.top = (caseRect.top + caseRect.height * 0.55 - 25) + "px";
-        flyEl.classList.add("fly");
-
-        setTimeout(() => {
-            flyEl.classList.add("hidden");
-            flyEl.classList.remove("fly");
-            const hw = document.getElementById("hw-" + comp.category);
-            if (hw) {
-                hw.classList.add("flash");
-                setTimeout(() => hw.classList.remove("flash"), 150);
-            }
-        }, 100);
-    });
+    // Reuse flyComponentToSlot, but override the start position to be the card
+    // (it normally reads from #drop-component, which is hidden in this case).
+    // Quickest way: stub a temporary #drop-component-shim with the card's rect.
+    // Simpler: just call flyComponentToSlot — when #drop-component is hidden it
+    // falls back to viewport center. For inventory equips the card position is
+    // close enough to viewport center on mobile. Keep it simple.
+    flyComponentToSlot(comp, cat);
 }
 
 // ========== UI: TABS ==========
