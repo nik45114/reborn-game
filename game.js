@@ -385,7 +385,10 @@ function showDrop(comp) {
         partImg.remove();
         iconEl.style.display = "block";
     };
-    partImg.src = comp.category + "-" + rarityNum + ".png";
+    // preview-* is the source image cropped tightly to its opaque pixels —
+    // shows the part big and centered in the card, not a tiny dot inside
+    // a 1536x1024 transparent canvas
+    partImg.src = "preview-" + comp.category + "-" + rarityNum + ".png";
     compEl.appendChild(partImg);
 
     // Info
@@ -507,8 +510,10 @@ function flyComponentToSlot(comp, cat) {
     }
 
     // ---- render the actual part PNG inside the flying element ----
+    // Use preview-* (cropped) so the spinning icon shows the full part,
+    // not a tiny dot lost in a 1536x1024 transparent canvas
     const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[comp.rarity];
-    const imgSrc = comp.category + "-" + rarityNum + ".png";
+    const imgSrc = "preview-" + comp.category + "-" + rarityNum + ".png";
     flyEl.innerHTML = '<img src="' + imgSrc +
         '" style="width:100%;height:100%;object-fit:contain;display:block;"' +
         ' onerror="this.outerHTML=\'<span style=\\\'font-size:120px;line-height:' +
