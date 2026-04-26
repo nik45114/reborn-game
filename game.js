@@ -55,6 +55,19 @@ const COMPONENTS = {
     }
 };
 
+// Percent positions on the case bg.png where each category visually appears.
+// Synced with compose.py center coordinates: xp = cx/1536*100, yp = cy/1024*100.
+// Used by the drop-flight animation to land each part at its actual slot.
+// pipeline_server.py keeps these in sync on every Save & Deploy.
+const SLOT_POSITIONS = {
+    cpu:  { xp: 47.8, yp: 44.9 },
+    gpu:  { xp: 46.4, yp: 59.8 },
+    ram:  { xp: 52.7, yp: 46.5 },
+    mb:   { xp: 47.3, yp: 50.4 },
+    psu:  { xp: 39.5, yp: 70.8 },
+    cool: { xp: 47.7, yp: 43.1 }
+};
+
 const BUILD_TIERS = [
     { name: "Офисный ПК",      stars: 1, minPower: 0,   bonus: 10,  emoji: "🖨" },
     { name: "Домашний ПК",     stars: 2, minPower: 150, bonus: 30,  emoji: "🏠" },
@@ -351,10 +364,29 @@ function showDrop(comp) {
     catEl.textContent = cat.name;
     catEl.style.color = rar.color;
 
-    // Component display
+    // Component display: big PNG of the actual part (fallback to emoji)
     const compEl = document.getElementById("drop-component");
+    const iconEl = document.getElementById("drop-comp-icon");
     compEl.style.borderColor = rar.color;
-    document.getElementById("drop-comp-icon").textContent = cat.icon;
+    iconEl.textContent = cat.icon;
+    // Strip any old image
+    const oldImg = compEl.querySelector("img.drop-comp-img");
+    if (oldImg) oldImg.remove();
+    // Try the part PNG; if it loads, swap from emoji to image
+    const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[comp.rarity];
+    const partImg = document.createElement("img");
+    partImg.className = "drop-comp-img";
+    partImg.style.cssText = "max-width:100%;max-height:100%;object-fit:contain;display:none";
+    partImg.onload = () => {
+        partImg.style.display = "block";
+        iconEl.style.display = "none";
+    };
+    partImg.onerror = () => {
+        partImg.remove();
+        iconEl.style.display = "block";
+    };
+    partImg.src = comp.category + "-" + rarityNum + ".png";
+    compEl.appendChild(partImg);
 
     // Info
     document.getElementById("drop-model").textContent = comp.model;
@@ -459,20 +491,19 @@ function flyComponentToSlot(comp, cat) {
         startCY = window.innerHeight / 2;
     }
 
-    // ---- target position: comp-grid slot for this category ----
-    const targetSlot = document.querySelector(
-        '.comp-slot[data-slot="' + comp.category + '"]'
-    );
+    // ---- target position: actual slot on the case where the part sits ----
+    // Use SLOT_POSITIONS percentages (synced with compose.py) mapped onto
+    // the case bg's current screen rect.
+    const caseImg = document.getElementById("pc-bg-image");
+    const caseRect = caseImg.getBoundingClientRect();
+    const slot = SLOT_POSITIONS[comp.category];
     let targetCX, targetCY;
-    if (targetSlot) {
-        const r = targetSlot.getBoundingClientRect();
-        targetCX = r.left + r.width / 2;
-        targetCY = r.top + r.height / 2;
+    if (slot) {
+        targetCX = caseRect.left + caseRect.width * slot.xp / 100;
+        targetCY = caseRect.top + caseRect.height * slot.yp / 100;
     } else {
-        const caseImg = document.getElementById("pc-bg-image");
-        const r = caseImg.getBoundingClientRect();
-        targetCX = r.left + r.width / 2;
-        targetCY = r.top + r.height / 2;
+        targetCX = caseRect.left + caseRect.width / 2;
+        targetCY = caseRect.top + caseRect.height / 2;
     }
 
     // ---- render the actual part PNG inside the flying element ----
@@ -512,16 +543,15 @@ function flyComponentToSlot(comp, cat) {
             flyEl.style.transition = "none";
             flyEl.innerHTML = "";
 
-            // Re-render: updates case overlays and comp-grid slot icons
+            // Re-render: updates case overlays (the part appears at the same
+            // pixel position the flight ended at) and comp-grid slot icons.
             renderCase();
 
-            // Brief pulse on the freshly-updated slot for landing feedback
-            const newSlot = document.querySelector(
-                '.comp-slot[data-slot="' + comp.category + '"]'
-            );
-            if (newSlot) {
-                newSlot.classList.add("just-landed");
-                setTimeout(() => newSlot.classList.remove("just-landed"), 600);
+            // Brief flash glow on the case overlay where the part landed
+            const overlay = document.getElementById("pc-" + comp.category + "-image");
+            if (overlay && overlay.style.display !== "none") {
+                overlay.classList.add("just-landed");
+                setTimeout(() => overlay.classList.remove("just-landed"), 700);
             }
         }, FLIGHT_MS + 30);
     });
