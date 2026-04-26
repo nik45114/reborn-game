@@ -64,7 +64,7 @@ const SLOT_POSITIONS = {
     gpu:  { xp: 46.4, yp: 59.8 },
     ram:  { xp: 52.8, yp: 45.8 },
     mb:   { xp: 47.8, yp: 50.4 },
-    psu:  { xp: 39.0, yp: 72.1 },
+    psu:  { xp: 39.9, yp: 71.3 },
     cool: { xp: 48.2, yp: 44.7 }
 };
 
