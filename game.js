@@ -73,7 +73,7 @@ const BUILD_TIERS = [
     { name: "Домашний ПК",     stars: 2, minPower: 150, bonus: 30,  emoji: "🏠" },
     { name: "Игровой ПК",      stars: 3, minPower: 300, bonus: 75,  emoji: "🎮" },
     { name: "Pro Gaming ПК",   stars: 4, minPower: 470, bonus: 200, emoji: "🔥" },
-    { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 500, emoji: "👑" }
+    { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 300, emoji: "👑" }
 ];
 
 // TESTING MODE — unlimited for all (remove later)
