@@ -244,6 +244,30 @@ function assembleBuild() {
         date: new Date().toLocaleDateString("ru"),
         tier: tier.name, stars: tier.stars, power, bonus: tier.bonus
     });
+
+    // Notify the bot when an Ultimate build is assembled — bot will credit the
+    // player's BonusBalance in the club DB. Other tiers stay in-game only.
+    if (tier.stars === 5 && window.Telegram && window.Telegram.WebApp &&
+        typeof Telegram.WebApp.sendData === "function") {
+        try {
+            const buildSnapshot = {};
+            for (const slot of Object.keys(state.currentBuild)) {
+                const c = state.currentBuild[slot];
+                if (c) buildSnapshot[slot] = {
+                    model: c.model, rarity: c.rarity, power: c.power
+                };
+            }
+            Telegram.WebApp.sendData(JSON.stringify({
+                event: "build_assembled",
+                tier: tier.name,
+                stars: tier.stars,
+                bonus: tier.bonus,
+                build: buildSnapshot,
+                ts: Date.now()
+            }));
+            // sendData closes the WebApp; bot will reply in chat with status.
+        } catch (e) { /* sendData not available — fail silently */ }
+    }
     for (const slot of Object.keys(state.currentBuild)) {
         const comp = state.currentBuild[slot];
         if (comp) {
