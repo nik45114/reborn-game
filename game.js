@@ -89,11 +89,15 @@ let TICKET_REGEN_MS = USER_REGEN_MS;
 
 function detectAdmin() {
     try {
-        const id = window.Telegram && window.Telegram.WebApp
+        const raw = window.Telegram && window.Telegram.WebApp
             && window.Telegram.WebApp.initDataUnsafe
             && window.Telegram.WebApp.initDataUnsafe.user
             && window.Telegram.WebApp.initDataUnsafe.user.id;
-        return !!(id && ADMIN_TG_IDS.has(id));
+        if (!raw) return false;
+        // Some Telegram clients deliver user.id as a string. Normalize both
+        // sides so Set.has() doesn't miss on type mismatch.
+        const asNum = Number(raw);
+        return ADMIN_TG_IDS.has(asNum) || ADMIN_TG_IDS.has(String(raw));
     } catch (e) { return false; }
 }
 
