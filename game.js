@@ -398,21 +398,42 @@ function assembleBuild(opts) {
     // Tell the bot every tier triggers a real bonus credit. The bot decides
     // the exact ruble amount (server is the source of truth), and the `auto`
     // flag changes the wording of the confirmation message.
-    if (window.Telegram && window.Telegram.WebApp &&
-        typeof Telegram.WebApp.sendData === "function") {
+    const payload = JSON.stringify({
+        event: "build_assembled",
+        tier: tier.name,
+        stars: tier.stars,
+        bonus: tier.bonus,
+        power: power,
+        build: buildSnapshot,
+        auto: auto,
+        ts: Date.now()
+    });
+    const tg = window.Telegram && window.Telegram.WebApp;
+    const hasSend = tg && typeof tg.sendData === "function";
+
+    function fireSend() {
+        if (!hasSend) {
+            alert("⚠️ Telegram.WebApp.sendData недоступен.\n" +
+                "Игра запущена не через меню-кнопку — открой через 🎲 слева от чата.");
+            return;
+        }
         try {
-            Telegram.WebApp.sendData(JSON.stringify({
-                event: "build_assembled",
-                tier: tier.name,
-                stars: tier.stars,
-                bonus: tier.bonus,
-                power: power,
-                build: buildSnapshot,
-                auto: auto,
-                ts: Date.now()
-            }));
+            tg.sendData(payload);
             // sendData closes the WebApp; bot replies in chat.
-        } catch (e) { /* sendData not available — fail silently */ }
+        } catch (e) {
+            alert("sendData упал с ошибкой: " + e.message);
+        }
+    }
+
+    // Diagnostic alert (shown to admin only) to confirm assembleBuild reached
+    // the sendData branch. Removed once the claim flow is proven to work.
+    if (IS_ADMIN && tg && typeof tg.showConfirm === "function") {
+        tg.showConfirm(
+            `DEBUG: отправляю клейм ${tier.stars}★ (${tier.name}). OK для отправки.`,
+            (ok) => { if (ok) fireSend(); }
+        );
+    } else {
+        fireSend();
     }
     return tier;
 }
