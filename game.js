@@ -69,11 +69,11 @@ const SLOT_POSITIONS = {
 };
 
 const BUILD_TIERS = [
-    { name: "Офисный ПК",      stars: 1, minPower: 0,   bonus: 10,  emoji: "🖨" },
-    { name: "Домашний ПК",     stars: 2, minPower: 150, bonus: 30,  emoji: "🏠" },
-    { name: "Игровой ПК",      stars: 3, minPower: 300, bonus: 75,  emoji: "🎮" },
+    { name: "Офисный ПК",      stars: 1, minPower: 0,   bonus: 25,  emoji: "🖨" },
+    { name: "Домашний ПК",     stars: 2, minPower: 150, bonus: 50,  emoji: "🏠" },
+    { name: "Игровой ПК",      stars: 3, minPower: 300, bonus: 100, emoji: "🎮" },
     { name: "Pro Gaming ПК",   stars: 4, minPower: 470, bonus: 200, emoji: "🔥" },
-    { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 300, emoji: "👑" }
+    { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 350, emoji: "👑" }
 ];
 
 // Admins get unlimited tickets; everyone else gets 5/day (one ~every 4h48m).
@@ -112,6 +112,15 @@ function defaultState() {
         tickets: USER_MAX_TICKETS,
         lastTicketTime: Date.now(),
         lastRefillStamp: null,
+        // Window-based bonus lockout. After claiming a bonus the player is
+        // locked out (no coupons, no further claim) until the start of the
+        // next window. Two windows per month: days 1–14 and 15–end.
+        // lockedUntilWindow stores the window key in which the claim happened.
+        lockedUntilWindow: null,
+        // Window key when the current build started filling. If we cross a
+        // boundary with a half-built or completed build, on next open the
+        // game will auto-claim (if complete) or silently drop progress.
+        buildWindowKey: null,
         bonusPoints: 0,
         inventory: [],
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
@@ -156,6 +165,48 @@ function saveState() {
     localStorage.setItem("reborn_pc_game_v2", JSON.stringify(state));
 }
 
+// ========== WINDOWS (bonus payout periods) ==========
+// Two windows per calendar month: 1–14 (h1) and 15–end (h2). A bonus claim
+// locks the player for the rest of their current window. At 00:00 МСК on
+// day 15 (and 1st of next month) the lockout is lifted automatically.
+const WINDOW_BOUNDARY_DAY = 15;
+
+function _mskNow() { return new Date(Date.now() + 3 * 3600 * 1000); }
+
+function currentWindowKey() {
+    const msk = _mskNow();
+    const y = msk.getUTCFullYear();
+    const m = String(msk.getUTCMonth() + 1).padStart(2, "0");
+    const half = msk.getUTCDate() < WINDOW_BOUNDARY_DAY ? "h1" : "h2";
+    return `${y}-${m}-${half}`;
+}
+
+function nextWindowStartMs() {
+    const msk = _mskNow();
+    let target;
+    if (msk.getUTCDate() < WINDOW_BOUNDARY_DAY) {
+        target = new Date(Date.UTC(msk.getUTCFullYear(), msk.getUTCMonth(), WINDOW_BOUNDARY_DAY));
+    } else {
+        target = new Date(Date.UTC(msk.getUTCFullYear(), msk.getUTCMonth() + 1, 1));
+    }
+    return target.getTime() - 3 * 3600 * 1000; // back to actual UTC ms
+}
+
+function isLocked() {
+    if (IS_ADMIN) return false;
+    return state.lockedUntilWindow && state.lockedUntilWindow === currentWindowKey();
+}
+
+function fmtRemainingShort(ms) {
+    if (ms <= 0) return "сейчас";
+    const days = Math.floor(ms / 86400000);
+    const hrs  = Math.floor((ms % 86400000) / 3600000);
+    const min  = Math.floor((ms % 3600000) / 60000);
+    if (days > 0) return `${days}д ${hrs}ч`;
+    if (hrs > 0)  return `${hrs}ч ${min.toString().padStart(2,"0")}м`;
+    return `${min}м`;
+}
+
 // ========== TICKETS ==========
 // Non-admins get 5 tickets refilled at once at 12:00 МСК (UTC+3) every day.
 // Admins are pinned to ADMIN_MAX_TICKETS at all times.
@@ -193,6 +244,11 @@ function regenTickets() {
         state.lastTicketTime = Date.now();
         return;
     }
+    if (isLocked()) {
+        // No coupons during the lockout — they only flow again after the
+        // window boundary at 00:00 МСК.
+        return;
+    }
     const stamp = currentRefillStamp();
     if (state.lastRefillStamp !== stamp) {
         state.tickets = USER_MAX_TICKETS;
@@ -208,12 +264,20 @@ function updateTicketTimer() {
     const el = document.getElementById("ticket-timer");
     const dropSub = document.getElementById("drop-sub");
     const dropBtn = document.getElementById("btn-drop");
+    const locked = isLocked();
 
-    dropSub.textContent = `🎫 ${state.tickets} попыт${state.tickets === 1 ? "ка" : "ки"}`;
-    dropBtn.disabled = state.tickets <= 0;
+    dropSub.textContent = locked
+        ? "🔒 Жди разблокировки"
+        : `🎫 ${state.tickets} попыт${state.tickets === 1 ? "ка" : "ки"}`;
+    dropBtn.disabled = locked || state.tickets <= 0;
 
     if (IS_ADMIN) {
         el.textContent = "Все попытки доступны!";
+        return;
+    }
+    if (locked) {
+        const remain = nextWindowStartMs() - Date.now();
+        el.textContent = `🔒 Бонус получен. Следующее окно через ${fmtRemainingShort(remain)}`;
         return;
     }
     const remaining = msUntilNextRefill();
@@ -287,8 +351,12 @@ function getFilledCount() {
     return Object.values(state.currentBuild).filter(s => s !== null).length;
 }
 
-function assembleBuild() {
+function assembleBuild(opts) {
+    opts = opts || {};
+    const auto = !!opts.auto;
     if (!isBuildComplete()) return;
+    if (!auto && isLocked()) return;
+
     const power = getBuildPower();
     const tier = getBuildTier(power);
     state.bonusPoints += tier.bonus;
@@ -297,29 +365,22 @@ function assembleBuild() {
         tier: tier.name, stars: tier.stars, power, bonus: tier.bonus
     });
 
-    // Notify the bot when an Ultimate build is assembled — bot will credit the
-    // player's BonusBalance in the club DB. Other tiers stay in-game only.
-    if (tier.stars === 5 && window.Telegram && window.Telegram.WebApp &&
-        typeof Telegram.WebApp.sendData === "function") {
-        try {
-            const buildSnapshot = {};
-            for (const slot of Object.keys(state.currentBuild)) {
-                const c = state.currentBuild[slot];
-                if (c) buildSnapshot[slot] = {
-                    model: c.model, rarity: c.rarity, power: c.power
-                };
-            }
-            Telegram.WebApp.sendData(JSON.stringify({
-                event: "build_assembled",
-                tier: tier.name,
-                stars: tier.stars,
-                bonus: tier.bonus,
-                build: buildSnapshot,
-                ts: Date.now()
-            }));
-            // sendData closes the WebApp; bot will reply in chat with status.
-        } catch (e) { /* sendData not available — fail silently */ }
+    const buildSnapshot = {};
+    for (const slot of Object.keys(state.currentBuild)) {
+        const c = state.currentBuild[slot];
+        if (c) buildSnapshot[slot] = {
+            model: c.model, rarity: c.rarity, power: c.power
+        };
     }
+
+    // Lock out non-admins for the rest of this window (auto-claims that fire
+    // on a fresh window are still locked into THAT window so the player can't
+    // double-dip in the same period).
+    if (!IS_ADMIN) {
+        state.lockedUntilWindow = currentWindowKey();
+    }
+
+    // Reset the build (used components are removed from inventory too).
     for (const slot of Object.keys(state.currentBuild)) {
         const comp = state.currentBuild[slot];
         if (comp) {
@@ -328,13 +389,47 @@ function assembleBuild() {
         }
         state.currentBuild[slot] = null;
     }
+    state.buildWindowKey = null;
     saveState();
+
+    // Tell the bot every tier triggers a real bonus credit. The bot decides
+    // the exact ruble amount (server is the source of truth), and the `auto`
+    // flag changes the wording of the confirmation message.
+    if (window.Telegram && window.Telegram.WebApp &&
+        typeof Telegram.WebApp.sendData === "function") {
+        try {
+            Telegram.WebApp.sendData(JSON.stringify({
+                event: "build_assembled",
+                tier: tier.name,
+                stars: tier.stars,
+                bonus: tier.bonus,
+                power: power,
+                build: buildSnapshot,
+                auto: auto,
+                ts: Date.now()
+            }));
+            // sendData closes the WebApp; bot replies in chat.
+        } catch (e) { /* sendData not available — fail silently */ }
+    }
     return tier;
+}
+
+// Stamp the current window onto the build the moment any slot is filled,
+// so init() can detect a window crossover and auto-claim if needed. Idempotent —
+// called from renderCase() which runs after every meaningful state change.
+function trackBuildStart() {
+    if (IS_ADMIN || state.buildWindowKey) return;
+    const filled = Object.values(state.currentBuild || {}).some(c => c);
+    if (filled) {
+        state.buildWindowKey = currentWindowKey();
+        saveState();
+    }
 }
 
 // ========== UI: CASE RENDERING ==========
 
 function renderCase() {
+    trackBuildStart();
     const power = getBuildPower();
     const tier = getBuildTier(power);
     let filledCount = 0;
@@ -419,8 +514,8 @@ function renderCase() {
     const maxPower = 700;
     document.getElementById("build-progress").style.width = Math.min(100, (power / maxPower) * 100) + "%";
 
-    // Assemble button
-    document.getElementById("btn-assemble").disabled = !isBuildComplete();
+    // Assemble button — disabled if build incomplete OR player locked for this window
+    document.getElementById("btn-assemble").disabled = !isBuildComplete() || isLocked();
 
     document.getElementById("bonus-points").textContent = state.bonusPoints;
 }
@@ -1189,6 +1284,44 @@ function init() {
     if (!IS_ADMIN && state.tickets > MAX_TICKETS) {
         state.tickets = MAX_TICKETS;
         saveState();
+    }
+
+    if (!IS_ADMIN) {
+        const cwk = currentWindowKey();
+        // Naturally lift a stale lockout once we cross the window boundary.
+        if (state.lockedUntilWindow && state.lockedUntilWindow !== cwk) {
+            state.lockedUntilWindow = null;
+            saveState();
+        }
+        // Track when the current build started — populate lazily so older
+        // saves don't confuse the boundary-cross logic below.
+        if (state.buildWindowKey == null) {
+            const filledNow = Object.values(state.currentBuild || {}).some(c => c);
+            if (filledNow) {
+                state.buildWindowKey = cwk;
+                saveState();
+            }
+        }
+        // If the build started in a previous window, the player either
+        // forgot to claim (auto-claim now) or never finished it (drop progress).
+        if (state.buildWindowKey && state.buildWindowKey !== cwk) {
+            if (isBuildComplete()) {
+                // assembleBuild({auto:true}) will:
+                //   - send sendData with auto:true so the bot replies with the
+                //     "you forgot, I credited it for you" message,
+                //   - lock the player into the current window,
+                //   - reset the build.
+                assembleBuild({ auto: true });
+                // sendData closes the WebApp; nothing more to do here.
+                return;
+            }
+            // Incomplete build — quietly drop the progress and start fresh.
+            for (const slot of Object.keys(state.currentBuild)) {
+                state.currentBuild[slot] = null;
+            }
+            state.buildWindowKey = null;
+            saveState();
+        }
     }
 
     regenTickets();
