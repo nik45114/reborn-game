@@ -76,10 +76,32 @@ const BUILD_TIERS = [
     { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 300, emoji: "👑" }
 ];
 
-// TESTING MODE — unlimited for all (remove later)
-let MAX_TICKETS = 99999;
-let TICKET_REGEN_MS = 1000;
-let IS_ADMIN = true;
+// Admins get unlimited tickets; everyone else gets 5/day (one ~every 4h48m).
+const ADMIN_TG_IDS = new Set([7704310171]);
+const ADMIN_MAX_TICKETS = 99999;
+const ADMIN_REGEN_MS = 1000;
+const USER_MAX_TICKETS = 5;
+const USER_REGEN_MS = Math.floor(24 * 60 * 60 * 1000 / USER_MAX_TICKETS);
+
+let IS_ADMIN = false;
+let MAX_TICKETS = USER_MAX_TICKETS;
+let TICKET_REGEN_MS = USER_REGEN_MS;
+
+function detectAdmin() {
+    try {
+        const id = window.Telegram && window.Telegram.WebApp
+            && window.Telegram.WebApp.initDataUnsafe
+            && window.Telegram.WebApp.initDataUnsafe.user
+            && window.Telegram.WebApp.initDataUnsafe.user.id;
+        return !!(id && ADMIN_TG_IDS.has(id));
+    } catch (e) { return false; }
+}
+
+function applyTier() {
+    IS_ADMIN = detectAdmin();
+    MAX_TICKETS = IS_ADMIN ? ADMIN_MAX_TICKETS : USER_MAX_TICKETS;
+    TICKET_REGEN_MS = IS_ADMIN ? ADMIN_REGEN_MS : USER_REGEN_MS;
+}
 
 // ========== STATE ==========
 
@@ -87,7 +109,7 @@ let state = loadState();
 
 function defaultState() {
     return {
-        tickets: MAX_TICKETS,
+        tickets: USER_MAX_TICKETS,
         lastTicketTime: Date.now(),
         bonusPoints: 0,
         inventory: [],
@@ -195,7 +217,7 @@ function rollComponent() {
 }
 
 function doDrop() {
-    if (IS_ADMIN) state.tickets = 99999;
+    if (IS_ADMIN) state.tickets = ADMIN_MAX_TICKETS;
     regenTickets();
     if (state.tickets <= 0) return null;
     state.tickets--;
@@ -1124,18 +1146,25 @@ function showDailyReward(reward, legendaryComp) {
 function resetAll() {
     localStorage.removeItem("reborn_pc_game_v2");
     state = defaultState();
-    state.tickets = 99999;
+    state.tickets = IS_ADMIN ? ADMIN_MAX_TICKETS : USER_MAX_TICKETS;
     saveState();
     renderCase();
     updateTicketTimer();
 }
 
 function init() {
+    applyTier();
+
+    // Clamp any oversaved tickets from before the cap was introduced
+    if (!IS_ADMIN && state.tickets > MAX_TICKETS) {
+        state.tickets = MAX_TICKETS;
+        saveState();
+    }
+
     regenTickets();
 
-    // Admin: force unlimited tickets AFTER regen
     if (IS_ADMIN) {
-        state.tickets = 99999;
+        state.tickets = ADMIN_MAX_TICKETS;
         saveState();
     }
 
