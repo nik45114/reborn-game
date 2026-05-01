@@ -299,8 +299,7 @@ function updateTicketTimer() {
     const remaining = msUntilNextRefill();
     const hrs = Math.floor(remaining / 3600000);
     const min = Math.floor((remaining % 3600000) / 60000);
-    const sec = Math.floor((remaining % 60000) / 1000);
-    el.textContent = `Следующие 5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м ${sec.toString().padStart(2,"0")}с)`;
+    el.textContent = `Следующие 5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м)`;
 }
 
 // ========== DROP ==========

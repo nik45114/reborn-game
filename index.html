@@ -120,6 +120,10 @@
 
         <!-- Flying comp -->
         <div class="flying-comp hidden" id="flying-comp"></div>
+
+        <!-- Version + admin badge. Lives INSIDE #app so it's parsed before
+             the scripts run; otherwise game.js's getElementById returns null. -->
+        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=113</div>
     </div>
 
     <!-- Force-refetch on every load — Telegram WebView caches scripts very
@@ -132,6 +136,5 @@
         document.write('<script src="game.js?ts=' + ts + '"><\/script>');
     })();
     </script>
-    <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=113</div>
 </body>
 </html>
