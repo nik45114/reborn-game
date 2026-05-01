@@ -122,7 +122,16 @@
         <div class="flying-comp hidden" id="flying-comp"></div>
     </div>
 
-    <script src="cases.js?v=37"></script>
-    <script src="game.js?v=113"></script>
+    <!-- Force-refetch on every load — Telegram WebView caches scripts very
+         aggressively, even past Cache-Control headers. The timestamp param
+         makes every URL unique so browser cache can never match. -->
+    <script>
+    (function () {
+        var ts = Date.now();
+        document.write('<script src="cases.js?ts=' + ts + '"><\/script>');
+        document.write('<script src="game.js?ts=' + ts + '"><\/script>');
+    })();
+    </script>
+    <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=113</div>
 </body>
 </html>
