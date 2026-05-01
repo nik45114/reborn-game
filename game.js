@@ -101,6 +101,19 @@ function applyTier() {
     IS_ADMIN = detectAdmin();
     MAX_TICKETS = IS_ADMIN ? ADMIN_MAX_TICKETS : USER_MAX_TICKETS;
     TICKET_REGEN_MS = IS_ADMIN ? ADMIN_REGEN_MS : USER_REGEN_MS;
+
+    // Surface tier + raw user.id in the bottom-right version badge so we can
+    // see at a glance whether admin detection actually fired.
+    try {
+        const el = document.getElementById("app-version");
+        if (el) {
+            const id = window.Telegram && Telegram.WebApp
+                && Telegram.WebApp.initDataUnsafe
+                && Telegram.WebApp.initDataUnsafe.user
+                && Telegram.WebApp.initDataUnsafe.user.id;
+            el.textContent = `v=113 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"}`;
+        }
+    } catch (e) {}
 }
 
 // ========== STATE ==========
@@ -1450,20 +1463,16 @@ function init() {
         saveState();
     }
 
-    // ONE-SHOT MIGRATION: clear stale lockouts inherited from the
-    // pre-v113 inline-button bug. Before v113 the WebApp launched from an
-    // inline keyboard button, which silently dropped sendData — so every
-    // tier claim "succeeded" locally (lockout set, build reset) but never
-    // reached the bot. Any lockout still in localStorage at this point is
-    // a phantom — drop it once and refill tickets.
-    if (!state.migratedV113) {
-        if (state.lockedUntilWindow) {
-            state.lockedUntilWindow = null;
-            state.lastRefillStamp = null; // force a fresh ticket refill below
-        }
-        state.migratedV113 = true;
+    // Until the claim flow is fully proven on the user's device we keep
+    // clearing phantom lockouts on every load — claims that the bot's
+    // bot_award_log can confirm will be added back via a future server
+    // sync. For now the safer default is "always playable".
+    if (state.lockedUntilWindow) {
+        state.lockedUntilWindow = null;
+        state.lastRefillStamp = null; // force fresh ticket refill below
         saveState();
     }
+    state.migratedV113 = true;
 
     if (!IS_ADMIN) {
         const cwk = currentWindowKey();
