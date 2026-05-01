@@ -1475,14 +1475,6 @@ function init() {
     if (window.Telegram && window.Telegram.WebApp) {
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
-        // Telegram's swipe-to-close gesture is finicky on iOS especially when
-        // the page is scrolled — give players a reliable "exit" via a button.
-        const closeBtn = document.getElementById("btn-close-app");
-        if (closeBtn) {
-            closeBtn.addEventListener("click", () => {
-                try { Telegram.WebApp.close(); } catch (e) { history.back(); }
-            });
-        }
     }
 
     // Check daily login bonus
