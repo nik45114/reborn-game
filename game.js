@@ -973,9 +973,51 @@ function renderInventoryList() {
     });
 }
 
+function renderAdminPanel() {
+    const list = document.getElementById("inventory-list");
+    if (!list || !IS_ADMIN) return;
+    const slot = document.getElementById("inv-admin-row") || (() => {
+        const d = document.createElement("div");
+        d.id = "inv-admin-row";
+        d.style.cssText =
+            "display:flex;gap:8px;flex-wrap:wrap;padding:10px 12px;" +
+            "border:1px dashed #f59e0b;border-radius:10px;margin-bottom:10px;" +
+            "background:rgba(245,158,11,0.06);font-size:13px";
+        list.parentElement.insertBefore(d, list);
+        return d;
+    })();
+    slot.innerHTML = `
+        <span style="color:#f59e0b;font-weight:600;align-self:center">🛠 Admin</span>
+        <button id="admin-clear-inv" style="padding:6px 10px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;cursor:pointer">🗑 Очистить детали</button>
+        <button id="admin-clear-lock" style="padding:6px 10px;border-radius:8px;border:1px solid #f59e0b;background:transparent;color:#f59e0b;cursor:pointer">🔓 Снять блокировку</button>
+        <button id="admin-full-reset" style="padding:6px 10px;border-radius:8px;border:1px solid #94a3b8;background:transparent;color:#94a3b8;cursor:pointer">💯 Полный сброс</button>
+    `;
+    document.getElementById("admin-clear-inv").onclick = () => {
+        if (!confirm("Удалить все детали из инвентаря и обнулить сборку?")) return;
+        state.inventory = [];
+        for (const k of Object.keys(state.currentBuild)) state.currentBuild[k] = null;
+        state.buildWindowKey = null;
+        saveState();
+        renderCase();
+        renderInventory();
+    };
+    document.getElementById("admin-clear-lock").onclick = () => {
+        state.lockedUntilWindow = null;
+        saveState();
+        updateTicketTimer();
+        renderCase();
+    };
+    document.getElementById("admin-full-reset").onclick = () => {
+        if (!confirm("Полный сброс прогресса (включая историю сборок)?")) return;
+        resetAll();
+        renderInventory();
+    };
+}
+
 function renderInventory() {
     renderInvTabs();
     renderInventoryList();
+    renderAdminPanel();
 }
 
 // ========== UI: SLOT POPUP ==========
