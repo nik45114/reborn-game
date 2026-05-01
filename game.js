@@ -413,28 +413,31 @@ function assembleBuild(opts) {
 
     function fireSend() {
         if (!hasSend) {
-            alert("⚠️ Telegram.WebApp.sendData недоступен.\n" +
-                "Игра запущена не через меню-кнопку — открой через 🎲 слева от чата.");
+            alert("⚠️ Telegram.WebApp.sendData недоступен.\n\n" +
+                "Открой игру через нижнюю reply-кнопку «🎲 Мини-игра» " +
+                "(после /start она закреплена внизу чата).");
             return;
         }
         try {
             tg.sendData(payload);
-            // sendData closes the WebApp; bot replies in chat.
+            // sendData should immediately close the WebApp on success. If
+            // we're still alive a second later, Telegram silently dropped
+            // the call (typical for Menu-Button launches) — warn the user.
+            setTimeout(() => {
+                alert(
+                    "⚠️ Бонус не отправился боту.\n\n" +
+                    "Скорее всего ты открыл игру не через нужную точку входа. " +
+                    "Закрой игру → в чате с ботом тапни «🎲 Мини-игра» " +
+                    "на нижней клавиатуре (если её нет — отправь /start). " +
+                    "Только из неё бонусы реально начисляются."
+                );
+            }, 1500);
         } catch (e) {
             alert("sendData упал с ошибкой: " + e.message);
         }
     }
 
-    // Diagnostic alert (shown to admin only) to confirm assembleBuild reached
-    // the sendData branch. Removed once the claim flow is proven to work.
-    if (IS_ADMIN && tg && typeof tg.showConfirm === "function") {
-        tg.showConfirm(
-            `DEBUG: отправляю клейм ${tier.stars}★ (${tier.name}). OK для отправки.`,
-            (ok) => { if (ok) fireSend(); }
-        );
-    } else {
-        fireSend();
-    }
+    fireSend();
     return tier;
 }
 
