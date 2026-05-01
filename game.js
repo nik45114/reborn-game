@@ -111,6 +111,7 @@ function defaultState() {
     return {
         tickets: USER_MAX_TICKETS,
         lastTicketTime: Date.now(),
+        lastRefillStamp: null,
         bonusPoints: 0,
         inventory: [],
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
@@ -156,16 +157,46 @@ function saveState() {
 }
 
 // ========== TICKETS ==========
+// Non-admins get 5 tickets refilled at once at 12:00 МСК (UTC+3) every day.
+// Admins are pinned to ADMIN_MAX_TICKETS at all times.
+const REFILL_HOUR_MSK = 12;
+
+// Returns the YYYY-MM-DD label of the most recent 12:00 МСК that has already
+// passed. Used as a per-day stamp so we refill exactly once per cycle.
+function currentRefillStamp() {
+    const msk = new Date(Date.now() + 3 * 3600 * 1000); // shift to UTC+3
+    if (msk.getUTCHours() < REFILL_HOUR_MSK) {
+        msk.setUTCDate(msk.getUTCDate() - 1);
+    }
+    const y = msk.getUTCFullYear();
+    const m = String(msk.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(msk.getUTCDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+}
+
+// Real ms left until the next 12:00 МСК.
+function msUntilNextRefill() {
+    const now = Date.now();
+    const msk = new Date(now + 3 * 3600 * 1000);
+    const target = new Date(msk);
+    target.setUTCHours(REFILL_HOUR_MSK, 0, 0, 0);
+    if (msk >= target) target.setUTCDate(target.getUTCDate() + 1);
+    return target.getTime() - msk.getTime();
+}
 
 function regenTickets() {
-    if (state.tickets >= MAX_TICKETS) {
+    if (IS_ADMIN) {
+        if (state.tickets < ADMIN_MAX_TICKETS) {
+            state.tickets = ADMIN_MAX_TICKETS;
+            saveState();
+        }
         state.lastTicketTime = Date.now();
         return;
     }
-    const elapsed = Date.now() - state.lastTicketTime;
-    const newT = Math.floor(elapsed / TICKET_REGEN_MS);
-    if (newT > 0) {
-        state.tickets = Math.min(MAX_TICKETS, state.tickets + newT);
+    const stamp = currentRefillStamp();
+    if (state.lastRefillStamp !== stamp) {
+        state.tickets = USER_MAX_TICKETS;
+        state.lastRefillStamp = stamp;
         state.lastTicketTime = Date.now();
         saveState();
     }
@@ -181,16 +212,15 @@ function updateTicketTimer() {
     dropSub.textContent = `🎫 ${state.tickets} попыт${state.tickets === 1 ? "ка" : "ки"}`;
     dropBtn.disabled = state.tickets <= 0;
 
-    if (state.tickets >= MAX_TICKETS) {
+    if (IS_ADMIN) {
         el.textContent = "Все попытки доступны!";
-    } else {
-        const elapsed = Date.now() - state.lastTicketTime;
-        const remaining = TICKET_REGEN_MS - elapsed;
-        const hrs = Math.floor(remaining / 3600000);
-        const min = Math.floor((remaining % 3600000) / 60000);
-        const sec = Math.floor((remaining % 60000) / 1000);
-        el.textContent = `Следующая попытка через ${hrs}ч ${min.toString().padStart(2,"0")}м ${sec.toString().padStart(2,"0")}с`;
+        return;
     }
+    const remaining = msUntilNextRefill();
+    const hrs = Math.floor(remaining / 3600000);
+    const min = Math.floor((remaining % 3600000) / 60000);
+    const sec = Math.floor((remaining % 60000) / 1000);
+    el.textContent = `Следующие 5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м ${sec.toString().padStart(2,"0")}с)`;
 }
 
 // ========== DROP ==========
