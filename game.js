@@ -1151,28 +1151,70 @@ async function renderRating() {
     }
 
     const histEl = document.getElementById("builds-history");
-    if (!state.buildsHistory.length) {
+    const builds = state.buildsHistory || [];
+    if (!builds.length) {
         histEl.innerHTML = `
-            <div class="history-title">📜 История сборок</div>
-            <div class="history-empty">Вы ещё не собрали ни одного ПК</div>
+            <div class="history-title" style="margin-top:14px">📜 Твои сборки</div>
+            <div class="history-empty">Ещё ни одной — собирай!</div>
         `;
         return;
     }
 
-    histEl.innerHTML = `
-        <div class="history-title">📜 История сборок</div>
-        ${state.buildsHistory.map(b => `
-            <div class="history-item">
-                <div>
-                    <div style="font-weight:600">${b.tier}</div>
-                    <div style="font-size:11px;color:var(--text2)">${b.date} · ⚡${b.power}</div>
+    // Aggregate by tier so the player gets a quick at-a-glance summary
+    // without scrolling — full chronological list moves into a collapsible.
+    const tierEmojis = { 1: "🖨", 2: "🏠", 3: "🎮", 4: "🔥", 5: "👑" };
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const sums = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    let totalBonus = 0;
+    let maxStars = 0;
+    for (const b of builds) {
+        const s = b.stars || 1;
+        counts[s] = (counts[s] || 0) + 1;
+        sums[s] = (sums[s] || 0) + (b.bonus || 0);
+        totalBonus += b.bonus || 0;
+        if (s > maxStars) maxStars = s;
+    }
+
+    let cards = "";
+    for (const t of [5, 4, 3, 2, 1]) {
+        const c = counts[t];
+        if (!c) continue;
+        const tier = BUILD_TIERS[t - 1];
+        cards += `
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.04);margin:4px 0">
+                <div style="font-size:22px;min-width:32px;text-align:center">${tierEmojis[t]}</div>
+                <div style="flex:1">
+                    <div style="font-weight:600">${tier.name} <span style="opacity:.6">${"⭐".repeat(t)}</span></div>
+                    <div style="font-size:11px;color:var(--text2)">собрано ${c} раз${c === 1 ? "" : c < 5 ? "а" : ""}</div>
                 </div>
-                <div style="text-align:right">
-                    <div>${"⭐".repeat(b.stars)}</div>
-                    <div style="font-size:12px;color:var(--green);font-weight:600">+${b.bonus} 🪙</div>
-                </div>
+                <div style="text-align:right;color:var(--green);font-weight:700">+${sums[t].toLocaleString("ru")} ₽</div>
             </div>
-        `).join("")}
+        `;
+    }
+
+    const recent = builds.slice(0, 30);
+    histEl.innerHTML = `
+        <div class="history-title" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+            <span>📜 Твои сборки</span>
+            <span style="font-size:12px;color:var(--text2)">всего ${builds.length} · +${totalBonus.toLocaleString("ru")} ₽</span>
+        </div>
+        ${cards}
+        <details style="margin-top:8px">
+            <summary style="cursor:pointer;padding:8px 12px;font-size:13px;color:var(--text2);border-radius:8px;background:rgba(255,255,255,0.03)">
+                📅 Хронология (последние ${recent.length})
+            </summary>
+            <div style="margin-top:6px">
+                ${recent.map(b => `
+                    <div class="history-item" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;margin:3px 0;font-size:12px">
+                        <div>
+                            <span style="font-weight:600">${b.tier}</span>
+                            <span style="opacity:.5"> · ${b.date}</span>
+                        </div>
+                        <div style="color:var(--green);font-weight:600">+${b.bonus} ₽</div>
+                    </div>
+                `).join("")}
+            </div>
+        </details>
     `;
 }
 
