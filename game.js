@@ -89,15 +89,25 @@ let TICKET_REGEN_MS = USER_REGEN_MS;
 
 function detectAdmin() {
     try {
+        // Path 1: Telegram delivered user.id via initDataUnsafe (normal case).
         const raw = window.Telegram && window.Telegram.WebApp
             && window.Telegram.WebApp.initDataUnsafe
             && window.Telegram.WebApp.initDataUnsafe.user
             && window.Telegram.WebApp.initDataUnsafe.user.id;
-        if (!raw) return false;
-        // Some Telegram clients deliver user.id as a string. Normalize both
-        // sides so Set.has() doesn't miss on type mismatch.
-        const asNum = Number(raw);
-        return ADMIN_TG_IDS.has(asNum) || ADMIN_TG_IDS.has(String(raw));
+        if (raw) {
+            const asNum = Number(raw);
+            if (ADMIN_TG_IDS.has(asNum) || ADMIN_TG_IDS.has(String(raw))) return true;
+        }
+        // Path 2: bot tagged the URL with ?admin=<id> when sending the
+        // reply-keyboard to a known admin. Used when initDataUnsafe is empty
+        // (some Android Telegram launches don't populate user there).
+        const params = new URLSearchParams(window.location.search);
+        const adminParam = params.get("admin");
+        if (adminParam) {
+            const asNum = Number(adminParam);
+            if (ADMIN_TG_IDS.has(asNum) || ADMIN_TG_IDS.has(adminParam)) return true;
+        }
+        return false;
     } catch (e) { return false; }
 }
 
@@ -115,7 +125,8 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
-            el.textContent = `v=113 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"}`;
+            const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
+            el.textContent = `v=113 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
