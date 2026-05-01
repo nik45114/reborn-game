@@ -410,15 +410,12 @@ function assembleBuild(opts) {
         state.lockedUntilWindow = currentWindowKey();
     }
 
-    // Reset the build (used components are removed from inventory too).
+    // Wipe everything tied to the current cycle: build slots + warehouse
+    // inventory. Player starts the next cycle from scratch.
     for (const slot of Object.keys(state.currentBuild)) {
-        const comp = state.currentBuild[slot];
-        if (comp) {
-            const idx = state.inventory.findIndex(i => i.id === comp.id);
-            if (idx !== -1) state.inventory.splice(idx, 1);
-        }
         state.currentBuild[slot] = null;
     }
+    state.inventory = [];
     state.buildWindowKey = null;
     saveState();
 
