@@ -51,17 +51,6 @@
 
             <!-- Components grid -->
             <div class="comp-grid" id="comp-grid"></div>
-
-            <!-- Build bar -->
-            <div class="build-bar">
-                <div class="build-bar-label">
-                    <span id="build-tier-name">Пустая сборка</span>
-                    <span id="build-power">⚡0 · 0/6</span>
-                </div>
-                <div class="build-progress-track">
-                    <div class="build-progress-fill" id="build-progress"></div>
-                </div>
-            </div>
         </div>
 
         <!-- Assemble -->
@@ -80,6 +69,17 @@
 
         <!-- Inventory -->
         <div id="page-inventory" class="page">
+            <!-- Build bar moved here so the player sees their current build's
+                 tier/power readout while browsing parts. -->
+            <div class="build-bar">
+                <div class="build-bar-label">
+                    <span id="build-tier-name">Пустая сборка</span>
+                    <span id="build-power">⚡0 · 0/6</span>
+                </div>
+                <div class="build-progress-track">
+                    <div class="build-progress-fill" id="build-progress"></div>
+                </div>
+            </div>
             <div class="inv-tabs" id="inv-tabs"></div>
             <div class="inventory-list" id="inventory-list"></div>
         </div>

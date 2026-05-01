@@ -1085,17 +1085,70 @@ document.getElementById("slot-popup").addEventListener("click", (e) => {
 
 // ========== UI: RATING ==========
 
-function renderRating() {
-    document.getElementById("rating-tiers").innerHTML = BUILD_TIERS.map(t => `
-        <div class="tier-card">
-            <div class="tier-stars">${"⭐".repeat(t.stars)}${"☆".repeat(5 - t.stars)}</div>
-            <div class="tier-info">
-                <div class="tier-name">${t.emoji} ${t.name}</div>
-                <div class="tier-desc">от ${t.minPower} мощности</div>
+async function fetchRanking() {
+    try {
+        const res = await fetch("./ranking.json?ts=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+function _myTgId() {
+    try {
+        return (window.Telegram && Telegram.WebApp
+            && Telegram.WebApp.initDataUnsafe
+            && Telegram.WebApp.initDataUnsafe.user
+            && Telegram.WebApp.initDataUnsafe.user.id) || null;
+    } catch (e) { return null; }
+}
+
+async function renderRating() {
+    const tiersEl = document.getElementById("rating-tiers");
+    tiersEl.innerHTML = `<div class="rating-loading" style="padding:12px;color:var(--text2);text-align:center">Загружаю рейтинг…</div>`;
+
+    const data = await fetchRanking();
+    const myId = _myTgId();
+    const players = (data && Array.isArray(data.players)) ? data.players : [];
+
+    if (!players.length) {
+        tiersEl.innerHTML = `
+            <div class="history-title" style="text-align:center;padding:14px">
+                🏆 Рейтинг игроков
             </div>
-            <div class="tier-bonus">+${t.bonus} 🪙</div>
-        </div>
-    `).join("");
+            <div class="history-empty" style="text-align:center;padding:14px;color:var(--text2)">
+                Пока никто не получил бонус. Будь первым!
+            </div>
+        `;
+    } else {
+        const medal = (r) => r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : `<span style="opacity:.6">#${r}</span>`;
+        const top = players.slice(0, 50);
+        let html = `<div class="history-title" style="padding:10px 12px;font-weight:700">🏆 Топ игроков по бонусам</div>`;
+        html += top.map(p => {
+            const isMe = myId && p.tg === myId;
+            const bg = isMe ? "background:rgba(245,158,11,0.15);border:1px solid #f59e0b" : "";
+            return `
+                <div class="history-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;margin:4px 0;${bg}">
+                    <div style="display:flex;gap:10px;align-items:center">
+                        <div style="font-size:16px;min-width:34px;text-align:center">${medal(p.rank)}</div>
+                        <div>
+                            <div style="font-weight:600">${p.name}${isMe ? " <span style=\"color:#f59e0b\">(ты)</span>" : ""}</div>
+                            <div style="font-size:11px;color:var(--text2)">${p.builds} сборок</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right">
+                        <div style="color:var(--green);font-weight:700">+${p.total.toLocaleString("ru")} ₽</div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+        if (data && data.generated_at) {
+            const ts = new Date(data.generated_at);
+            html += `<div style="text-align:center;color:var(--text2);font-size:11px;margin-top:6px">Обновлено: ${ts.toLocaleString("ru")}</div>`;
+        }
+        tiersEl.innerHTML = html;
+    }
 
     const histEl = document.getElementById("builds-history");
     if (!state.buildsHistory.length) {
