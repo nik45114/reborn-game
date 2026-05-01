@@ -121,6 +121,9 @@ function defaultState() {
         // boundary with a half-built or completed build, on next open the
         // game will auto-claim (if complete) or silently drop progress.
         buildWindowKey: null,
+        // One-shot migration flags. Used to fix locks left behind by the
+        // pre-v113 inline-button bug where claims never reached the bot.
+        migratedV113: false,
         bonusPoints: 0,
         inventory: [],
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
@@ -1420,6 +1423,21 @@ function init() {
     // Clamp any oversaved tickets from before the cap was introduced
     if (!IS_ADMIN && state.tickets > MAX_TICKETS) {
         state.tickets = MAX_TICKETS;
+        saveState();
+    }
+
+    // ONE-SHOT MIGRATION: clear stale lockouts inherited from the
+    // pre-v113 inline-button bug. Before v113 the WebApp launched from an
+    // inline keyboard button, which silently dropped sendData — so every
+    // tier claim "succeeded" locally (lockout set, build reset) but never
+    // reached the bot. Any lockout still in localStorage at this point is
+    // a phantom — drop it once and refill tickets.
+    if (!state.migratedV113) {
+        if (state.lockedUntilWindow) {
+            state.lockedUntilWindow = null;
+            state.lastRefillStamp = null; // force a fresh ticket refill below
+        }
+        state.migratedV113 = true;
         saveState();
     }
 
