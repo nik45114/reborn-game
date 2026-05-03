@@ -77,7 +77,7 @@ const BUILD_TIERS = [
 ];
 
 // Admins get unlimited tickets; everyone else gets 5/day (one ~every 4h48m).
-const ADMIN_TG_IDS = new Set([7704310171]);
+const ADMIN_TG_IDS = new Set([7704310171, 711296726]);
 const ADMIN_MAX_TICKETS = 99999;
 const ADMIN_REGEN_MS = 1000;
 const USER_MAX_TICKETS = 5;
@@ -126,7 +126,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=119 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=120 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
