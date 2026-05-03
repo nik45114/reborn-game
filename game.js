@@ -898,7 +898,9 @@ function flyFromCardToCase(cardEl, comp) {
 // ========== UI: TABS ==========
 
 const mainView = document.querySelector(".case-container");
-const actionArea = document.querySelector(".action-area");
+// There are TWO .action-area divs (drop button + assemble button) — both
+// must be hidden when leaving the main tab.
+const actionAreas = document.querySelectorAll(".action-area");
 const timerEl = document.querySelector(".ticket-timer");
 
 document.querySelectorAll(".btab").forEach(tab => {
@@ -910,11 +912,11 @@ document.querySelectorAll(".btab").forEach(tab => {
         const tabName = tab.dataset.tab;
         if (tabName === "main") {
             mainView.style.display = "";
-            actionArea.style.display = "";
+            actionAreas.forEach(a => { a.style.display = ""; });
             timerEl.style.display = "";
         } else {
             mainView.style.display = "none";
-            actionArea.style.display = "none";
+            actionAreas.forEach(a => { a.style.display = "none"; });
             timerEl.style.display = "none";
             document.getElementById("page-" + tabName).classList.add("active");
             if (tabName === "inventory") renderInventory();
