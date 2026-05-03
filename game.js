@@ -992,21 +992,43 @@ function renderInventoryList() {
     const current = state.currentBuild[invActiveCategory];
 
     if (!items.length) {
-        list.innerHTML = `<div class="inv-empty">Нет деталей: ${cat.name}. Выбивайте! 📦</div>`;
+        list.innerHTML = `
+            <div style="text-align:center;padding:40px 20px;border:2px dashed rgba(255,255,255,0.08);border-radius:14px;margin-top:8px">
+                <div style="font-size:48px;margin-bottom:10px;opacity:.5">${cat.icon}</div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:6px">Нет деталей: ${cat.name}</div>
+                <div style="font-size:12px;color:var(--text2)">Открой вкладку «🖥 Сборка» и тапай «📦 Выбить деталь», чтобы наполнить склад.</div>
+            </div>
+        `;
         return;
     }
 
+    // Bigger, info-rich cards: rarity-colored border + filled rarity pill,
+    // prominent model name, large power readout, clear "in build" badge.
     list.innerHTML = items.map(item => {
         const rar = RARITIES[item.rarity];
         const inBuild = current && current.id === item.id;
+        const cardBg = inBuild
+            ? `linear-gradient(135deg, ${rar.color}33, var(--bg2))`
+            : item.rarity === "legendary"
+                ? "linear-gradient(135deg, #1a1000, var(--bg2))"
+                : "var(--bg2)";
         return `
-            <div class="inv-item ${item.rarity} ${inBuild ? 'equipped' : ''}" data-item-id="${item.id}">
-                <div class="inv-item-icon">${cat.icon}</div>
-                <div class="inv-item-info">
-                    <div class="inv-item-name" style="color:${rar.color}">${item.model}</div>
-                    <div class="inv-item-type">${rar.name} · ⚡${item.power}${inBuild ? " · 🖥 в сборке" : ""}</div>
+            <div class="inv-item ${item.rarity} ${inBuild ? 'equipped' : ''}" data-item-id="${item.id}"
+                 style="background:${cardBg};border-radius:14px;border-left:4px solid ${rar.color};padding:14px 14px;display:flex;align-items:center;gap:14px;cursor:${inBuild ? 'default' : 'pointer'};transition:transform .12s">
+                <div style="font-size:36px;min-width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border-radius:10px">
+                    ${cat.icon}
                 </div>
-                <div class="inv-item-action">${inBuild ? "✓" : "⬅️"}</div>
+                <div style="flex:1;min-width:0">
+                    <div style="font-size:15px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.model}</div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
+                        <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:${rar.color};color:#000">${rar.name}</span>
+                        ${inBuild ? `<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:rgba(34,197,94,0.18);color:#22c55e">🖥 в сборке</span>` : ""}
+                    </div>
+                </div>
+                <div style="text-align:right;min-width:60px">
+                    <div style="font-size:20px;font-weight:800;color:${rar.color};line-height:1">⚡${item.power}</div>
+                    <div style="font-size:10px;color:var(--text2);margin-top:2px">мощность</div>
+                </div>
             </div>
         `;
     }).join("");
