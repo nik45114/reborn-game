@@ -126,7 +126,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=117 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=118 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -984,6 +984,15 @@ function renderInvTabs() {
 
 function renderInventoryList() {
     const list = document.getElementById("inventory-list");
+    try {
+        return _renderInventoryListImpl(list);
+    } catch (e) {
+        list.innerHTML = `<div style="padding:16px;color:#f87171;font-size:13px">⚠️ Ошибка отрисовки: ${(e && e.message) || e}</div>`;
+        console.error("renderInventoryList:", e);
+    }
+}
+
+function _renderInventoryListImpl(list) {
     const items = state.inventory.filter(i => i.category === invActiveCategory);
     const rarOrder = { legendary: 0, epic: 1, rare: 2, common: 3 };
     items.sort((a, b) => rarOrder[a.rarity] - rarOrder[b.rarity] || b.power - a.power);
@@ -1005,7 +1014,10 @@ function renderInventoryList() {
     // Bigger, info-rich cards: rarity-colored border + filled rarity pill,
     // prominent model name, large power readout, clear "in build" badge.
     list.innerHTML = items.map(item => {
-        const rar = RARITIES[item.rarity];
+        // Defensive: legacy saves can carry rarities (e.g. "uncommon") that
+        // the current RARITIES table no longer defines. Fall back so the
+        // whole list doesn't blow up on a single bad item.
+        const rar = RARITIES[item.rarity] || RARITIES.common;
         const inBuild = current && current.id === item.id;
         const cardBg = inBuild
             ? `linear-gradient(135deg, ${rar.color}33, var(--bg2))`
