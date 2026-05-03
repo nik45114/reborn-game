@@ -126,7 +126,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=118 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=119 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -961,19 +961,28 @@ let invActiveCategory = "cpu";
 
 function renderInvTabs() {
     const tabsEl = document.getElementById("inv-tabs");
+    tabsEl.style.cssText = "display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px";
     const catKeys = Object.keys(CATEGORIES);
     tabsEl.innerHTML = catKeys.map(key => {
         const cat = CATEGORIES[key];
         const count = state.inventory.filter(i => i.category === key).length;
         const isActive = key === invActiveCategory;
-        return `<button class="inv-tab ${isActive ? 'active' : ''}" data-cat="${key}">
-            <span class="inv-tab-icon">${cat.icon}</span>
-            <span class="inv-tab-name">${cat.name}</span>
-            ${count > 0 ? `<span class="inv-tab-count">${count}</span>` : ''}
-        </button>`;
+        const bg = isActive ? "var(--accent)" : "var(--bg2)";
+        const fg = isActive ? "#0a0a0a" : "#fff";
+        const sub = isActive ? "rgba(0,0,0,0.55)" : "var(--text2)";
+        const border = isActive ? "transparent" : "rgba(255,255,255,0.06)";
+        return `
+            <button class="invtab2 ${isActive ? 'invtab2-active' : ''}" data-cat="${key}"
+                    style="background:${bg};color:${fg};border:1px solid ${border};border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-family:inherit;position:relative;min-height:78px">
+                <span style="font-size:24px;line-height:1">${cat.icon}</span>
+                <span style="font-size:12px;font-weight:700;line-height:1.1;text-align:center">${cat.name}</span>
+                <span style="font-size:11px;color:${sub};font-weight:600">${count} шт.</span>
+                ${count > 0 ? `<span style="position:absolute;top:6px;right:8px;background:${isActive ? '#0a0a0a' : 'var(--accent)'};color:${isActive ? 'var(--accent)' : '#0a0a0a'};font-size:10px;font-weight:800;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center">${count}</span>` : ''}
+            </button>
+        `;
     }).join("");
 
-    tabsEl.querySelectorAll(".inv-tab").forEach(btn => {
+    tabsEl.querySelectorAll(".invtab2").forEach(btn => {
         btn.addEventListener("click", () => {
             invActiveCategory = btn.dataset.cat;
             renderInvTabs();
