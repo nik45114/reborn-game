@@ -126,7 +126,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=116 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=117 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1013,28 +1013,28 @@ function renderInventoryList() {
                 ? "linear-gradient(135deg, #1a1000, var(--bg2))"
                 : "var(--bg2)";
         return `
-            <div class="inv-item ${item.rarity} ${inBuild ? 'equipped' : ''}" data-item-id="${item.id}"
-                 style="background:${cardBg};border-radius:14px;border-left:4px solid ${rar.color};padding:14px 14px;display:flex;align-items:center;gap:14px;cursor:${inBuild ? 'default' : 'pointer'};transition:transform .12s">
-                <div style="font-size:36px;min-width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border-radius:10px">
+            <div class="invcard2 ${inBuild ? 'invcard2-eq' : ''}" data-item-id="${item.id}"
+                 style="background:${cardBg};border-radius:16px;border:2px solid ${rar.color};padding:16px;display:flex;align-items:center;gap:14px;cursor:${inBuild ? 'default' : 'pointer'};margin:8px 0;box-shadow:0 2px 12px ${rar.color}22">
+                <div style="font-size:42px;min-width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:${rar.color}22;border-radius:12px;border:1px solid ${rar.color}55">
                     ${cat.icon}
                 </div>
                 <div style="flex:1;min-width:0">
-                    <div style="font-size:15px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.model}</div>
-                    <div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap">
-                        <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:${rar.color};color:#000">${rar.name}</span>
-                        ${inBuild ? `<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:rgba(34,197,94,0.18);color:#22c55e">🖥 в сборке</span>` : ""}
+                    <div style="font-size:16px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px">${item.model}</div>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:${rar.color};color:#000;text-transform:uppercase;letter-spacing:.3px">${rar.name}</span>
+                        ${inBuild ? `<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:#22c55e;color:#000">🖥 В СБОРКЕ</span>` : ""}
                     </div>
                 </div>
-                <div style="text-align:right;min-width:60px">
-                    <div style="font-size:20px;font-weight:800;color:${rar.color};line-height:1">⚡${item.power}</div>
-                    <div style="font-size:10px;color:var(--text2);margin-top:2px">мощность</div>
+                <div style="text-align:center;min-width:62px;padding-left:6px;border-left:1px solid rgba(255,255,255,0.08)">
+                    <div style="font-size:22px;font-weight:900;color:${rar.color};line-height:1">${item.power}</div>
+                    <div style="font-size:10px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px">⚡ мощн.</div>
                 </div>
             </div>
         `;
     }).join("");
 
     // Click to equip
-    list.querySelectorAll(".inv-item:not(.equipped)").forEach(el => {
+    list.querySelectorAll(".invcard2:not(.invcard2-eq)").forEach(el => {
         el.addEventListener("click", () => {
             const itemId = parseFloat(el.dataset.itemId);
             const item = state.inventory.find(i => i.id === itemId);
