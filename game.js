@@ -126,7 +126,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=120 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=121 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -152,6 +152,9 @@ function defaultState() {
         // One-shot migration flags. Used to fix locks left behind by the
         // pre-v113 inline-button bug where claims never reached the bot.
         migratedV113: false,
+        // Last consumed bot grant signature ("YYYY-MM-DD:N") so we credit
+        // each ?bonus_tickets= payload at most once.
+        lastClubPlayGrant: null,
         bonusPoints: 0,
         inventory: [],
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
@@ -1529,6 +1532,27 @@ function init() {
         saveState();
     }
     state.migratedV113 = true;
+
+    // Consume bonus tickets the bot owes us for real club play. The bot
+    // signs the URL with `bonus_tickets=N&grant_date=YYYY-MM-DD`; we apply
+    // each (date, N) pair exactly once by remembering the last-credited
+    // grant signature in localStorage.
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const bonus = parseInt(params.get("bonus_tickets") || "0", 10);
+        const grantDate = params.get("grant_date");
+        if (bonus > 0 && grantDate) {
+            const grantKey = `${grantDate}:${bonus}`;
+            if (state.lastClubPlayGrant !== grantKey && !IS_ADMIN) {
+                state.tickets = (state.tickets || 0) + bonus;
+                state.lastClubPlayGrant = grantKey;
+                saveState();
+                setTimeout(() => {
+                    alert(`🎮 +${bonus} купон(а) за игру в клубе сегодня!\nЗаработано в реальной игре, можно тратить тут.`);
+                }, 400);
+            }
+        }
+    } catch (e) {}
 
     if (!IS_ADMIN) {
         const cwk = currentWindowKey();
