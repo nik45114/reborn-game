@@ -76,15 +76,20 @@ const BUILD_TIERS = [
     { name: "Ultimate ПК",     stars: 5, minPower: 600, bonus: 350, emoji: "👑" }
 ];
 
-// Admins get unlimited tickets; everyone else gets 5/day (one ~every 4h48m).
+// Admins get unlimited tickets; everyone else gets +5 ingame coupons every
+// day at 12:00 МСК that ACCUMULATE within the current bonus window
+// (1–14 / 15–end of month). Whatever didn't get spent is wiped at the
+// window boundary, so people can stockpile up to ~14 × 5 = 70 + initial 5
+// tickets if they grind right before window-end.
 const ADMIN_TG_IDS = new Set([7704310171, 711296726, 5046401423]);
 const ADMIN_MAX_TICKETS = 99999;
 const ADMIN_REGEN_MS = 1000;
-const USER_MAX_TICKETS = 5;
+const USER_MAX_TICKETS = 5;            // daily noon allotment (additive)
+const USER_TICKET_CAP = 100;           // hard cap on accumulated stash
 const USER_REGEN_MS = Math.floor(24 * 60 * 60 * 1000 / USER_MAX_TICKETS);
 
 let IS_ADMIN = false;
-let MAX_TICKETS = USER_MAX_TICKETS;
+let MAX_TICKETS = USER_TICKET_CAP;
 let TICKET_REGEN_MS = USER_REGEN_MS;
 
 function detectAdmin() {
@@ -113,7 +118,7 @@ function detectAdmin() {
 
 function applyTier() {
     IS_ADMIN = detectAdmin();
-    MAX_TICKETS = IS_ADMIN ? ADMIN_MAX_TICKETS : USER_MAX_TICKETS;
+    MAX_TICKETS = IS_ADMIN ? ADMIN_MAX_TICKETS : USER_TICKET_CAP;
     TICKET_REGEN_MS = IS_ADMIN ? ADMIN_REGEN_MS : USER_REGEN_MS;
 
     // Surface tier + raw user.id in the bottom-right version badge so we can
@@ -126,7 +131,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=122 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=123 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -149,6 +154,9 @@ function defaultState() {
         // boundary with a half-built or completed build, on next open the
         // game will auto-claim (if complete) or silently drop progress.
         buildWindowKey: null,
+        // Last bonus window we saw the player in. When this stops matching
+        // currentWindowKey() we wipe any unspent accumulated tickets.
+        lastSeenWindow: null,
         // One-shot migration flags. Used to fix locks left behind by the
         // pre-v113 inline-button bug where claims never reached the bot.
         migratedV113: false,
@@ -283,9 +291,24 @@ function regenTickets() {
         // window boundary at 00:00 МСК.
         return;
     }
+    // Wipe accumulated tickets at every bonus-window boundary (15-th / 1-st
+    // 00:00 МСК). Whatever the player didn't spend is gone — fresh start.
+    // Skip the wipe on first ever load (lastSeenWindow == null) so existing
+    // players don't lose their tickets when this version rolls out.
+    const cwk = currentWindowKey();
+    if (state.lastSeenWindow == null) {
+        state.lastSeenWindow = cwk;
+        saveState();
+    } else if (state.lastSeenWindow !== cwk) {
+        state.lastSeenWindow = cwk;
+        state.tickets = 0;
+        state.lastRefillStamp = null; // force a fresh refill below
+        saveState();
+    }
+    // Daily refill: accumulate +5 per missed day, capped at USER_TICKET_CAP.
     const stamp = currentRefillStamp();
     if (state.lastRefillStamp !== stamp) {
-        state.tickets = USER_MAX_TICKETS;
+        state.tickets = Math.min(USER_TICKET_CAP, (state.tickets || 0) + USER_MAX_TICKETS);
         state.lastRefillStamp = stamp;
         state.lastTicketTime = Date.now();
         saveState();
@@ -317,7 +340,7 @@ function updateTicketTimer() {
     const remaining = msUntilNextRefill();
     const hrs = Math.floor(remaining / 3600000);
     const min = Math.floor((remaining % 3600000) / 60000);
-    el.textContent = `Следующие 5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м)`;
+    el.textContent = `+5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м) — копятся до ${USER_TICKET_CAP}`;
 }
 
 // ========== DROP ==========
