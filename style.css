@@ -1179,7 +1179,7 @@ body {
     text-align: center;
 }
 
-/* ===== PLAYER-FACING POLISH v131 ===== */
+/* ===== PLAYER-FACING POLISH v132 ===== */
 :root {
     --bg: #070808;
     --bg2: #111413;
@@ -1335,10 +1335,6 @@ body::before {
 .action-area {
     margin-top: 7px;
     padding: 0 12px;
-}
-
-.case-container > .action-area {
-    margin-top: clamp(28px, 5vh, 44px);
 }
 
 .btn-drop,
