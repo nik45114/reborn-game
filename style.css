@@ -1179,7 +1179,7 @@ body {
     text-align: center;
 }
 
-/* ===== PLAYER-FACING POLISH v124 ===== */
+/* ===== PLAYER-FACING POLISH v125 ===== */
 :root {
     --bg: #070808;
     --bg2: #111413;
@@ -1187,8 +1187,8 @@ body {
     --text: #f4f7f5;
     --text2: #9aa4a0;
     --accent: #f7f8ef;
-    --accent2: #9ce8d5;
-    --cyan: #38d8c6;
+    --accent2: #d6d0c2;
+    --hot: #ef4444;
     --gold: #f6b84b;
     --line: rgba(255, 255, 255, 0.12);
     --line-strong: rgba(255, 255, 255, 0.22);
@@ -1242,7 +1242,7 @@ body::before {
 
 .header-title {
     font-size: 14px;
-    background: linear-gradient(90deg, #ffffff 0%, #baf9eb 46%, #f7d38a 100%);
+    background: linear-gradient(90deg, #ffffff 0%, #e8e1d4 54%, #f7d38a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     min-width: 0;
@@ -1285,10 +1285,10 @@ body::before {
 
 .pc-scene::before {
     background:
-        linear-gradient(90deg, transparent, rgba(56,216,198,0.08), transparent),
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 8px);
-    opacity: 0.55;
-    mix-blend-mode: screen;
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.035), transparent),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 8px);
+    opacity: 0.28;
+    mix-blend-mode: soft-light;
 }
 
 .pc-scene::after {
@@ -1304,21 +1304,21 @@ body::before {
 }
 
 .pc-bg-image {
-    filter: saturate(1.06) contrast(1.03);
+    filter: contrast(1.04) brightness(0.98);
 }
 
-.pc-case-area.tier-1 .pc-bg-image { filter: saturate(1.03) contrast(1.02); }
-.pc-case-area.tier-2 .pc-bg-image { filter: saturate(1.08) contrast(1.03); }
-.pc-case-area.tier-3 .pc-bg-image { filter: saturate(1.16) brightness(1.04) contrast(1.04); }
-.pc-case-area.tier-4 .pc-bg-image { filter: saturate(1.24) brightness(1.07) contrast(1.05); }
-.pc-case-area.tier-5 .pc-bg-image { filter: saturate(1.3) brightness(1.1) contrast(1.06); }
+.pc-case-area.tier-1 .pc-bg-image { filter: contrast(1.04) brightness(0.98); }
+.pc-case-area.tier-2 .pc-bg-image { filter: contrast(1.05) brightness(1); }
+.pc-case-area.tier-3 .pc-bg-image { filter: contrast(1.06) brightness(1.03); }
+.pc-case-area.tier-4 .pc-bg-image { filter: contrast(1.07) brightness(1.05); }
+.pc-case-area.tier-5 .pc-bg-image { filter: contrast(1.08) brightness(1.08); }
 
 .case-glow {
     z-index: 4;
     background:
-        linear-gradient(110deg, transparent 0%, rgba(56,216,198,0.08) 36%, transparent 58%),
-        linear-gradient(180deg, transparent 45%, rgba(246,184,75,0.08) 100%);
-    opacity: 0.75;
+        linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.045) 36%, transparent 58%),
+        linear-gradient(180deg, transparent 45%, rgba(246,184,75,0.055) 100%);
+    opacity: 0.42;
 }
 
 .pc-case-area.tier-3 .case-glow,
@@ -1328,8 +1328,8 @@ body::before {
 }
 
 @keyframes caseBreath {
-    0%, 100% { opacity: 0.55; filter: saturate(1); }
-    50% { opacity: 0.92; filter: saturate(1.35); }
+    0%, 100% { opacity: 0.32; }
+    50% { opacity: 0.58; }
 }
 
 .action-area {
@@ -1351,13 +1351,13 @@ body::before {
 .btn-drop {
     min-height: 68px;
     padding: 12px 15px;
-    border: 1px solid rgba(56,216,198,0.55);
+    border: 1px solid rgba(255,255,255,0.22);
     border-radius: 18px;
     background:
-        linear-gradient(135deg, rgba(56,216,198,0.22) 0%, rgba(17,20,19,0.95) 46%, rgba(246,184,75,0.18) 100%);
+        linear-gradient(135deg, rgba(255,255,255,0.09) 0%, rgba(17,20,19,0.96) 48%, rgba(246,184,75,0.18) 100%);
     box-shadow:
         0 14px 34px rgba(0,0,0,0.32),
-        0 0 24px rgba(56,216,198,0.14),
+        0 0 24px rgba(246,184,75,0.10),
         inset 0 1px 0 rgba(255,255,255,0.13);
     z-index: 0;
     animation: dropButtonBreath 2.8s ease-in-out infinite;
@@ -1403,7 +1403,7 @@ body::before {
 }
 
 @keyframes dropButtonBreath {
-    0%, 100% { box-shadow: 0 14px 34px rgba(0,0,0,0.32), 0 0 18px rgba(56,216,198,0.12), inset 0 1px 0 rgba(255,255,255,0.13); }
+    0%, 100% { box-shadow: 0 14px 34px rgba(0,0,0,0.32), 0 0 18px rgba(246,184,75,0.09), inset 0 1px 0 rgba(255,255,255,0.13); }
     50% { box-shadow: 0 16px 38px rgba(0,0,0,0.36), 0 0 30px rgba(246,184,75,0.18), inset 0 1px 0 rgba(255,255,255,0.18); }
 }
 
@@ -1429,7 +1429,7 @@ body::before {
 }
 
 .btn-drop-sub {
-    color: #bdf6e9;
+    color: #ead5a7;
 }
 
 .btn-assemble {
@@ -1544,7 +1544,7 @@ body::before {
     border-radius: 28px;
     background:
         linear-gradient(180deg, rgba(255,255,255,0.085), rgba(255,255,255,0.035)),
-        linear-gradient(135deg, rgba(56,216,198,0.08), rgba(246,184,75,0.05));
+        linear-gradient(135deg, rgba(255,255,255,0.035), rgba(246,184,75,0.055), rgba(239,68,68,0.025));
     box-shadow: var(--panel-shadow), inset 0 1px 0 rgba(255,255,255,0.14);
     isolation: isolate;
     animation: dropAppear 0.48s cubic-bezier(0.2, 0.9, 0.22, 1.12);
@@ -1614,14 +1614,14 @@ body::before {
 .daily-btn {
     min-width: 190px;
     border-radius: 15px;
-    background: linear-gradient(135deg, #f7f8ef, #bdf6e9 58%, #f7d38a);
+    background: linear-gradient(135deg, #f7f8ef, #e9e2d5 58%, #f7d38a);
     box-shadow: 0 14px 26px rgba(0,0,0,0.28);
 }
 
 .flying-comp {
     filter:
         drop-shadow(0 0 16px rgba(255,255,255,0.65))
-        drop-shadow(0 0 28px rgba(56,216,198,0.22));
+        drop-shadow(0 0 28px rgba(246,184,75,0.16));
 }
 
 .bottom-tabs {
@@ -1649,9 +1649,9 @@ body::before {
 }
 
 .btab.active {
-    background: linear-gradient(135deg, #f7f8ef, #bdf6e9);
+    background: linear-gradient(135deg, #f7f8ef, #e6dfd0);
     color: #07100e;
-    box-shadow: 0 8px 20px rgba(56,216,198,0.16);
+    box-shadow: 0 8px 20px rgba(246,184,75,0.12);
 }
 
 .page {
@@ -1688,8 +1688,8 @@ body::before {
 }
 
 .build-progress-fill {
-    background: linear-gradient(90deg, var(--cyan), #eafaf4 52%, var(--gold));
-    box-shadow: 0 0 14px rgba(56,216,198,0.22);
+    background: linear-gradient(90deg, #f7f8ef, #f1c96a 56%, var(--hot));
+    box-shadow: 0 0 14px rgba(246,184,75,0.18);
 }
 
 .invtab2,
@@ -1724,7 +1724,7 @@ body::before {
 
 .daily-title,
 .recycle-title {
-    background: linear-gradient(90deg, #ffffff, #bdf6e9 52%, #f7d38a);
+    background: linear-gradient(90deg, #ffffff, #e8e1d4 52%, #f7d38a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -1737,7 +1737,7 @@ body::before {
 }
 
 .streak-dot.current {
-    box-shadow: 0 0 18px rgba(56,216,198,0.32);
+    box-shadow: 0 0 18px rgba(246,184,75,0.22);
 }
 
 .slot-popup {
