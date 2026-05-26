@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=125 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=126 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -563,26 +563,47 @@ function renderCase() {
     const grid = document.getElementById("comp-grid");
     if (grid) {
         const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "cool"];
-        grid.innerHTML = slotOrder.map(slot => {
+        const cards = slotOrder.map(slot => {
             const comp = state.currentBuild[slot];
             const cat = CATEGORIES[slot];
 
             if (comp) {
                 filledCount++;
                 const rar = RARITIES[comp.rarity];
+                const rarityNum = imgMap[comp.rarity] || imgMap.common;
+                const previewSrc = `preview-${slot}-${rarityNum}.png`;
                 return `
-                    <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}">
-                        <div class="comp-slot-icon">${cat.icon}</div>
-                        <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
-                        <div class="comp-slot-power" style="color:${rar.color}">⚡${comp.power}</div>
+                    <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}" style="--slot-color:${rar.color}">
+                        <div class="comp-slot-media">
+                            <div class="comp-slot-icon">${cat.icon}</div>
+                            <img class="comp-slot-img" src="${previewSrc}" alt="" onerror="this.remove()">
+                        </div>
+                        <div class="comp-slot-copy">
+                            <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                            <div class="comp-slot-model">${comp.model}</div>
+                        </div>
+                        <div class="comp-slot-power">⚡${comp.power}</div>
                     </div>`;
             }
             return `
                 <div class="comp-slot empty" data-slot="${slot}">
-                    <div class="comp-slot-icon">${cat.icon}</div>
-                    <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                    <div class="comp-slot-media">
+                        <div class="comp-slot-icon">${cat.icon}</div>
+                    </div>
+                    <div class="comp-slot-copy">
+                        <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                        <div class="comp-slot-model">Пустой слот</div>
+                    </div>
+                    <div class="comp-slot-add">+</div>
                 </div>`;
-        }).join("");
+        });
+        grid.innerHTML = `
+            <div class="comp-grid-head">
+                <span>Слоты сборки</span>
+                <strong>${filledCount}/6</strong>
+            </div>
+            ${cards.join("")}
+        `;
     }
 
     // Slot click — open slot inventory popup
