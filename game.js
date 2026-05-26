@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=133 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=135 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -565,7 +565,6 @@ function renderCase() {
         const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "cool"];
         const cards = slotOrder.map(slot => {
             const comp = state.currentBuild[slot];
-            const cat = CATEGORIES[slot];
 
             if (comp) {
                 filledCount++;
@@ -575,7 +574,7 @@ function renderCase() {
                 return `
                     <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}" style="--slot-color:${rar.color}">
                         <div class="comp-slot-media">
-                            <div class="comp-slot-icon">${cat.icon}</div>
+                            <div class="comp-slot-code">${SLOT_LABELS[slot]}</div>
                             <img class="comp-slot-img" src="${previewSrc}" alt="" onerror="this.remove()">
                         </div>
                         <div class="comp-slot-copy">
@@ -588,7 +587,7 @@ function renderCase() {
             return `
                 <div class="comp-slot empty" data-slot="${slot}">
                     <div class="comp-slot-media">
-                        <div class="comp-slot-icon">${cat.icon}</div>
+                        <div class="comp-slot-code">${SLOT_LABELS[slot]}</div>
                     </div>
                     <div class="comp-slot-copy">
                         <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
@@ -620,11 +619,11 @@ function renderCase() {
     // Assemble button — disabled if build incomplete OR player locked for this window
     const assembleBtn = document.getElementById("btn-assemble");
     assembleBtn.disabled = !isBuildComplete() || isLocked();
-    const assembleLabel = assembleBtn.querySelector("span");
+    const assembleLabel = assembleBtn.querySelector(".assemble-label") || assembleBtn.querySelector("span");
     if (assembleLabel) {
         assembleLabel.textContent = isBuildComplete()
-            ? "⚡ Собрать ПК"
-            : `⚡ Собрать ПК · ${filledCount}/6`;
+            ? "Собрать ПК"
+            : `Собрать ПК · ${filledCount}/6`;
     }
 
     document.getElementById("bonus-points").textContent = state.bonusPoints;
@@ -957,8 +956,7 @@ function flyFromCardToCase(cardEl, comp) {
 // ========== UI: TABS ==========
 
 const mainView = document.querySelector(".case-container");
-// There are TWO .action-area divs (drop button + assemble button) — both
-// must be hidden when leaving the main tab.
+// Legacy action areas may be absent after the control deck redesign.
 const actionAreas = document.querySelectorAll(".action-area");
 const timerEl = document.querySelector(".ticket-timer");
 

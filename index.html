@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=99">
+    <link rel="stylesheet" href="style.css?v=101">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -39,25 +39,29 @@
                 <div class="pc-desk"></div>
             </div>
 
-            <!-- Drop button under case image -->
-            <div class="action-area">
-                <button class="btn-drop" id="btn-drop">
-                    <span class="btn-drop-icon">📦</span>
-                    <span class="btn-drop-text">Выбить деталь</span>
-                    <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
-                </button>
+            <div class="main-control-deck">
+                <div class="deck-actions">
+                    <button class="btn-drop" id="btn-drop">
+                        <span class="btn-drop-icon">+</span>
+                        <span class="btn-drop-copy">
+                            <span class="btn-drop-kicker">Лут</span>
+                            <span class="btn-drop-text">Выбить</span>
+                        </span>
+                        <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
+                    </button>
+                    <button class="btn-assemble" id="btn-assemble" disabled>
+                        <span class="assemble-mark">⚡</span>
+                        <span class="assemble-label">Собрать ПК</span>
+                    </button>
+                </div>
+
+                <div class="deck-status">
+                    <div class="ticket-timer" id="ticket-timer"></div>
+                </div>
+
+                <!-- Components grid -->
+                <div class="comp-grid" id="comp-grid"></div>
             </div>
-            <div class="ticket-timer" id="ticket-timer"></div>
-
-            <!-- Components grid -->
-            <div class="comp-grid" id="comp-grid"></div>
-        </div>
-
-        <!-- Assemble -->
-        <div class="action-area">
-            <button class="btn-assemble" id="btn-assemble" disabled>
-                <span>⚡ Собрать ПК</span>
-            </button>
         </div>
 
         <!-- Bottom tabs -->
@@ -123,7 +127,7 @@
 
         <!-- Version + admin badge. Lives INSIDE #app so it's parsed before
              the scripts run; otherwise game.js's getElementById returns null. -->
-        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=133</div>
+        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=135</div>
     </div>
 
     <!-- Force-refetch on every load — Telegram WebView caches scripts very

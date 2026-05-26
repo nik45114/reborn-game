@@ -1179,7 +1179,7 @@ body {
     text-align: center;
 }
 
-/* ===== PLAYER-FACING POLISH v133 ===== */
+/* ===== PLAYER-FACING POLISH v135 ===== */
 :root {
     --bg: #070808;
     --bg2: #111413;
@@ -1265,6 +1265,32 @@ body::before {
 
 .case-container {
     padding-top: 0;
+}
+
+.main-control-deck {
+    position: relative;
+    z-index: 8;
+    margin: -28px 12px 0;
+    padding: 9px;
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 22px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045)),
+        rgba(8, 9, 9, 0.9);
+    box-shadow:
+        0 18px 42px rgba(0,0,0,0.38),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    backdrop-filter: blur(16px) saturate(1.08);
+}
+
+.deck-actions {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 7px;
+}
+
+.deck-status {
+    margin-top: 5px;
 }
 
 .pc-scene {
@@ -1950,15 +1976,15 @@ body::before {
 }
 
 .ticket-timer {
-    width: calc(100% - 28px);
-    margin-top: 4px;
+    width: 100%;
+    margin-top: 0;
     color: rgba(246,243,234,0.55);
     background: transparent;
 }
 
 .comp-grid {
     gap: 5px;
-    padding-top: 6px;
+    padding: 6px 0 0;
 }
 
 .comp-slot {
@@ -2120,6 +2146,294 @@ body::before {
     }
     .btn-drop {
         min-height: 50px;
+    }
+}
+
+/* ===== GAME SCREEN REDESIGN v135 ===== */
+:root {
+    --tabs-clearance: max(78px, calc(68px + env(safe-area-inset-bottom)));
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+#app {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-bottom: var(--tabs-clearance);
+}
+
+.case-container {
+    position: relative;
+    min-height: calc(100vh - 48px - var(--tabs-clearance));
+    min-height: calc(100svh - 48px - var(--tabs-clearance));
+    padding: 0;
+    overflow: hidden;
+}
+
+.pc-scene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.pc-scene::after {
+    background:
+        linear-gradient(180deg, rgba(0,0,0,0.04) 0%, transparent 24%, rgba(0,0,0,0.2) 52%, rgba(0,0,0,0.82) 100%);
+}
+
+.pc-case-area {
+    height: min(520px, calc(100% - 118px));
+}
+
+.pc-bg-image,
+.hw-layer {
+    height: 100%;
+    min-height: 0;
+    object-position: center 18%;
+}
+
+.main-control-deck {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    margin: 0;
+    padding: 8px;
+    border-radius: 20px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.035)),
+        rgba(7, 8, 8, 0.86);
+    box-shadow:
+        0 18px 48px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.deck-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.btn-drop,
+.btn-assemble {
+    min-height: 46px;
+    padding: 6px 8px;
+    border-radius: 14px;
+}
+
+.btn-drop {
+    gap: 8px;
+    background: linear-gradient(135deg, #f8f2df 0%, #e5d9bd 52%, #b88942 100%);
+}
+
+.btn-drop-icon,
+.assemble-mark {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 950;
+}
+
+.btn-drop-copy {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    line-height: 1;
+}
+
+.btn-drop-kicker {
+    color: rgba(18,16,13,0.52);
+    font-size: 8px;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.btn-drop-text {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.btn-drop-sub {
+    max-width: 74px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 4px 6px;
+    font-size: 9px;
+}
+
+.btn-assemble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: #ecfff8;
+}
+
+.assemble-mark {
+    background: rgba(255,255,255,0.1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
+}
+
+.assemble-label {
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.05;
+}
+
+.deck-status {
+    min-height: 12px;
+    margin: 4px 2px 0;
+}
+
+.ticket-timer {
+    padding: 0;
+    font-size: 9.5px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comp-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 4px;
+    padding: 7px 0 0;
+}
+
+.comp-slot {
+    height: 44px;
+    display: grid;
+    grid-template-rows: 25px 1fr;
+    justify-items: center;
+    align-items: center;
+    gap: 0;
+    padding: 4px 3px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.comp-slot-media {
+    width: 100%;
+    min-width: 0;
+    height: 25px;
+    border: 0;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.055);
+}
+
+.comp-slot-img {
+    inset: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+}
+
+.comp-slot-code {
+    color: rgba(246,243,234,0.48);
+    font-size: 8px;
+    font-weight: 950;
+    line-height: 1;
+}
+
+.comp-slot.filled .comp-slot-code {
+    opacity: 0;
+}
+
+.comp-slot-copy {
+    width: 100%;
+    padding: 0;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.comp-slot.empty {
+    grid-template-rows: 1fr;
+}
+
+.comp-slot.empty .comp-slot-media {
+    height: 100%;
+}
+
+.comp-slot.empty .comp-slot-copy {
+    display: none;
+}
+
+.comp-slot-name {
+    font-size: 8px;
+    line-height: 1;
+    text-align: center;
+}
+
+.comp-slot-model {
+    display: none;
+}
+
+.comp-slot-power,
+.comp-slot-add {
+    top: -3px;
+    right: -3px;
+    min-width: 18px;
+    padding: 2px 4px;
+    font-size: 7.5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.24);
+}
+
+.comp-slot-add {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 380px) {
+    .main-control-deck {
+        left: 8px;
+        right: 8px;
+        padding: 7px;
+    }
+
+    .deck-actions {
+        gap: 5px;
+    }
+
+    .btn-drop,
+    .btn-assemble {
+        min-height: 44px;
+        padding-inline: 7px;
+    }
+
+    .btn-drop-icon,
+    .assemble-mark {
+        width: 25px;
+        height: 25px;
+        min-width: 25px;
+        font-size: 16px;
+    }
+
+    .btn-drop-text {
+        font-size: 14px;
+    }
+
+    .assemble-label {
+        font-size: 12px;
+    }
+
+    .comp-grid {
+        gap: 3px;
+    }
+
+    .comp-slot {
+        height: 42px;
+        padding-inline: 2px;
     }
 }
 
