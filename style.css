@@ -1179,7 +1179,7 @@ body {
     text-align: center;
 }
 
-/* ===== PLAYER-FACING POLISH v126 ===== */
+/* ===== PLAYER-FACING POLISH v127 ===== */
 :root {
     --bg: #070808;
     --bg2: #111413;
@@ -1217,7 +1217,7 @@ body::before {
 
 #app {
     position: relative;
-    width: min(100%, 520px);
+    width: min(100%, 430px);
     margin: 0 auto;
     background:
         linear-gradient(180deg, rgba(18, 21, 20, 0.96) 0%, #090a0a 46%, #050606 100%);
@@ -1298,7 +1298,7 @@ body::before {
 
 .pc-bg-image,
 .hw-layer {
-    height: clamp(330px, 50vh, 460px);
+    height: clamp(285px, 43vh, 390px);
     min-height: 0;
     object-position: center 18%;
 }
@@ -1452,9 +1452,9 @@ body::before {
 
 .comp-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    padding: 10px 14px 4px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px 12px 2px;
 }
 
 .comp-grid-head {
@@ -1462,16 +1462,16 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 2px;
+    margin-bottom: 0;
     padding: 0 2px;
     color: rgba(255,255,255,0.76);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.2px;
 }
 
 .comp-grid-head strong {
-    padding: 3px 9px;
+    padding: 2px 8px;
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 999px;
     background: rgba(255,255,255,0.06);
@@ -1483,13 +1483,13 @@ body::before {
     position: relative;
     width: auto;
     min-width: 0;
-    height: 88px;
+    height: 62px;
     flex-direction: row;
     align-items: stretch;
     justify-content: flex-start;
-    gap: 8px;
-    padding: 8px;
-    border-radius: 16px;
+    gap: 5px;
+    padding: 6px;
+    border-radius: 12px;
     border: 1px solid var(--slot-color, rgba(255,255,255,0.13));
     background:
         radial-gradient(circle at 16% 18%, var(--slot-glow, rgba(255,255,255,0.07)), transparent 48%),
@@ -1507,7 +1507,7 @@ body::before {
     content: "";
     position: absolute;
     inset: 1px;
-    border-radius: 15px;
+    border-radius: 11px;
     border: 1px solid rgba(255,255,255,0.055);
     pointer-events: none;
 }
@@ -1530,10 +1530,10 @@ body::before {
 
 .comp-slot-media {
     position: relative;
-    width: 52px;
-    min-width: 52px;
+    width: 34px;
+    min-width: 34px;
     height: 100%;
-    border-radius: 13px;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1544,17 +1544,21 @@ body::before {
 
 .comp-slot-img {
     position: absolute;
-    inset: 5px;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
+    inset: 3px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
     object-fit: contain;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.4));
 }
 
 .comp-slot-icon {
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1;
     opacity: 0.78;
+}
+
+.comp-slot.filled .comp-slot-icon {
+    display: none;
 }
 
 .comp-slot-copy {
@@ -1563,14 +1567,14 @@ body::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
-    padding-right: 30px;
+    gap: 2px;
+    padding-right: 22px;
 }
 
 .comp-slot-name {
     max-width: 100%;
     color: var(--slot-color, rgba(255,255,255,0.82));
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 900;
     line-height: 1;
     letter-spacing: 0.2px;
@@ -1582,12 +1586,12 @@ body::before {
 .comp-slot-model {
     max-width: 100%;
     color: rgba(255,255,255,0.72);
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 650;
     line-height: 1.18;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
 
@@ -1598,23 +1602,23 @@ body::before {
 .comp-slot-power,
 .comp-slot-add {
     position: absolute;
-    right: 9px;
-    top: 8px;
+    right: 5px;
+    top: 5px;
     min-width: 28px;
-    padding: 3px 6px;
+    padding: 2px 5px;
     border-radius: 999px;
     background: var(--slot-chip, rgba(255,255,255,0.08));
     color: var(--slot-color, rgba(255,255,255,0.84));
     border: 1px solid var(--slot-line, rgba(255,255,255,0.12));
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
     line-height: 1;
     text-align: center;
 }
 
 .comp-slot-add {
-    width: 24px;
-    height: 24px;
+    width: 19px;
+    height: 19px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1655,22 +1659,6 @@ body::before {
     --slot-chip: rgba(245,158,11,0.16);
     --slot-glow: rgba(245,158,11,0.2);
     box-shadow: 0 0 24px rgba(245,158,11,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
-}
-
-@media (min-width: 460px) {
-    .comp-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .comp-slot {
-        height: 76px;
-    }
-    .comp-slot-media {
-        width: 46px;
-        min-width: 46px;
-    }
-    .comp-slot-model {
-        font-size: 10px;
-    }
 }
 
 .drop-overlay,
@@ -1782,7 +1770,7 @@ body::before {
     left: 50%;
     right: auto;
     bottom: max(8px, env(safe-area-inset-bottom));
-    width: min(calc(100% - 18px), 500px);
+    width: min(calc(100% - 18px), 412px);
     padding: 6px;
     border: 1px solid rgba(255,255,255,0.11);
     border-radius: 20px;
@@ -1914,30 +1902,30 @@ body::before {
     .stat { padding: 5px 7px; }
     .pc-bg-image,
     .hw-layer {
-        height: clamp(330px, 58vh, 520px);
+        height: clamp(270px, 42vh, 360px);
     }
     .comp-grid {
         gap: 6px;
         padding-inline: 9px;
     }
     .comp-slot {
-        height: 82px;
+        height: 58px;
         border-radius: 12px;
-        gap: 6px;
-        padding: 7px;
+        gap: 4px;
+        padding: 5px;
     }
     .comp-slot-media {
-        width: 44px;
-        min-width: 44px;
+        width: 30px;
+        min-width: 30px;
     }
     .comp-slot-name {
         font-size: 10px;
     }
     .comp-slot-model {
-        font-size: 10px;
+        font-size: 8.5px;
     }
     .bottom-tabs {
-        width: min(calc(100% - 12px), 500px);
+        width: min(calc(100% - 12px), 412px);
     }
     .btab {
         font-size: 12px;
