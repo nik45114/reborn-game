@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=127 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=129 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -349,7 +349,7 @@ function updateTicketTimer() {
     const remaining = msUntilNextRefill();
     const hrs = Math.floor(remaining / 3600000);
     const min = Math.floor((remaining % 3600000) / 60000);
-    el.textContent = `+5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м) — копятся до ${USER_TICKET_CAP}`;
+    el.textContent = `+5 в 12:00 МСК · через ${hrs}ч ${min.toString().padStart(2,"0")}м · до ${USER_TICKET_CAP}`;
 }
 
 // ========== DROP ==========
@@ -597,13 +597,7 @@ function renderCase() {
                     <div class="comp-slot-add">+</div>
                 </div>`;
         });
-        grid.innerHTML = `
-            <div class="comp-grid-head">
-                <span>Слоты сборки</span>
-                <strong>${filledCount}/6</strong>
-            </div>
-            ${cards.join("")}
-        `;
+        grid.innerHTML = cards.join("");
     }
 
     // Slot click — open slot inventory popup
@@ -624,7 +618,14 @@ function renderCase() {
     document.getElementById("build-progress").style.width = Math.min(100, (power / maxPower) * 100) + "%";
 
     // Assemble button — disabled if build incomplete OR player locked for this window
-    document.getElementById("btn-assemble").disabled = !isBuildComplete() || isLocked();
+    const assembleBtn = document.getElementById("btn-assemble");
+    assembleBtn.disabled = !isBuildComplete() || isLocked();
+    const assembleLabel = assembleBtn.querySelector("span");
+    if (assembleLabel) {
+        assembleLabel.textContent = isBuildComplete()
+            ? "⚡ Собрать ПК"
+            : `⚡ Собрать ПК · ${filledCount}/6`;
+    }
 
     document.getElementById("bonus-points").textContent = state.bonusPoints;
 }
