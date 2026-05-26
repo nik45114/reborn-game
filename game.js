@@ -9,6 +9,15 @@ const CATEGORIES = {
     cool: { name: "Охлаждение",   icon: "❄️" }
 };
 
+const SLOT_LABELS = {
+    cpu: "CPU",
+    gpu: "GPU",
+    ram: "RAM",
+    mb: "Плата",
+    psu: "БП",
+    cool: "Кулер"
+};
+
 const RARITIES = {
     common:    { name: "Обычная",    chance: 0.45, color: "#9ca3af", power: [10, 30] },
     rare:      { name: "Редкая",     chance: 0.30, color: "#3b82f6", power: [31, 60] },
@@ -131,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=123 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=124 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -564,12 +573,14 @@ function renderCase() {
                 return `
                     <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}">
                         <div class="comp-slot-icon">${cat.icon}</div>
+                        <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
                         <div class="comp-slot-power" style="color:${rar.color}">⚡${comp.power}</div>
                     </div>`;
             }
             return `
                 <div class="comp-slot empty" data-slot="${slot}">
                     <div class="comp-slot-icon">${cat.icon}</div>
+                    <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
                 </div>`;
         }).join("");
     }
