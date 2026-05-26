@@ -1179,7 +1179,7 @@ body {
     text-align: center;
 }
 
-/* ===== PLAYER-FACING POLISH v130 ===== */
+/* ===== PLAYER-FACING POLISH v131 ===== */
 :root {
     --bg: #070808;
     --bg2: #111413;
@@ -1298,7 +1298,7 @@ body::before {
 
 .pc-bg-image,
 .hw-layer {
-    height: clamp(285px, 43vh, 390px);
+    height: clamp(350px, 54vh, 500px);
     min-height: 0;
     object-position: center 18%;
 }
@@ -1880,7 +1880,7 @@ body::before {
     .stat { padding: 5px 7px; }
     .pc-bg-image,
     .hw-layer {
-        height: clamp(270px, 42vh, 360px);
+        height: clamp(330px, 50vh, 430px);
     }
     .comp-grid {
         gap: 4px;
