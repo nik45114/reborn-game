@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=101">
+    <link rel="stylesheet" href="style.css?v=102">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -43,10 +43,7 @@
                 <div class="deck-actions">
                     <button class="btn-drop" id="btn-drop">
                         <span class="btn-drop-icon">+</span>
-                        <span class="btn-drop-copy">
-                            <span class="btn-drop-kicker">Лут</span>
-                            <span class="btn-drop-text">Выбить</span>
-                        </span>
+                        <span class="btn-drop-text">Выбить</span>
                         <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
                     </button>
                     <button class="btn-assemble" id="btn-assemble" disabled>
@@ -127,7 +124,7 @@
 
         <!-- Version + admin badge. Lives INSIDE #app so it's parsed before
              the scripts run; otherwise game.js's getElementById returns null. -->
-        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=135</div>
+        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=136</div>
     </div>
 
     <!-- Force-refetch on every load — Telegram WebView caches scripts very

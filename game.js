@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=135 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=136 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -623,7 +623,7 @@ function renderCase() {
     if (assembleLabel) {
         assembleLabel.textContent = isBuildComplete()
             ? "Собрать ПК"
-            : `Собрать ПК · ${filledCount}/6`;
+            : `Собрать · ${filledCount}/6`;
     }
 
     document.getElementById("bonus-points").textContent = state.bonusPoints;
