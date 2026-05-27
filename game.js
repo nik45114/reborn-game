@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=138 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=139 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -584,6 +584,15 @@ function renderCase() {
         grid.innerHTML = cards.join("");
     }
 
+    const buildSummary = document.getElementById("build-summary");
+    const buildSummaryTitle = document.getElementById("build-summary-title");
+    const buildSummaryPower = document.getElementById("build-summary-power");
+    if (buildSummary && buildSummaryTitle && buildSummaryPower) {
+        buildSummaryTitle.textContent = `Сборка ${filledCount}/6`;
+        buildSummaryPower.textContent = `⚡${power}`;
+        buildSummary.classList.toggle("complete", isBuildComplete());
+    }
+
     // Slot click — open slot inventory popup
     if (grid) {
         grid.querySelectorAll(".comp-slot").forEach(el => {
@@ -944,9 +953,21 @@ const mainView = document.querySelector(".case-container");
 // Legacy action areas may be absent after the control deck redesign.
 const actionAreas = document.querySelectorAll(".action-area");
 const timerEl = document.querySelector(".ticket-timer");
+const buildSheet = document.getElementById("build-sheet");
+const buildSummary = document.getElementById("build-summary");
+const buildSheetClose = document.getElementById("build-sheet-close");
+
+function closeBuildSheet() {
+    if (buildSheet) buildSheet.classList.add("hidden");
+}
+
+function openBuildSheet() {
+    if (buildSheet) buildSheet.classList.remove("hidden");
+}
 
 document.querySelectorAll(".btab").forEach(tab => {
     tab.addEventListener("click", () => {
+        closeBuildSheet();
         document.querySelectorAll(".btab").forEach(t => t.classList.remove("active"));
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         tab.classList.add("active");
@@ -966,6 +987,20 @@ document.querySelectorAll(".btab").forEach(tab => {
         }
     });
 });
+
+if (buildSummary) {
+    buildSummary.addEventListener("click", openBuildSheet);
+}
+
+if (buildSheetClose) {
+    buildSheetClose.addEventListener("click", closeBuildSheet);
+}
+
+if (buildSheet) {
+    buildSheet.addEventListener("click", (e) => {
+        if (e.target === buildSheet) closeBuildSheet();
+    });
+}
 
 // ========== UI: DROP BUTTON ==========
 
