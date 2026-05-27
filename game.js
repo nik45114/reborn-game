@@ -18,15 +18,6 @@ const SLOT_LABELS = {
     cool: "Кулер"
 };
 
-const SLOT_CODES = {
-    cpu: "CPU",
-    gpu: "GPU",
-    ram: "RAM",
-    mb: "MB",
-    psu: "БП",
-    cool: "FAN"
-};
-
 const RARITIES = {
     common:    { name: "Обычная",    chance: 0.45, color: "#9ca3af", power: [10, 30] },
     rare:      { name: "Редкая",     chance: 0.30, color: "#3b82f6", power: [31, 60] },
@@ -149,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=137 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=138 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -578,31 +569,16 @@ function renderCase() {
             if (comp) {
                 filledCount++;
                 const rar = RARITIES[comp.rarity];
-                const rarityNum = imgMap[comp.rarity] || imgMap.common;
-                const previewSrc = `preview-${slot}-${rarityNum}.png`;
                 return `
                     <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}" style="--slot-color:${rar.color}">
-                        <div class="comp-slot-media">
-                            <div class="comp-slot-code">${SLOT_CODES[slot]}</div>
-                            <img class="comp-slot-img" src="${previewSrc}" alt="" onerror="this.remove()">
-                        </div>
-                        <div class="comp-slot-copy">
-                            <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
-                            <div class="comp-slot-model">${comp.model}</div>
-                        </div>
-                        <div class="comp-slot-power">${comp.power}</div>
+                        <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                        <div class="comp-slot-value">⚡${comp.power}</div>
                     </div>`;
             }
             return `
                 <div class="comp-slot empty" data-slot="${slot}">
-                    <div class="comp-slot-media">
-                        <div class="comp-slot-code">${SLOT_CODES[slot]}</div>
-                    </div>
-                    <div class="comp-slot-copy">
-                        <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
-                        <div class="comp-slot-model">Пустой слот</div>
-                    </div>
-                    <div class="comp-slot-add">+</div>
+                    <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                    <div class="comp-slot-value">пусто</div>
                 </div>`;
         });
         grid.innerHTML = cards.join("");
