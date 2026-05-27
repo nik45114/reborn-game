@@ -7429,6 +7429,116 @@ body {
     }
 }
 
+/* ===== ULTIMATE BUILD RESULT CLEAN v166 ===== */
+.ultimate-complete-panel {
+    width: min(100%, 286px);
+    margin: 0 auto 15px;
+    padding: 12px;
+    border: 1px solid rgba(227, 189, 98, 0.24);
+    border-radius: 22px;
+    display: grid;
+    gap: 10px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.026);
+    box-shadow:
+        0 14px 28px rgba(0,0,0,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.ultimate-complete-score {
+    min-height: 66px;
+    border: 1px solid rgba(227, 189, 98, 0.22);
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    gap: 3px;
+    background:
+        radial-gradient(circle at 50% 20%, rgba(227, 189, 98, 0.16), transparent 82px),
+        rgba(227, 189, 98, 0.045);
+}
+
+.ultimate-complete-score strong {
+    color: #ffe7a5;
+    font-size: 34px;
+    font-weight: 950;
+    line-height: 0.92;
+    text-shadow: 0 0 18px rgba(227, 189, 98, 0.18);
+}
+
+.ultimate-complete-score span {
+    color: rgba(255, 243, 220, 0.7);
+    font-size: 11px;
+    font-weight: 950;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.ultimate-complete-panel .ultimate-slot-chips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.ultimate-complete-panel .ultimate-slot-chips b {
+    height: 30px;
+    padding: 0 8px 0 22px;
+    border-color: rgba(227, 189, 98, 0.2);
+    border-radius: 10px;
+    justify-content: flex-start;
+    background: rgba(255,255,255,0.035);
+    color: rgba(255, 243, 220, 0.86);
+    font-size: 10px;
+    position: relative;
+}
+
+.ultimate-complete-panel .ultimate-slot-chips b::before {
+    left: 8px;
+    width: 8px;
+    height: 8px;
+    background: #36e796;
+}
+
+.ultimate-complete-panel .ultimate-slot-chips b::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 9px;
+    width: 3px;
+    height: 6px;
+    border: solid #0b2b1b;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+}
+
+@media (max-width: 380px) {
+    .ultimate-complete-panel {
+        width: min(100%, 296px);
+        padding: 10px;
+        gap: 8px;
+        border-radius: 20px;
+    }
+
+    .ultimate-complete-score {
+        min-height: 60px;
+        border-radius: 16px;
+    }
+
+    .ultimate-complete-score strong {
+        font-size: 31px;
+    }
+
+    .ultimate-complete-panel .ultimate-slot-chips {
+        gap: 5px;
+    }
+
+    .ultimate-complete-panel .ultimate-slot-chips b {
+        height: 28px;
+        padding-right: 5px;
+        font-size: 9px;
+    }
+}
+
 /* ===== RECYCLE IMAGE CLIPPING v160 ===== */
 .recycle-stack span,
 .recycle-dupe-images span,
