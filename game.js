@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=150 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=151 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1274,73 +1274,124 @@ function _myTgId() {
 
 async function renderRating() {
     const tiersEl = document.getElementById("rating-tiers");
-    tiersEl.innerHTML = `<div class="rating-loading" style="padding:12px;color:var(--text2);text-align:center">Загружаю рейтинг…</div>`;
+    const histEl = document.getElementById("builds-history");
+    tiersEl.innerHTML = `<section class="rating-panel rating-loading">Загружаю рейтинг...</section>`;
+    if (histEl) histEl.innerHTML = "";
 
     const data = await fetchRanking();
     const myId = _myTgId();
     const players = (data && Array.isArray(data.players)) ? data.players : [];
+    const escapeHtml = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[ch]);
+    const rub = (v) => Math.round(Number(v) || 0).toLocaleString("ru");
+    const pluralBuilds = (n) => {
+        const x = Math.abs(Number(n) || 0) % 100;
+        const y = x % 10;
+        if (x > 10 && x < 20) return "сборок";
+        if (y === 1) return "сборка";
+        if (y >= 2 && y <= 4) return "сборки";
+        return "сборок";
+    };
+    const buildText = (n) => `${Number(n) || 0} ${pluralBuilds(n)}`;
+    const isMyPlayer = (p) => myId != null && String(p.tg) === String(myId);
+    const rankTone = (rank) => rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "bronze" : "dark";
+    const rankLabel = (rank) => String(rank).padStart(2, "0");
 
     if (!players.length) {
         tiersEl.innerHTML = `
-            <div class="history-title" style="text-align:center;padding:14px">
-                🏆 Рейтинг игроков
-            </div>
-            <div class="history-empty" style="text-align:center;padding:14px;color:var(--text2)">
-                Пока никто не получил бонус. Будь первым!
-            </div>
+            <section class="rating-hero rating-empty-state">
+                <div class="rating-kicker">Рейтинг клуба</div>
+                <div class="rating-hero-title">Топ еще свободен</div>
+                <div class="rating-hero-sub">Собери первый ПК и забери верхнюю строку рейтинга.</div>
+            </section>
         `;
     } else {
-        const medal = (r) => r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : `<span style="opacity:.6">#${r}</span>`;
         const top = players.slice(0, 50);
-        let html = `<div class="history-title" style="padding:10px 12px;font-weight:700">🏆 Топ игроков по бонусам</div>`;
-        html += top.map(p => {
-            const isMe = myId && p.tg === myId;
-            const bg = isMe ? "background:rgba(245,158,11,0.15);border:1px solid #f59e0b" : "";
-            return `
-                <div class="history-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;margin:4px 0;${bg}">
-                    <div style="display:flex;gap:10px;align-items:center">
-                        <div style="font-size:16px;min-width:34px;text-align:center">${medal(p.rank)}</div>
-                        <div>
-                            <div style="font-weight:600">${p.name}${isMe ? " <span style=\"color:#f59e0b\">(ты)</span>" : ""}</div>
-                            <div style="font-size:11px;color:var(--text2)">${p.builds} сборок</div>
-                        </div>
-                    </div>
-                    <div style="text-align:right">
-                        <div style="color:var(--green);font-weight:700">+${p.total.toLocaleString("ru")} ₽</div>
-                    </div>
+        const totalPaid = players.reduce((sum, p) => sum + Number(p.total || 0), 0);
+        const topThree = top.slice(0, 3);
+        const rest = top.slice(3);
+        let html = `
+            <section class="rating-hero">
+                <div>
+                    <div class="rating-kicker">Рейтинг клуба</div>
+                    <div class="rating-hero-title">Топ по бонусам</div>
+                    <div class="rating-hero-sub">Кто чаще собирает ПК и забирает выплаты</div>
                 </div>
+                <div class="rating-hero-stats">
+                    <span><b>${players.length}</b><small>игроков</small></span>
+                    <span><b>+${rub(totalPaid)} ₽</b><small>бонусами</small></span>
+                </div>
+            </section>
+            <section class="rating-podium">
+        `;
+        html += topThree.map(p => {
+            const isMe = isMyPlayer(p);
+            const name = escapeHtml(p.name || "Игрок");
+            const rank = Number(p.rank) || 0;
+            return `
+                <article class="rating-podium-card rank-${rank} ${isMe ? "rating-me" : ""}">
+                    <div class="rating-rank-badge ${rankTone(rank)}">
+                        <b>${rankLabel(rank)}</b>
+                        <small>место</small>
+                    </div>
+                    <div class="rating-player-main">
+                        <div class="rating-player-name">${name}${isMe ? `<span class="rating-you">ты</span>` : ""}</div>
+                        <div class="rating-player-sub">${buildText(p.builds)}</div>
+                    </div>
+                    <div class="rating-player-money">+${rub(p.total)} ₽</div>
+                </article>
             `;
         }).join("");
+        html += `</section>`;
+        if (rest.length) {
+            html += `<section class="rating-list">`;
+            html += rest.map(p => {
+                const isMe = isMyPlayer(p);
+                const name = escapeHtml(p.name || "Игрок");
+                const rank = Number(p.rank) || 0;
+                return `
+                    <article class="rating-row ${isMe ? "rating-me" : ""}">
+                        <div class="rating-row-rank">${rankLabel(rank)}</div>
+                        <div class="rating-row-info">
+                            <div class="rating-player-name">${name}${isMe ? `<span class="rating-you">ты</span>` : ""}</div>
+                            <div class="rating-player-sub">${buildText(p.builds)}</div>
+                        </div>
+                        <div class="rating-player-money">+${rub(p.total)} ₽</div>
+                    </article>
+                `;
+            }).join("");
+            html += `</section>`;
+        }
         if (data && data.generated_at) {
             const ts = new Date(data.generated_at);
-            html += `<div style="text-align:center;color:var(--text2);font-size:11px;margin-top:6px">Обновлено: ${ts.toLocaleString("ru")}</div>`;
+            html += `<div class="rating-updated">Обновлено ${ts.toLocaleString("ru")}</div>`;
         }
         tiersEl.innerHTML = html;
     }
 
-    const histEl = document.getElementById("builds-history");
     const builds = state.buildsHistory || [];
     if (!builds.length) {
         histEl.innerHTML = `
-            <div class="history-title" style="margin-top:14px">📜 Твои сборки</div>
-            <div class="history-empty">Ещё ни одной — собирай!</div>
+            <section class="my-builds-panel">
+                <div class="rating-section-title">
+                    <span>Твои сборки</span>
+                    <small>0 сборок</small>
+                </div>
+                <div class="rating-empty-card">Здесь появятся твои собранные ПК и сумма бонусов.</div>
+            </section>
         `;
         return;
     }
 
-    // Aggregate by tier so the player gets a quick at-a-glance summary
-    // without scrolling — full chronological list moves into a collapsible.
-    const tierEmojis = { 1: "🖨", 2: "🏠", 3: "🎮", 4: "🔥", 5: "👑" };
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     const sums = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     let totalBonus = 0;
-    let maxStars = 0;
     for (const b of builds) {
-        const s = b.stars || 1;
+        const s = Math.max(1, Math.min(5, Number(b.stars) || 1));
         counts[s] = (counts[s] || 0) + 1;
         sums[s] = (sums[s] || 0) + (b.bonus || 0);
         totalBonus += b.bonus || 0;
-        if (s > maxStars) maxStars = s;
     }
 
     let cards = "";
@@ -1349,40 +1400,40 @@ async function renderRating() {
         if (!c) continue;
         const tier = BUILD_TIERS[t - 1];
         cards += `
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.04);margin:4px 0">
-                <div style="font-size:22px;min-width:32px;text-align:center">${tierEmojis[t]}</div>
-                <div style="flex:1">
-                    <div style="font-weight:600">${tier.name} <span style="opacity:.6">${"⭐".repeat(t)}</span></div>
-                    <div style="font-size:11px;color:var(--text2)">собрано ${c} раз${c === 1 ? "" : c < 5 ? "а" : ""}</div>
+            <article class="my-build-tier tier-${t}">
+                <div class="my-build-mark">${t}★</div>
+                <div class="my-build-info">
+                    <div>${escapeHtml(tier ? tier.name : `${t} звезд`)}</div>
+                    <small>${buildText(c)}</small>
                 </div>
-                <div style="text-align:right;color:var(--green);font-weight:700">+${sums[t].toLocaleString("ru")} ₽</div>
-            </div>
+                <div class="rating-player-money">+${rub(sums[t])} ₽</div>
+            </article>
         `;
     }
 
     const recent = builds.slice(0, 30);
     histEl.innerHTML = `
-        <div class="history-title" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
-            <span>📜 Твои сборки</span>
-            <span style="font-size:12px;color:var(--text2)">всего ${builds.length} · +${totalBonus.toLocaleString("ru")} ₽</span>
-        </div>
-        ${cards}
-        <details style="margin-top:8px">
-            <summary style="cursor:pointer;padding:8px 12px;font-size:13px;color:var(--text2);border-radius:8px;background:rgba(255,255,255,0.03)">
-                📅 Хронология (последние ${recent.length})
-            </summary>
-            <div style="margin-top:6px">
-                ${recent.map(b => `
-                    <div class="history-item" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;margin:3px 0;font-size:12px">
-                        <div>
-                            <span style="font-weight:600">${b.tier}</span>
-                            <span style="opacity:.5"> · ${b.date}</span>
-                        </div>
-                        <div style="color:var(--green);font-weight:600">+${b.bonus} ₽</div>
-                    </div>
-                `).join("")}
+        <section class="my-builds-panel">
+            <div class="rating-section-title">
+                <span>Твои сборки</span>
+                <small>${builds.length} · +${rub(totalBonus)} ₽</small>
             </div>
-        </details>
+            <div class="my-build-grid">${cards}</div>
+            <details class="rating-details">
+                <summary>Последние сборки (${recent.length})</summary>
+                <div class="rating-timeline">
+                    ${recent.map(b => `
+                        <article class="rating-timeline-row">
+                            <div>
+                                <b>${escapeHtml(b.tier)}</b>
+                                <small>${escapeHtml(b.date)}</small>
+                            </div>
+                            <span>+${rub(b.bonus)} ₽</span>
+                        </article>
+                    `).join("")}
+                </div>
+            </details>
+        </section>
     `;
 }
 
