@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=160 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=161 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1605,7 +1605,15 @@ function renderBlueprint() {
     svg.innerHTML = html;
 }
 
-// ========== RECYCLE (3 duplicates → +1 ticket) ==========
+// ========== RECYCLE (3 duplicates → ticket reward) ==========
+
+function recycleTicketReward(sample) {
+    return sample && sample.rarity === "legendary" ? 3 : 1;
+}
+
+function ticketWord(n) {
+    return n === 1 ? "билет" : "билета";
+}
 
 function checkRecycle(model) {
     const dupes = state.inventory.filter(i => i.model === model);
@@ -1623,21 +1631,26 @@ function checkRecycle(model) {
         if (idx !== -1) state.inventory.splice(idx, 1);
     }
 
-    // Grant ticket
-    state.tickets++;
+    // Grant tickets: legendary duplicates are worth more.
+    const rewardTickets = recycleTicketReward(toRemove[0]);
+    state.tickets += rewardTickets;
     saveState();
     updateTicketTimer();
     renderCase();
 
     // Show recycle animation
-    showRecycleAnimation(model, toRemove[0]);
+    showRecycleAnimation(model, toRemove[0], rewardTickets);
 }
 
-function showRecycleAnimation(model, sample) {
+function showRecycleAnimation(model, sample, rewardTickets) {
+    rewardTickets = rewardTickets || recycleTicketReward(sample);
     const cat = CATEGORIES[sample.category];
     const rar = RARITIES[sample.rarity] || RARITIES.common;
     const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[sample.rarity] || 1;
     const imgSrc = "preview-" + sample.category + "-" + rarityNum + ".png";
+    const word = ticketWord(rewardTickets);
+    const earnedLabel = rewardTickets === 1 ? "Билет получен" : `${rewardTickets} билета получено`;
+    const buttonLabel = rewardTickets === 1 ? "Забрать билет" : `Забрать ${rewardTickets} билета`;
     const safeModel = String(model).replace(/[&<>"']/g, ch => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     })[ch]);
@@ -1648,9 +1661,9 @@ function showRecycleAnimation(model, sample) {
         <div class="recycle-content recycle-clear recycle-result" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
             <div class="recycle-result-head">
                 <span>Переработка</span>
-                <strong>+1 🎫</strong>
+                <strong>+${rewardTickets} 🎫</strong>
             </div>
-            <h2 class="recycle-result-title">3 детали → 1 билет</h2>
+            <h2 class="recycle-result-title">3 детали → ${rewardTickets} ${word}</h2>
             <div class="recycle-result-stage">
                 <div class="recycle-spent" aria-label="Списано 3 дубликата">
                     <div class="recycle-stack" aria-hidden="true">
@@ -1662,19 +1675,19 @@ function showRecycleAnimation(model, sample) {
                     <b>${cat.name}</b>
                 </div>
                 <div class="recycle-convert" aria-hidden="true"></div>
-                <div class="recycle-earned" aria-label="Получен 1 билет">
+                <div class="recycle-earned" aria-label="Получено ${rewardTickets} ${word}">
                     <div class="recycle-ticket-big" aria-hidden="true">
-                        <b>1</b>
+                        <b>${rewardTickets}</b>
                         <span>🎫</span>
                     </div>
-                    <b>Билет получен</b>
+                    <b>${earnedLabel}</b>
                 </div>
             </div>
             <div class="recycle-model-line">
                 <span>Списано:</span>
                 <strong>${safeModel}</strong>
             </div>
-            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Забрать билет</button>
+            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">${buttonLabel}</button>
         </div>
     `;
     document.body.appendChild(modal);
