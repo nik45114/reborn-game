@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=165 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=166 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1120,24 +1120,22 @@ function showBuildResult(tier, power) {
                 <span>${isUltimate ? "Лучший результат" : "Сборка готова"}</span>
                 <strong>+${tier.bonus}</strong>
             </div>
-            <div class="result-rig ${isUltimate ? "result-rig-ultimate" : ""}" aria-hidden="true">
-                ${isUltimate ? `
-                    <span class="ultimate-case-mini">
-                        <span class="ultimate-case-board"></span>
-                        <span class="ultimate-case-cpu"></span>
-                        <span class="ultimate-case-gpu"></span>
-                        <span class="ultimate-case-ram"></span>
-                        <span class="ultimate-case-psu"></span>
-                        <span class="ultimate-case-fan"></span>
-                    </span>
-                    <span class="ultimate-slot-chips">
+            ${isUltimate ? `
+                <div class="ultimate-complete-panel" aria-hidden="true">
+                    <div class="ultimate-complete-score">
+                        <strong>6/6</strong>
+                        <span>легендарных деталей</span>
+                    </div>
+                    <div class="ultimate-slot-chips">
                         <b>CPU</b><b>GPU</b><b>RAM</b><b>MB</b><b>БП</b><b>FAN</b>
-                    </span>
-                ` : `
+                    </div>
+                </div>
+            ` : `
+                <div class="result-rig" aria-hidden="true">
                     <span class="result-rig-screen"></span>
                     <span class="result-rig-spark"></span>
-                `}
-            </div>
+                </div>
+            `}
             <h2 class="result-title">${isUltimate ? "Сборка максимальной мощности" : tier.name}</h2>
             ${isUltimate ? `
                 <div class="ultimate-label">${tier.name} · 6/6 легендарных деталей</div>
