@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=145 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=146 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -331,9 +331,10 @@ function updateTicketTimer() {
     const dropSub = document.getElementById("drop-sub");
     const dropBtn = document.getElementById("btn-drop");
     const locked = isLocked();
+    const ticketLimitLabel = IS_ADMIN ? "∞" : MAX_TICKETS;
     dropSub.innerHTML = locked
         ? "🔒"
-        : `<b>${state.tickets}</b> 🎫`;
+        : `<b>${state.tickets}</b><span class="ticket-total">/${ticketLimitLabel}</span> 🎫`;
     dropBtn.disabled = locked || state.tickets <= 0;
 
     if (IS_ADMIN) {
