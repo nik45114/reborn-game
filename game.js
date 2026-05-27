@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=161 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=162 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1608,7 +1608,10 @@ function renderBlueprint() {
 // ========== RECYCLE (3 duplicates → ticket reward) ==========
 
 function recycleTicketReward(sample) {
-    return sample && sample.rarity === "legendary" ? 3 : 1;
+    if (!sample) return 1;
+    if (sample.rarity === "legendary") return 3;
+    if (sample.rarity === "epic") return 2;
+    return 1;
 }
 
 function ticketWord(n) {
