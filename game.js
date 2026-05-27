@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=162 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=163 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1105,31 +1105,45 @@ document.getElementById("btn-assemble").addEventListener("click", () => {
 function showBuildResult(tier, power) {
     const modal = document.createElement("div");
     modal.className = "result-modal";
+    const isUltimate = tier.stars === 5;
     const stars = Array.from({ length: 5 }, (_, i) =>
         `<span class="${i < tier.stars ? "active" : ""}"></span>`
     ).join("");
     modal.innerHTML = `
-        <div class="result-content result-finish tier-${tier.stars}">
+        <div class="result-content result-finish tier-${tier.stars} ${isUltimate ? "result-ultimate" : ""}">
+            ${isUltimate ? `
+                <div class="ultimate-burst" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+            ` : ""}
             <div class="result-head">
-                <span>Сборка готова</span>
+                <span>${isUltimate ? "Максимум мощности" : "Сборка готова"}</span>
                 <strong>+${tier.bonus}</strong>
             </div>
             <div class="result-rig" aria-hidden="true">
+                ${isUltimate ? `
+                    <span class="ultimate-rig-aura"></span>
+                    <span class="ultimate-rig-crown"></span>
+                ` : ""}
                 <span class="result-rig-screen"></span>
                 <span class="result-rig-spark"></span>
             </div>
             <h2 class="result-title">${tier.name}</h2>
+            ${isUltimate ? `
+                <div class="ultimate-label">6/6 легендарных деталей</div>
+                <div class="ultimate-max">MAX POWER</div>
+            ` : ""}
             <div class="result-stars" aria-label="${tier.stars} из 5">${stars}</div>
             <div class="result-reward">
-                <span>Начислено</span>
+                <span>${isUltimate ? "Максимальная выплата" : "Начислено"}</span>
                 <strong>+${tier.bonus}</strong>
                 <small>бонусных баллов</small>
             </div>
             <div class="result-meta">
                 <span>Мощность <b>${power}</b></span>
-                <span>Класс <b>${tier.stars}/5</b></span>
+                <span>${isUltimate ? "Легендарность" : "Класс"} <b>${isUltimate ? "6/6" : `${tier.stars}/5`}</b></span>
             </div>
-            <button class="result-btn" onclick="this.closest('.result-modal').remove()">Забрать бонус</button>
+            <button class="result-btn" onclick="this.closest('.result-modal').remove()">${isUltimate ? "Забрать максимум" : "Забрать бонус"}</button>
         </div>
     `;
     document.body.appendChild(modal);
