@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=152 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=153 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -782,16 +782,41 @@ function getPartScreenPosition(category) {
 // Fly the part image from the drop modal into the case slot, rotating
 // in flight. Use this when the dropped part actually goes INTO the case
 // (i.e. it's an upgrade that auto-equips).
-function flyComponentToSlot(comp, cat) {
+function rarityFlightColor(rarity) {
+    return (RARITIES[rarity] && RARITIES[rarity].color) || "#f6d37d";
+}
+
+function renderFlyingComponent(flyEl, comp, cat, size) {
+    const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[comp.rarity];
+    const imgSrc = "preview-" + comp.category + "-" + rarityNum + ".png";
+    flyEl.innerHTML = `
+        <div class="flight-aura"></div>
+        <img class="flight-part" src="${imgSrc}" alt=""
+             onerror="this.outerHTML='<span class=&quot;flight-fallback&quot; style=&quot;font-size:${Math.round(size * 0.62)}px;line-height:${size}px&quot;>${cat.icon}</span>'">
+        <div class="flight-scan"></div>
+    `;
+}
+
+function spawnCaseImpact(x, y, rarity) {
+    const impact = document.createElement("div");
+    impact.className = "case-impact";
+    impact.style.left = x + "px";
+    impact.style.top = y + "px";
+    impact.style.setProperty("--impact-color", rarityFlightColor(rarity));
+    document.body.appendChild(impact);
+    setTimeout(() => impact.remove(), 760);
+}
+
+function flyComponentToSlot(comp, cat, sourceOverrideEl = null) {
     const flyEl = document.getElementById("flying-comp");
-    const FLY_SIZE = 180;     // start size (px)
-    const LAND_SIZE = 60;     // end size (px) — roughly comp-grid slot icon
+    const FLY_SIZE = 164;     // start size (px)
+    const LAND_SIZE = 48;     // end size (px) — snaps into the case
     const SCALE_END = LAND_SIZE / FLY_SIZE;
-    const FLIGHT_MS = 1200;
-    const ROT_DEG = 720;      // two full spins
+    const FLIGHT_MS = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 220 : 980;
+    const color = rarityFlightColor(comp.rarity);
 
     // ---- start position: where the part is shown in the drop modal ----
-    const sourceEl = document.getElementById("drop-component");
+    const sourceEl = sourceOverrideEl || document.getElementById("drop-component");
     let startCX, startCY;
     if (sourceEl && sourceEl.offsetParent !== null) {
         const r = sourceEl.getBoundingClientRect();
@@ -810,43 +835,65 @@ function flyComponentToSlot(comp, cat) {
     const target = getPartScreenPosition(comp.category);
     let targetCX = target.x, targetCY = target.y;
 
-    // ---- render the actual part PNG inside the flying element ----
-    // Use preview-* (cropped) so the spinning icon shows the full part,
-    // not a tiny dot lost in a 1536x1024 transparent canvas
-    const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[comp.rarity];
-    const imgSrc = "preview-" + comp.category + "-" + rarityNum + ".png";
-    flyEl.innerHTML = '<img src="' + imgSrc +
-        '" style="width:100%;height:100%;object-fit:contain;display:block;"' +
-        ' onerror="this.outerHTML=\'<span style=\\\'font-size:120px;line-height:' +
-        FLY_SIZE + 'px\\\'>' + cat.icon + '</span>\'">';
-
-    // ---- snap to start, no transition ----
+    renderFlyingComponent(flyEl, comp, cat, FLY_SIZE);
     flyEl.style.transition = "none";
-    flyEl.style.left = (startCX - FLY_SIZE / 2) + "px";
-    flyEl.style.top = (startCY - FLY_SIZE / 2) + "px";
-    flyEl.style.transform = "scale(1) rotate(0deg)";
+    flyEl.style.width = FLY_SIZE + "px";
+    flyEl.style.height = FLY_SIZE + "px";
+    flyEl.style.left = "0px";
+    flyEl.style.top = "0px";
+    flyEl.style.transform = `translate(${startCX - FLY_SIZE / 2}px, ${startCY - FLY_SIZE / 2}px) scale(1) rotate(-8deg)`;
     flyEl.style.opacity = "1";
+    flyEl.style.setProperty("--flight-color", color);
+    flyEl.classList.add("slot-flight");
     flyEl.classList.remove("hidden");
 
     // Force layout flush so the no-transition placement applies
     void flyEl.offsetWidth;
 
-    // ---- animate to target ----
+    const drift = Math.max(38, Math.min(92, Math.abs(targetCX - startCX) * 0.22));
+    const midCX = startCX + (targetCX - startCX) * 0.54;
+    const midCY = Math.min(startCY, targetCY) - drift;
+    const landX = targetCX - FLY_SIZE / 2;
+    const landY = targetCY - FLY_SIZE / 2;
+    const frames = [
+        {
+            transform: `translate(${startCX - FLY_SIZE / 2}px, ${startCY - FLY_SIZE / 2}px) scale(1) rotate(-8deg)`,
+            opacity: 1,
+            filter: "brightness(1.06)"
+        },
+        {
+            offset: 0.48,
+            transform: `translate(${midCX - FLY_SIZE / 2}px, ${midCY - FLY_SIZE / 2}px) scale(0.82) rotate(16deg)`,
+            opacity: 1,
+            filter: "brightness(1.22)"
+        },
+        {
+            offset: 0.78,
+            transform: `translate(${targetCX - FLY_SIZE / 2}px, ${targetCY - FLY_SIZE / 2}px) scale(${SCALE_END * 1.24}) rotate(-5deg)`,
+            opacity: 0.96,
+            filter: "brightness(1.35)"
+        },
+        {
+            transform: `translate(${landX}px, ${landY}px) scale(${SCALE_END}) rotate(0deg)`,
+            opacity: 0,
+            filter: "brightness(1.7)"
+        }
+    ];
+
     requestAnimationFrame(() => {
-        flyEl.style.transition =
-            "left " + FLIGHT_MS + "ms cubic-bezier(0.45, 0.05, 0.55, 0.95), " +
-            "top " + FLIGHT_MS + "ms cubic-bezier(0.55, -0.2, 0.4, 1.2), " +
-            "transform " + FLIGHT_MS + "ms cubic-bezier(0.4, 0, 0.2, 1), " +
-            "opacity " + (FLIGHT_MS - 100) + "ms ease-in";
+        const flight = flyEl.animate(frames, {
+            duration: FLIGHT_MS,
+            easing: "cubic-bezier(0.18, 0.82, 0.18, 1)",
+            fill: "forwards"
+        });
 
-        flyEl.style.left = (targetCX - FLY_SIZE / 2) + "px";
-        flyEl.style.top = (targetCY - FLY_SIZE / 2) + "px";
-        flyEl.style.transform = "scale(" + SCALE_END + ") rotate(" + ROT_DEG + "deg)";
-        flyEl.style.opacity = "0.9";
+        setTimeout(() => spawnCaseImpact(targetCX, targetCY, comp.rarity), Math.max(80, FLIGHT_MS - 170));
 
-        setTimeout(() => {
+        flight.onfinish = () => {
             flyEl.classList.add("hidden");
+            flyEl.classList.remove("slot-flight");
             flyEl.style.transition = "none";
+            flyEl.style.transform = "";
             flyEl.innerHTML = "";
 
             // Re-render: updates case overlays (the part appears at the same
@@ -859,7 +906,7 @@ function flyComponentToSlot(comp, cat) {
                 overlay.classList.add("just-landed");
                 setTimeout(() => overlay.classList.remove("just-landed"), 700);
             }
-        }, FLIGHT_MS + 30);
+        };
     });
 }
 
@@ -944,7 +991,7 @@ function flyComponentToInventory(comp, cat) {
 // starting from the clicked card instead of the drop modal.
 function flyFromCardToCase(cardEl, comp) {
     const cat = CATEGORIES[comp.category];
-    flyComponentToSlot(comp, cat);
+    flyComponentToSlot(comp, cat, cardEl);
 }
 
 // ========== UI: TABS ==========
