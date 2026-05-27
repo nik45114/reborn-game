@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=151 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=152 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1265,10 +1265,13 @@ async function fetchRanking() {
 
 function _myTgId() {
     try {
-        return (window.Telegram && Telegram.WebApp
+        const tgId = (window.Telegram && Telegram.WebApp
             && Telegram.WebApp.initDataUnsafe
             && Telegram.WebApp.initDataUnsafe.user
             && Telegram.WebApp.initDataUnsafe.user.id) || null;
+        if (tgId) return tgId;
+        const params = new URLSearchParams(window.location.search);
+        return params.get("tg") || params.get("tg_id") || params.get("user_id") || null;
     } catch (e) { return null; }
 }
 
@@ -1311,6 +1314,7 @@ async function renderRating() {
         const totalPaid = players.reduce((sum, p) => sum + Number(p.total || 0), 0);
         const topThree = top.slice(0, 3);
         const rest = top.slice(3);
+        const me = players.find(isMyPlayer);
         let html = `
             <section class="rating-hero">
                 <div>
@@ -1323,8 +1327,25 @@ async function renderRating() {
                     <span><b>+${rub(totalPaid)} ₽</b><small>бонусами</small></span>
                 </div>
             </section>
-            <section class="rating-podium">
         `;
+        if (me) {
+            const myRank = Number(me.rank) || 0;
+            const myName = escapeHtml(me.name || "Игрок");
+            html += `
+                <section class="rating-self-strip">
+                    <div class="rating-self-rank">
+                        <b>${rankLabel(myRank)}</b>
+                        <small>место</small>
+                    </div>
+                    <div class="rating-self-copy">
+                        <b>Твоя позиция</b>
+                        <span>${myName} · ${buildText(me.builds)}</span>
+                    </div>
+                    <strong>+${rub(me.total)} ₽</strong>
+                </section>
+            `;
+        }
+        html += `<section class="rating-podium">`;
         html += topThree.map(p => {
             const isMe = isMyPlayer(p);
             const name = escapeHtml(p.name || "Игрок");
