@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=163 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=164 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1117,7 +1117,7 @@ function showBuildResult(tier, power) {
                 </div>
             ` : ""}
             <div class="result-head">
-                <span>${isUltimate ? "Максимум мощности" : "Сборка готова"}</span>
+                <span>${isUltimate ? "Лучший результат" : "Сборка готова"}</span>
                 <strong>+${tier.bonus}</strong>
             </div>
             <div class="result-rig" aria-hidden="true">
@@ -1128,22 +1128,21 @@ function showBuildResult(tier, power) {
                 <span class="result-rig-screen"></span>
                 <span class="result-rig-spark"></span>
             </div>
-            <h2 class="result-title">${tier.name}</h2>
+            <h2 class="result-title">${isUltimate ? "Сборка максимальной мощности" : tier.name}</h2>
             ${isUltimate ? `
-                <div class="ultimate-label">6/6 легендарных деталей</div>
-                <div class="ultimate-max">MAX POWER</div>
+                <div class="ultimate-label">${tier.name} · 6/6 легендарных деталей</div>
             ` : ""}
             <div class="result-stars" aria-label="${tier.stars} из 5">${stars}</div>
             <div class="result-reward">
-                <span>${isUltimate ? "Максимальная выплата" : "Начислено"}</span>
+                <span>${isUltimate ? "Бонус за максимум" : "Начислено"}</span>
                 <strong>+${tier.bonus}</strong>
                 <small>бонусных баллов</small>
             </div>
             <div class="result-meta">
                 <span>Мощность <b>${power}</b></span>
-                <span>${isUltimate ? "Легендарность" : "Класс"} <b>${isUltimate ? "6/6" : `${tier.stars}/5`}</b></span>
+                <span>${isUltimate ? "Легендарные детали" : "Класс"} <b>${isUltimate ? "6/6" : `${tier.stars}/5`}</b></span>
             </div>
-            <button class="result-btn" onclick="this.closest('.result-modal').remove()">${isUltimate ? "Забрать максимум" : "Забрать бонус"}</button>
+            <button class="result-btn" onclick="this.closest('.result-modal').remove()">${isUltimate ? `Забрать +${tier.bonus}` : "Забрать бонус"}</button>
         </div>
     `;
     document.body.appendChild(modal);
