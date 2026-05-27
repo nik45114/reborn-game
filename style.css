@@ -7631,6 +7631,125 @@ body {
     }
 }
 
+/* ===== BOTTOM TABS UNIFIED v169 ===== */
+.bottom-tabs {
+    width: min(calc(100% - 20px), 390px);
+    height: 54px;
+    padding: 0 8px;
+    gap: 0;
+    overflow: hidden;
+    border-radius: 17px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.062), rgba(255,255,255,0.018)),
+        rgba(8, 9, 9, 0.91);
+}
+
+.btab {
+    height: 54px;
+    padding: 7px 0 8px;
+    border: 0;
+    border-radius: 0;
+    gap: 3px;
+    color: rgba(246,243,234,0.46);
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none;
+}
+
+.btab::before {
+    display: none;
+}
+
+.btab + .btab::before {
+    display: none;
+}
+
+.btab::after {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: auto;
+    width: 28px;
+    height: 2px;
+    border-radius: 999px;
+    background: transparent;
+    opacity: 0;
+    transform: translateX(-50%);
+}
+
+.btab.active {
+    color: #efd47f;
+    background: transparent !important;
+    text-shadow: 0 0 12px rgba(239,212,127,0.18);
+}
+
+.btab.active::after {
+    background: #e8c775;
+    box-shadow: 0 0 10px rgba(232,199,117,0.24);
+    opacity: 1;
+}
+
+.btab-svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.85;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.66;
+    transition: opacity 0.16s ease, transform 0.16s ease, color 0.16s ease;
+}
+
+.btab.active .btab-svg {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.btab-icon {
+    display: none;
+}
+
+.btab-label {
+    font-size: 9.5px;
+    font-weight: 850;
+    line-height: 1;
+}
+
+.btab.active .btab-label {
+    font-weight: 950;
+}
+
+.btab:active .btab-svg,
+.btab:active .btab-label {
+    transform: translateY(1px);
+}
+
+@media (max-width: 380px) {
+    .bottom-tabs {
+        width: min(calc(100% - 18px), 390px);
+        height: 52px;
+        padding-inline: 5px;
+        border-radius: 16px;
+    }
+
+    .btab {
+        height: 52px;
+        padding-top: 7px;
+        padding-bottom: 8px;
+    }
+
+    .btab-svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .btab-label {
+        font-size: 9px;
+    }
+}
+
 /* ===== RECYCLE IMAGE CLIPPING v160 ===== */
 .recycle-stack span,
 .recycle-dupe-images span,
