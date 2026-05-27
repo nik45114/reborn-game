@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=166 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=167 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1138,7 +1138,7 @@ function showBuildResult(tier, power) {
             `}
             <h2 class="result-title">${isUltimate ? "Сборка максимальной мощности" : tier.name}</h2>
             ${isUltimate ? `
-                <div class="ultimate-label">${tier.name} · 6/6 легендарных деталей</div>
+                <div class="ultimate-label">${tier.name}</div>
             ` : ""}
             <div class="result-stars" aria-label="${tier.stars} из 5">${stars}</div>
             <div class="result-reward">
@@ -1148,7 +1148,7 @@ function showBuildResult(tier, power) {
             </div>
             <div class="result-meta">
                 <span>Мощность <b>${power}</b></span>
-                <span>${isUltimate ? "Легендарные детали" : "Класс"} <b>${isUltimate ? "6/6" : `${tier.stars}/5`}</b></span>
+                <span>Класс <b>${isUltimate ? "Ultimate" : `${tier.stars}/5`}</b></span>
             </div>
             <button class="result-btn" onclick="this.closest('.result-modal').remove()">${isUltimate ? `Забрать +${tier.bonus}` : "Забрать бонус"}</button>
         </div>
