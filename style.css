@@ -6777,3 +6777,29 @@ body {
         min-height: 40px;
     }
 }
+
+/* ===== RECYCLE IMAGE CLIPPING v160 ===== */
+.recycle-stack span,
+.recycle-dupe-images span,
+.recycle-mini {
+    overflow: hidden;
+}
+
+.recycle-stack span img,
+.recycle-dupe-images span img,
+.recycle-mini img {
+    position: absolute;
+    inset: 5px;
+    width: calc(100% - 10px) !important;
+    height: calc(100% - 10px) !important;
+    max-width: calc(100% - 10px) !important;
+    max-height: calc(100% - 10px) !important;
+    object-fit: contain;
+    object-position: center;
+}
+
+.recycle-stack span,
+.recycle-dupe-images span,
+.recycle-mini {
+    position: absolute;
+}
