@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=148 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=149 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1036,7 +1036,7 @@ document.getElementById("btn-assemble").addEventListener("click", () => {
 
 let invActiveCategory = "cpu";
 const INV_TAB_CODES = { cpu: "CPU", gpu: "GPU", ram: "RAM", mb: "MB", psu: "БП", cool: "FAN" };
-const INV_TAB_NAMES = { cpu: "Проц", gpu: "Видео", ram: "ОЗУ", mb: "Плата", psu: "Питание", cool: "Кулер" };
+const INV_TAB_NAMES = { cpu: "Процессор", gpu: "Видеокарта", ram: "Оперативка", mb: "Мат. плата", psu: "Питание", cool: "Охлаждение" };
 
 function renderInvTabs() {
     const tabsEl = document.getElementById("inv-tabs");
