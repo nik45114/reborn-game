@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=158 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=159 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1093,24 +1093,47 @@ document.getElementById("btn-drop").addEventListener("click", () => {
 // ========== UI: ASSEMBLE ==========
 
 document.getElementById("btn-assemble").addEventListener("click", () => {
+    const resultPower = getBuildPower();
     const tier = assembleBuild();
     if (!tier) return;
 
-    const modal = document.createElement("div");
-    modal.className = "result-modal";
-    modal.innerHTML = `
-        <div class="result-content">
-            <div class="result-emoji">${tier.emoji}</div>
-            <div class="result-title">${tier.name}</div>
-            <div class="result-stars">${"⭐".repeat(tier.stars)}</div>
-            <div class="result-bonus">+${tier.bonus} бонусных баллов! 🪙</div>
-            <button class="result-btn" onclick="this.closest('.result-modal').remove()">Отлично!</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
+    showBuildResult(tier, resultPower);
 
     renderCase();
 });
+
+function showBuildResult(tier, power) {
+    const modal = document.createElement("div");
+    modal.className = "result-modal";
+    const stars = Array.from({ length: 5 }, (_, i) =>
+        `<span class="${i < tier.stars ? "active" : ""}"></span>`
+    ).join("");
+    modal.innerHTML = `
+        <div class="result-content result-finish tier-${tier.stars}">
+            <div class="result-head">
+                <span>Сборка готова</span>
+                <strong>+${tier.bonus}</strong>
+            </div>
+            <div class="result-rig" aria-hidden="true">
+                <span class="result-rig-screen"></span>
+                <span class="result-rig-spark"></span>
+            </div>
+            <h2 class="result-title">${tier.name}</h2>
+            <div class="result-stars" aria-label="${tier.stars} из 5">${stars}</div>
+            <div class="result-reward">
+                <span>Начислено</span>
+                <strong>+${tier.bonus}</strong>
+                <small>бонусных баллов</small>
+            </div>
+            <div class="result-meta">
+                <span>Мощность <b>${power}</b></span>
+                <span>Класс <b>${tier.stars}/5</b></span>
+            </div>
+            <button class="result-btn" onclick="this.closest('.result-modal').remove()">Забрать бонус</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
 
 // ========== UI: INVENTORY ==========
 
