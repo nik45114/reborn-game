@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=156 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=157 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -627,11 +627,16 @@ function renderCase() {
 
 function showDrop(comp) {
     const overlay = document.getElementById("drop-overlay");
+    const revealEl = document.getElementById("drop-reveal");
     const cat = CATEGORIES[comp.category];
     const rar = RARITIES[comp.rarity];
 
+    revealEl.classList.remove("drop-revealing");
+
     // Glow color
     document.getElementById("drop-glow").style.background = rar.color;
+    revealEl.style.setProperty("--drop-rarity", rar.color);
+    revealEl.style.setProperty("--drop-rarity-soft", rar.color + "26");
 
     // Category name (big, first thing you see)
     const catEl = document.getElementById("drop-category");
@@ -642,7 +647,12 @@ function showDrop(comp) {
     const compEl = document.getElementById("drop-component");
     const iconEl = document.getElementById("drop-comp-icon");
     compEl.style.borderColor = rar.color;
+    compEl.style.setProperty("--drop-rarity", rar.color);
+    compEl.style.setProperty("--drop-rarity-soft", rar.color + "26");
+    compEl.classList.remove("drop-component-ready");
     iconEl.textContent = cat.icon;
+    iconEl.style.display = "block";
+    iconEl.classList.remove("drop-icon-ready");
     // Strip any old image
     const oldImg = compEl.querySelector("img.drop-comp-img");
     if (oldImg) oldImg.remove();
@@ -654,10 +664,20 @@ function showDrop(comp) {
     partImg.onload = () => {
         partImg.style.display = "block";
         iconEl.style.display = "none";
+        partImg.classList.remove("drop-img-ready");
+        if (!overlay.classList.contains("hidden")) {
+            void partImg.offsetWidth;
+            partImg.classList.add("drop-img-ready");
+        }
     };
     partImg.onerror = () => {
         partImg.remove();
         iconEl.style.display = "block";
+        iconEl.classList.remove("drop-icon-ready");
+        if (!overlay.classList.contains("hidden")) {
+            void iconEl.offsetWidth;
+            iconEl.classList.add("drop-icon-ready");
+        }
     };
     // preview-* is the source image cropped tightly to its opaque pixels —
     // shows the part big and centered in the card, not a tiny dot inside
@@ -744,6 +764,19 @@ function showDrop(comp) {
     }
 
     overlay.classList.remove("hidden");
+    requestAnimationFrame(() => {
+        revealEl.classList.add("drop-revealing");
+        compEl.classList.add("drop-component-ready");
+        if (partImg.isConnected && partImg.complete && partImg.naturalWidth > 0) {
+            partImg.classList.remove("drop-img-ready");
+            void partImg.offsetWidth;
+            partImg.classList.add("drop-img-ready");
+        } else {
+            iconEl.classList.remove("drop-icon-ready");
+            void iconEl.offsetWidth;
+            iconEl.classList.add("drop-icon-ready");
+        }
+    });
 }
 
 // Compute where a category's part actually shows up on screen, accounting
