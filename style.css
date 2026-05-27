@@ -3427,3 +3427,373 @@ body {
         font-size: 10px;
     }
 }
+
+/* ===== INVENTORY SCREEN REDESIGN v148 ===== */
+#page-inventory.page {
+    min-height: calc(100svh - 47px);
+    padding: 12px 10px calc(78px + env(safe-area-inset-bottom));
+    background:
+        radial-gradient(circle at 50% -120px, rgba(239,197,105,0.08), transparent 240px),
+        linear-gradient(180deg, rgba(255,255,255,0.025), transparent 130px),
+        #070808;
+}
+
+#page-inventory .build-bar {
+    margin: 0 0 9px;
+    padding: 10px 11px;
+    border: 1px solid rgba(255,255,255,0.105);
+    border-radius: 16px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)),
+        rgba(13, 14, 14, 0.88);
+    box-shadow:
+        0 12px 28px rgba(0,0,0,0.26),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+#page-inventory .build-bar-label {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 7px;
+    color: rgba(246,243,234,0.64);
+    font-size: 11px;
+    line-height: 1;
+}
+
+#build-tier-name {
+    min-width: 0;
+    overflow: hidden;
+    color: rgba(246,243,234,0.82);
+    font-size: 12px;
+    font-weight: 950;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#build-power {
+    color: #e8c775;
+    font-size: 12px;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+#page-inventory .build-progress-track {
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.07);
+}
+
+#page-inventory .build-progress-fill {
+    border-radius: inherit;
+    background: linear-gradient(90deg, #f7f2df, #d9b261 54%, #ef6d77);
+    box-shadow: 0 0 12px rgba(239,197,105,0.18);
+}
+
+#page-inventory .inv-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    margin: 0 0 10px;
+}
+
+.invtab2 {
+    position: relative;
+    min-width: 0;
+    height: 48px;
+    padding: 6px 4px 5px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 14px;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    justify-items: center;
+    gap: 2px;
+    color: rgba(246,243,234,0.58);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.02)),
+        rgba(13, 14, 14, 0.72);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.075);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.invtab2-active {
+    color: #fff7df;
+    border-color: rgba(239,197,105,0.3);
+    background:
+        linear-gradient(180deg, rgba(239,197,105,0.16), rgba(255,255,255,0.035)),
+        rgba(23, 21, 17, 0.9);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 0 16px rgba(239,197,105,0.08);
+}
+
+.invtab2-code {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 950;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.invtab2-count {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(246,243,234,0.78);
+    background: rgba(255,255,255,0.07);
+    font-size: 9px;
+    font-weight: 950;
+    line-height: 1;
+}
+
+.invtab2-active .invtab2-count {
+    color: #241a0c;
+    background: #e8c775;
+}
+
+.invtab2-name {
+    max-width: 100%;
+    overflow: hidden;
+    color: rgba(246,243,234,0.42);
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.invtab2-active .invtab2-name {
+    color: rgba(255,247,223,0.6);
+}
+
+#page-inventory .inventory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+}
+
+.invcard2 {
+    position: relative;
+    width: 100%;
+    min-height: 78px;
+    margin: 0;
+    padding: 10px 10px 10px 11px;
+    border: 1px solid var(--rarity);
+    border-radius: 16px;
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    color: #f6f3ea;
+    background:
+        radial-gradient(circle at 16% 22%, var(--rarity-soft), transparent 90px),
+        linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.024)),
+        rgba(10, 11, 11, 0.88);
+    box-shadow:
+        0 13px 26px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.085);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.invcard2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 3px;
+    border-radius: 0 999px 999px 0;
+    background: var(--rarity);
+    box-shadow: 0 0 12px var(--rarity-soft);
+}
+
+.invcard2-eq {
+    border-color: rgba(49,226,140,0.34);
+    cursor: default;
+}
+
+.invcard2-media {
+    width: 54px;
+    height: 54px;
+    border: 1px solid rgba(255,255,255,0.105);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: var(--rarity);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.035);
+    font-size: 24px;
+}
+
+.invcard2-media img {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+    display: block;
+}
+
+.invcard2-main {
+    min-width: 0;
+    display: grid;
+    gap: 7px;
+}
+
+.invcard2-model {
+    min-width: 0;
+    overflow: hidden;
+    color: #fff7df;
+    font-size: 14px;
+    font-weight: 950;
+    line-height: 1.05;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.invcard2-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.invcard2-rarity,
+.invcard2-equipped {
+    height: 19px;
+    padding: 0 7px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    color: #090908;
+    background: var(--rarity);
+    font-size: 9px;
+    font-weight: 950;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.invcard2-equipped {
+    color: #062112;
+    background: #31e28c;
+}
+
+.invcard2-power {
+    min-width: 45px;
+    padding-left: 9px;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    display: grid;
+    justify-items: end;
+    gap: 3px;
+    color: rgba(246,243,234,0.48);
+    font-size: 9px;
+    font-weight: 850;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.invcard2-power strong {
+    color: var(--rarity);
+    font-size: 21px;
+    font-weight: 950;
+    line-height: 1;
+}
+
+.inv-empty-panel {
+    min-height: 144px;
+    border: 1px dashed rgba(255,255,255,0.13);
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    color: rgba(246,243,234,0.58);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+        rgba(10, 11, 11, 0.72);
+    text-align: center;
+}
+
+.inv-empty-code {
+    color: #e8c775;
+    font-size: 22px;
+    font-weight: 950;
+}
+
+.inv-empty-title {
+    color: #f6f3ea;
+    font-size: 14px;
+    font-weight: 950;
+}
+
+.inv-empty-copy {
+    max-width: 230px;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+@media (max-width: 380px) {
+    #page-inventory.page {
+        padding-inline: 8px;
+    }
+
+    #page-inventory .inv-tabs {
+        gap: 4px;
+    }
+
+    .invtab2 {
+        height: 45px;
+        border-radius: 13px;
+    }
+
+    .invtab2-code {
+        font-size: 10px;
+    }
+
+    .invtab2-name {
+        display: none;
+    }
+
+    .invcard2 {
+        grid-template-columns: 50px minmax(0, 1fr) auto;
+        gap: 8px;
+        min-height: 74px;
+        padding: 9px 9px 9px 10px;
+    }
+
+    .invcard2-media {
+        width: 50px;
+        height: 50px;
+    }
+
+    .invcard2-model {
+        font-size: 13px;
+    }
+
+    .invcard2-power {
+        min-width: 41px;
+        padding-left: 7px;
+    }
+
+    .invcard2-power strong {
+        font-size: 19px;
+    }
+}

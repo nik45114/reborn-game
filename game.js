@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=146 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=148 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -604,7 +604,7 @@ function renderCase() {
     }
 
     // Update build bar
-    document.getElementById("build-tier-name").textContent = tier.emoji + " " + tier.name;
+    document.getElementById("build-tier-name").textContent = tier.name;
     document.getElementById("build-power").textContent = "⚡" + power + " · " + filledCount + "/6";
 
     const maxPower = 700;
@@ -1035,26 +1035,24 @@ document.getElementById("btn-assemble").addEventListener("click", () => {
 // ========== UI: INVENTORY ==========
 
 let invActiveCategory = "cpu";
+const INV_TAB_CODES = { cpu: "CPU", gpu: "GPU", ram: "RAM", mb: "MB", psu: "БП", cool: "FAN" };
+const INV_TAB_NAMES = { cpu: "Проц", gpu: "Видео", ram: "ОЗУ", mb: "Плата", psu: "Питание", cool: "Кулер" };
 
 function renderInvTabs() {
     const tabsEl = document.getElementById("inv-tabs");
-    tabsEl.style.cssText = "display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px";
+    tabsEl.removeAttribute("style");
     const catKeys = Object.keys(CATEGORIES);
     tabsEl.innerHTML = catKeys.map(key => {
         const cat = CATEGORIES[key];
+        const label = INV_TAB_CODES[key] || SLOT_LABELS[key] || key.toUpperCase();
+        const name = INV_TAB_NAMES[key] || cat.name;
         const count = state.inventory.filter(i => i.category === key).length;
         const isActive = key === invActiveCategory;
-        const bg = isActive ? "var(--accent)" : "var(--bg2)";
-        const fg = isActive ? "#0a0a0a" : "#fff";
-        const sub = isActive ? "rgba(0,0,0,0.55)" : "var(--text2)";
-        const border = isActive ? "transparent" : "rgba(255,255,255,0.06)";
         return `
-            <button class="invtab2 ${isActive ? 'invtab2-active' : ''}" data-cat="${key}"
-                    style="background:${bg};color:${fg};border:1px solid ${border};border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-family:inherit;position:relative;min-height:78px">
-                <span style="font-size:24px;line-height:1">${cat.icon}</span>
-                <span style="font-size:12px;font-weight:700;line-height:1.1;text-align:center">${cat.name}</span>
-                <span style="font-size:11px;color:${sub};font-weight:600">${count} шт.</span>
-                ${count > 0 ? `<span style="position:absolute;top:6px;right:8px;background:${isActive ? '#0a0a0a' : 'var(--accent)'};color:${isActive ? 'var(--accent)' : '#0a0a0a'};font-size:10px;font-weight:800;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center">${count}</span>` : ''}
+            <button class="invtab2 ${isActive ? 'invtab2-active' : ''}" data-cat="${key}" type="button" aria-pressed="${isActive}">
+                <span class="invtab2-code">${label}</span>
+                <span class="invtab2-count">${count}</span>
+                <span class="invtab2-name">${name}</span>
             </button>
         `;
     }).join("");
@@ -1088,10 +1086,10 @@ function _renderInventoryListImpl(list) {
 
     if (!items.length) {
         list.innerHTML = `
-            <div style="text-align:center;padding:40px 20px;border:2px dashed rgba(255,255,255,0.08);border-radius:14px;margin-top:8px">
-                <div style="font-size:48px;margin-bottom:10px;opacity:.5">${cat.icon}</div>
-                <div style="font-size:15px;font-weight:600;margin-bottom:6px">Нет деталей: ${cat.name}</div>
-                <div style="font-size:12px;color:var(--text2)">Открой вкладку «🖥 Сборка» и тапай «📦 Выбить деталь», чтобы наполнить склад.</div>
+            <div class="inv-empty-panel">
+                <div class="inv-empty-code">${SLOT_LABELS[invActiveCategory] || invActiveCategory.toUpperCase()}</div>
+                <div class="inv-empty-title">Пока пусто</div>
+                <div class="inv-empty-copy">Выбей деталь на сборке, и она появится здесь.</div>
             </div>
         `;
         return;
@@ -1105,29 +1103,26 @@ function _renderInventoryListImpl(list) {
         // whole list doesn't blow up on a single bad item.
         const rar = RARITIES[item.rarity] || RARITIES.common;
         const inBuild = current && current.id === item.id;
-        const cardBg = inBuild
-            ? `linear-gradient(135deg, ${rar.color}33, var(--bg2))`
-            : item.rarity === "legendary"
-                ? "linear-gradient(135deg, #1a1000, var(--bg2))"
-                : "var(--bg2)";
+        const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[item.rarity] || 1;
+        const imgSrc = "preview-" + item.category + "-" + rarityNum + ".png";
         return `
-            <div class="invcard2 ${inBuild ? 'invcard2-eq' : ''}" data-item-id="${item.id}"
-                 style="background:${cardBg};border-radius:16px;border:2px solid ${rar.color};padding:16px;display:flex;align-items:center;gap:14px;cursor:${inBuild ? 'default' : 'pointer'};margin:8px 0;box-shadow:0 2px 12px ${rar.color}22">
-                <div style="font-size:42px;min-width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:${rar.color}22;border-radius:12px;border:1px solid ${rar.color}55">
-                    ${cat.icon}
-                </div>
-                <div style="flex:1;min-width:0">
-                    <div style="font-size:16px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px">${item.model}</div>
-                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:${rar.color};color:#000;text-transform:uppercase;letter-spacing:.3px">${rar.name}</span>
-                        ${inBuild ? `<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:#22c55e;color:#000">🖥 В СБОРКЕ</span>` : ""}
-                    </div>
-                </div>
-                <div style="text-align:center;min-width:62px;padding-left:6px;border-left:1px solid rgba(255,255,255,0.08)">
-                    <div style="font-size:22px;font-weight:900;color:${rar.color};line-height:1">${item.power}</div>
-                    <div style="font-size:10px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px">⚡ мощн.</div>
-                </div>
-            </div>
+            <button class="invcard2 ${inBuild ? 'invcard2-eq' : ''}" data-item-id="${item.id}" type="button"
+                    style="--rarity:${rar.color};--rarity-soft:${rar.color}24" ${inBuild ? 'aria-pressed="true"' : ''}>
+                <span class="invcard2-media">
+                    <img src="${imgSrc}" alt="" onerror="this.replaceWith(document.createTextNode('${cat.icon}'))">
+                </span>
+                <span class="invcard2-main">
+                    <span class="invcard2-model">${item.model}</span>
+                    <span class="invcard2-meta">
+                        <span class="invcard2-rarity">${rar.name}</span>
+                        ${inBuild ? `<span class="invcard2-equipped">В сборке</span>` : ""}
+                    </span>
+                </span>
+                <span class="invcard2-power">
+                    <strong>${item.power}</strong>
+                    <span>мощн.</span>
+                </span>
+            </button>
         `;
     }).join("");
 
