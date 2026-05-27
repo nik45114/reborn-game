@@ -2974,3 +2974,22 @@ body {
         font-size: 11px;
     }
 }
+
+/* ===== CLEAN DROP BUTTON v140 ===== */
+.btn-drop {
+    justify-content: space-between;
+}
+
+.btn-drop-icon {
+    display: none;
+}
+
+.btn-drop-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-drop-sub {
+    max-width: none;
+    white-space: nowrap;
+}
