@@ -2975,7 +2975,7 @@ body {
     }
 }
 
-/* ===== CLEAN DROP BUTTON v140 ===== */
+/* ===== CLEAN DROP BUTTON v141 ===== */
 .btn-drop {
     justify-content: space-between;
 }
@@ -2991,5 +2991,20 @@ body {
 
 .btn-drop-sub {
     max-width: none;
+    min-width: 42px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1;
     white-space: nowrap;
+}
+
+.btn-drop-sub b {
+    font-size: 14px;
+    line-height: 1;
 }
