@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=154 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=155 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1579,23 +1579,42 @@ function checkRecycle(model) {
 
 function showRecycleAnimation(model, sample) {
     const cat = CATEGORIES[sample.category];
-    const rar = RARITIES[sample.rarity];
+    const rar = RARITIES[sample.rarity] || RARITIES.common;
+    const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[sample.rarity] || 1;
+    const imgSrc = "preview-" + sample.category + "-" + rarityNum + ".png";
+    const safeModel = String(model).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[ch]);
 
     const modal = document.createElement("div");
     modal.className = "recycle-modal";
     modal.innerHTML = `
-        <div class="recycle-content">
-            <div class="recycle-icons">
-                <div class="recycle-icon r1">${cat.icon}</div>
-                <div class="recycle-icon r2">${cat.icon}</div>
-                <div class="recycle-icon r3">${cat.icon}</div>
+        <div class="recycle-content" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
+            <div class="recycle-topline">
+                <span>Станция переработки</span>
+                <strong>+1 билет</strong>
             </div>
-            <div class="recycle-arrow">⚡</div>
-            <div class="recycle-result">🎫</div>
-            <div class="recycle-title">Переработка!</div>
-            <div class="recycle-desc">3× <span style="color:${rar.color}">${model}</span></div>
-            <div class="recycle-bonus">+1 попытка</div>
-            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Отлично!</button>
+            <div class="recycle-machine" aria-hidden="true">
+                <div class="recycle-stack">
+                    <span class="recycle-mini r1"><img src="${imgSrc}" alt=""></span>
+                    <span class="recycle-mini r2"><img src="${imgSrc}" alt=""></span>
+                    <span class="recycle-mini r3"><img src="${imgSrc}" alt=""></span>
+                </div>
+                <div class="recycle-core">
+                    <span></span>
+                </div>
+                <div class="recycle-ticket">
+                    <b>1</b>
+                </div>
+            </div>
+            <div class="recycle-copy">
+                <div class="recycle-title">Дубликаты обменяны</div>
+                <div class="recycle-desc">
+                    <b>3×</b> <span>${safeModel}</span>
+                </div>
+                <div class="recycle-bonus">Получена 1 попытка</div>
+            </div>
+            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Забрать</button>
         </div>
     `;
     document.body.appendChild(modal);

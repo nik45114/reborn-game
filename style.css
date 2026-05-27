@@ -5274,3 +5274,322 @@ body {
         font-size: 7px;
     }
 }
+
+/* ===== RECYCLE MODAL REDESIGN v155 ===== */
+.recycle-modal {
+    padding: 18px;
+    align-items: center;
+    background:
+        radial-gradient(circle at 50% 32%, rgba(239,197,105,0.12), transparent 190px),
+        rgba(3, 4, 4, 0.88);
+    backdrop-filter: blur(10px) saturate(1.08);
+}
+
+.recycle-content {
+    position: relative;
+    width: min(calc(100vw - 34px), 360px);
+    padding: 14px;
+    border-radius: 24px;
+    overflow: hidden;
+    text-align: left;
+    border-color: rgba(239,197,105,0.22);
+    background:
+        radial-gradient(circle at 88% 8%, var(--rarity-soft), transparent 126px),
+        linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.027)),
+        rgba(10, 11, 11, 0.96);
+    box-shadow:
+        0 24px 70px rgba(0,0,0,0.58),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.recycle-content::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(239,197,105,0.5), transparent);
+    pointer-events: none;
+}
+
+.recycle-topline {
+    position: relative;
+    z-index: 1;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.recycle-topline span {
+    color: rgba(246,243,234,0.58);
+    font-size: 10px;
+    font-weight: 950;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.recycle-topline strong {
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    color: #1b1305;
+    background: linear-gradient(135deg, #fff0b8, #d6a33f);
+    font-size: 11px;
+    font-weight: 950;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+}
+
+.recycle-machine {
+    position: relative;
+    z-index: 1;
+    min-height: 172px;
+    margin: 6px 0 4px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 98px minmax(0, 1fr) 76px;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+        rgba(255,255,255,0.024);
+}
+
+.recycle-stack {
+    position: relative;
+    height: 116px;
+}
+
+.recycle-mini {
+    position: absolute;
+    width: 66px;
+    height: 66px;
+    border: 1px solid color-mix(in srgb, var(--rarity, #d6a33f) 58%, rgba(255,255,255,0.16));
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,0.12), transparent 66%),
+        rgba(12,13,13,0.92);
+    box-shadow:
+        0 12px 22px rgba(0,0,0,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: recycleCardFeed 1.2s cubic-bezier(0.2,0.84,0.2,1) both;
+}
+
+.recycle-mini img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    display: block;
+}
+
+.recycle-mini.r1 {
+    left: 0;
+    top: 4px;
+    animation-delay: 0.05s;
+}
+
+.recycle-mini.r2 {
+    left: 18px;
+    top: 24px;
+    animation-delay: 0.16s;
+}
+
+.recycle-mini.r3 {
+    left: 36px;
+    top: 46px;
+    animation-delay: 0.27s;
+}
+
+.recycle-core {
+    position: relative;
+    height: 96px;
+    border-radius: 22px;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(circle, color-mix(in srgb, var(--rarity, #d6a33f) 20%, transparent), transparent 64%),
+        rgba(255,255,255,0.035);
+}
+
+.recycle-core::before,
+.recycle-core::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: 18px;
+    border: 1px solid color-mix(in srgb, var(--rarity, #d6a33f) 44%, transparent);
+    animation: recycleCorePulse 1.1s ease-in-out infinite;
+}
+
+.recycle-core::after {
+    inset: 30px;
+    animation-delay: 0.18s;
+}
+
+.recycle-core span {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background:
+        linear-gradient(180deg, #fff0b8, #d6a33f);
+    box-shadow:
+        0 0 24px color-mix(in srgb, var(--rarity, #d6a33f) 42%, transparent),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    transform: rotate(45deg);
+}
+
+.recycle-ticket {
+    width: 68px;
+    height: 54px;
+    margin-left: auto;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    color: #1b1305;
+    background:
+        radial-gradient(circle at 0 50%, rgba(10,11,11,0.96) 0 6px, transparent 6.5px),
+        radial-gradient(circle at 100% 50%, rgba(10,11,11,0.96) 0 6px, transparent 6.5px),
+        linear-gradient(135deg, #fff1bd, #d6a33f);
+    box-shadow:
+        0 0 26px rgba(239,197,105,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    animation: recycleTicketPop 0.54s cubic-bezier(0.2,0.84,0.2,1.24) 0.5s both;
+}
+
+.recycle-ticket b {
+    font-size: 24px;
+    font-weight: 950;
+    line-height: 1;
+}
+
+.recycle-copy {
+    position: relative;
+    z-index: 1;
+    padding: 4px 3px 0;
+    text-align: center;
+}
+
+.recycle-title {
+    animation: none;
+    margin: 0;
+    color: #fff8e8;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    font-size: 22px;
+    font-weight: 950;
+    line-height: 1.08;
+}
+
+.recycle-desc {
+    animation: none;
+    margin: 8px auto 0;
+    max-width: 260px;
+    color: rgba(246,243,234,0.62);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.24;
+}
+
+.recycle-desc b {
+    color: #e8c775;
+}
+
+.recycle-desc span {
+    color: var(--rarity, #e8c775);
+}
+
+.recycle-bonus {
+    animation: none;
+    width: max-content;
+    max-width: 100%;
+    min-height: 30px;
+    margin: 12px auto 14px;
+    padding: 0 12px;
+    border: 1px solid rgba(49,226,140,0.2);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    color: #31e28c;
+    background: rgba(49,226,140,0.08);
+    font-size: 13px;
+    font-weight: 950;
+    line-height: 1;
+}
+
+.recycle-btn {
+    animation: none;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    border-radius: 16px;
+    font-size: 15px;
+}
+
+@keyframes recycleCardFeed {
+    0% { opacity: 0; transform: translateX(-18px) scale(0.86) rotate(-10deg); }
+    44% { opacity: 1; transform: translateX(0) scale(1) rotate(0deg); }
+    100% { opacity: 0.72; transform: translateX(22px) scale(0.78) rotate(9deg); }
+}
+
+@keyframes recycleCorePulse {
+    0%, 100% { opacity: 0.28; transform: scale(0.92); }
+    50% { opacity: 0.82; transform: scale(1.06); }
+}
+
+@keyframes recycleTicketPop {
+    0% { opacity: 0; transform: translateX(18px) scale(0.72) rotate(6deg); }
+    100% { opacity: 1; transform: translateX(0) scale(1) rotate(0deg); }
+}
+
+@media (max-width: 380px) {
+    .recycle-content {
+        padding: 12px;
+        border-radius: 22px;
+    }
+
+    .recycle-machine {
+        min-height: 154px;
+        grid-template-columns: 82px minmax(0, 1fr) 62px;
+        padding: 10px;
+    }
+
+    .recycle-stack {
+        height: 102px;
+    }
+
+    .recycle-mini {
+        width: 58px;
+        height: 58px;
+        border-radius: 14px;
+    }
+
+    .recycle-mini.r2 {
+        left: 14px;
+        top: 22px;
+    }
+
+    .recycle-mini.r3 {
+        left: 28px;
+        top: 42px;
+    }
+
+    .recycle-ticket {
+        width: 58px;
+        height: 48px;
+        border-radius: 13px;
+    }
+
+    .recycle-title {
+        font-size: 20px;
+    }
+}
