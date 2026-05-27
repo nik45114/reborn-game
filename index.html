@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=108">
+    <link rel="stylesheet" href="style.css?v=109">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -14,10 +14,13 @@
     <div id="app">
         <!-- Header -->
         <div class="header">
-            <div class="header-title">⚡ RE:BORN — Собери ПК</div>
-            <div class="header-stats">
-                <span class="stat">🪙 <span id="bonus-points">0</span></span>
-                <span class="stat">🎫 <span id="tickets">2</span></span>
+            <div class="header-brand" aria-label="RE:BORN">
+                <span class="brand-mark">R</span>
+                <span class="brand-text">RE:BORN</span>
+            </div>
+            <div class="header-stats" aria-label="Resources">
+                <span class="stat"><span id="bonus-points">0</span><span class="stat-icon" aria-hidden="true">&#129689;</span></span>
+                <span class="stat stat-ticket"><span id="tickets">2</span><span class="stat-icon" aria-hidden="true">&#127915;</span></span>
             </div>
         </div>
 
@@ -135,7 +138,7 @@
 
         <!-- Version + admin badge. Lives INSIDE #app so it's parsed before
              the scripts run; otherwise game.js's getElementById returns null. -->
-        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=142</div>
+        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=143</div>
     </div>
 
     <!-- Force-refetch on every load — Telegram WebView caches scripts very
