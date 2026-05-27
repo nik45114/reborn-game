@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=155 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=156 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1589,32 +1589,35 @@ function showRecycleAnimation(model, sample) {
     const modal = document.createElement("div");
     modal.className = "recycle-modal";
     modal.innerHTML = `
-        <div class="recycle-content" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
-            <div class="recycle-topline">
-                <span>Станция переработки</span>
-                <strong>+1 билет</strong>
+        <div class="recycle-content recycle-clear" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
+            <div class="recycle-clear-head">
+                <span>Переработка дубликатов</span>
+                <strong>+1 попытка</strong>
             </div>
-            <div class="recycle-machine" aria-hidden="true">
-                <div class="recycle-stack">
-                    <span class="recycle-mini r1"><img src="${imgSrc}" alt=""></span>
-                    <span class="recycle-mini r2"><img src="${imgSrc}" alt=""></span>
-                    <span class="recycle-mini r3"><img src="${imgSrc}" alt=""></span>
+            <div class="recycle-formula">
+                <div class="recycle-formula-card recycle-formula-left">
+                    <div class="recycle-dupe-images" aria-hidden="true">
+                        <span><img src="${imgSrc}" alt=""></span>
+                        <span><img src="${imgSrc}" alt=""></span>
+                        <span><img src="${imgSrc}" alt=""></span>
+                    </div>
+                    <b>3 дубликата</b>
+                    <small>${safeModel}</small>
                 </div>
-                <div class="recycle-core">
-                    <span></span>
-                </div>
-                <div class="recycle-ticket">
-                    <b>1</b>
+                <div class="recycle-formula-arrow" aria-hidden="true">→</div>
+                <div class="recycle-formula-card recycle-formula-right">
+                    <div class="recycle-ticket-big" aria-hidden="true">
+                        <b>+1</b>
+                        <span>билет</span>
+                    </div>
+                    <b>Новая попытка</b>
+                    <small>добавлена в счетчик</small>
                 </div>
             </div>
-            <div class="recycle-copy">
-                <div class="recycle-title">Дубликаты обменяны</div>
-                <div class="recycle-desc">
-                    <b>3×</b> <span>${safeModel}</span>
-                </div>
-                <div class="recycle-bonus">Получена 1 попытка</div>
+            <div class="recycle-clear-summary">
+                Списали 3 дубликата и вернули 1 попытку.
             </div>
-            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Забрать</button>
+            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Понятно</button>
         </div>
     `;
     document.body.appendChild(modal);
