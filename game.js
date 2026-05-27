@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=157 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=167 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1093,24 +1093,68 @@ document.getElementById("btn-drop").addEventListener("click", () => {
 // ========== UI: ASSEMBLE ==========
 
 document.getElementById("btn-assemble").addEventListener("click", () => {
+    const resultPower = getBuildPower();
     const tier = assembleBuild();
     if (!tier) return;
 
-    const modal = document.createElement("div");
-    modal.className = "result-modal";
-    modal.innerHTML = `
-        <div class="result-content">
-            <div class="result-emoji">${tier.emoji}</div>
-            <div class="result-title">${tier.name}</div>
-            <div class="result-stars">${"⭐".repeat(tier.stars)}</div>
-            <div class="result-bonus">+${tier.bonus} бонусных баллов! 🪙</div>
-            <button class="result-btn" onclick="this.closest('.result-modal').remove()">Отлично!</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
+    showBuildResult(tier, resultPower);
 
     renderCase();
 });
+
+function showBuildResult(tier, power) {
+    const modal = document.createElement("div");
+    modal.className = "result-modal";
+    const isUltimate = tier.stars === 5;
+    const stars = Array.from({ length: 5 }, (_, i) =>
+        `<span class="${i < tier.stars ? "active" : ""}"></span>`
+    ).join("");
+    modal.innerHTML = `
+        <div class="result-content result-finish tier-${tier.stars} ${isUltimate ? "result-ultimate" : ""}">
+            ${isUltimate ? `
+                <div class="ultimate-burst" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+            ` : ""}
+            <div class="result-head">
+                <span>${isUltimate ? "Лучший результат" : "Сборка готова"}</span>
+                <strong>+${tier.bonus}</strong>
+            </div>
+            ${isUltimate ? `
+                <div class="ultimate-complete-panel" aria-hidden="true">
+                    <div class="ultimate-complete-score">
+                        <strong>6/6</strong>
+                        <span>легендарных деталей</span>
+                    </div>
+                    <div class="ultimate-slot-chips">
+                        <b>CPU</b><b>GPU</b><b>RAM</b><b>MB</b><b>БП</b><b>FAN</b>
+                    </div>
+                </div>
+            ` : `
+                <div class="result-rig" aria-hidden="true">
+                    <span class="result-rig-screen"></span>
+                    <span class="result-rig-spark"></span>
+                </div>
+            `}
+            <h2 class="result-title">${isUltimate ? "Сборка максимальной мощности" : tier.name}</h2>
+            ${isUltimate ? `
+                <div class="ultimate-label">${tier.name}</div>
+            ` : ""}
+            <div class="result-stars" aria-label="${tier.stars} из 5">${stars}</div>
+            <div class="result-reward">
+                <span>${isUltimate ? "Бонус за максимум" : "Начислено"}</span>
+                <strong>+${tier.bonus}</strong>
+                <small>бонусных баллов</small>
+            </div>
+            <div class="result-meta">
+                <span>Мощность <b>${power}</b></span>
+                <span>Класс <b>${isUltimate ? "Ultimate" : `${tier.stars}/5`}</b></span>
+            </div>
+            <button class="result-btn" onclick="this.closest('.result-modal').remove()">${isUltimate ? `Забрать +${tier.bonus}` : "Забрать бонус"}</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
 
 // ========== UI: INVENTORY ==========
 
@@ -1582,7 +1626,18 @@ function renderBlueprint() {
     svg.innerHTML = html;
 }
 
-// ========== RECYCLE (3 duplicates → +1 ticket) ==========
+// ========== RECYCLE (3 duplicates → ticket reward) ==========
+
+function recycleTicketReward(sample) {
+    if (!sample) return 1;
+    if (sample.rarity === "legendary") return 3;
+    if (sample.rarity === "epic") return 2;
+    return 1;
+}
+
+function ticketWord(n) {
+    return n === 1 ? "билет" : "билета";
+}
 
 function checkRecycle(model) {
     const dupes = state.inventory.filter(i => i.model === model);
@@ -1600,21 +1655,26 @@ function checkRecycle(model) {
         if (idx !== -1) state.inventory.splice(idx, 1);
     }
 
-    // Grant ticket
-    state.tickets++;
+    // Grant tickets: legendary duplicates are worth more.
+    const rewardTickets = recycleTicketReward(toRemove[0]);
+    state.tickets += rewardTickets;
     saveState();
     updateTicketTimer();
     renderCase();
 
     // Show recycle animation
-    showRecycleAnimation(model, toRemove[0]);
+    showRecycleAnimation(model, toRemove[0], rewardTickets);
 }
 
-function showRecycleAnimation(model, sample) {
+function showRecycleAnimation(model, sample, rewardTickets) {
+    rewardTickets = rewardTickets || recycleTicketReward(sample);
     const cat = CATEGORIES[sample.category];
     const rar = RARITIES[sample.rarity] || RARITIES.common;
     const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[sample.rarity] || 1;
     const imgSrc = "preview-" + sample.category + "-" + rarityNum + ".png";
+    const word = ticketWord(rewardTickets);
+    const earnedLabel = rewardTickets === 1 ? "Билет получен" : `${rewardTickets} билета получено`;
+    const buttonLabel = rewardTickets === 1 ? "Забрать билет" : `Забрать ${rewardTickets} билета`;
     const safeModel = String(model).replace(/[&<>"']/g, ch => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     })[ch]);
@@ -1622,35 +1682,36 @@ function showRecycleAnimation(model, sample) {
     const modal = document.createElement("div");
     modal.className = "recycle-modal";
     modal.innerHTML = `
-        <div class="recycle-content recycle-clear" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
-            <div class="recycle-clear-head">
-                <span>Переработка дубликатов</span>
-                <strong>+1 попытка</strong>
+        <div class="recycle-content recycle-clear recycle-result" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
+            <div class="recycle-result-head">
+                <span>Переработка</span>
+                <strong>+${rewardTickets} 🎫</strong>
             </div>
-            <div class="recycle-formula">
-                <div class="recycle-formula-card recycle-formula-left">
-                    <div class="recycle-dupe-images" aria-hidden="true">
+            <h2 class="recycle-result-title">3 детали → ${rewardTickets} ${word}</h2>
+            <div class="recycle-result-stage">
+                <div class="recycle-spent" aria-label="Списано 3 дубликата">
+                    <div class="recycle-stack" aria-hidden="true">
                         <span><img src="${imgSrc}" alt=""></span>
                         <span><img src="${imgSrc}" alt=""></span>
                         <span><img src="${imgSrc}" alt=""></span>
+                        <em>×3</em>
                     </div>
-                    <b>3 дубликата</b>
-                    <small>${safeModel}</small>
+                    <b>${cat.name}</b>
                 </div>
-                <div class="recycle-formula-arrow" aria-hidden="true">→</div>
-                <div class="recycle-formula-card recycle-formula-right">
+                <div class="recycle-convert" aria-hidden="true"></div>
+                <div class="recycle-earned" aria-label="Получено ${rewardTickets} ${word}">
                     <div class="recycle-ticket-big" aria-hidden="true">
-                        <b>+1</b>
-                        <span>билет</span>
+                        <b>${rewardTickets}</b>
+                        <span>🎫</span>
                     </div>
-                    <b>Новая попытка</b>
-                    <small>добавлена в счетчик</small>
+                    <b>${earnedLabel}</b>
                 </div>
             </div>
-            <div class="recycle-clear-summary">
-                Списали 3 дубликата и вернули 1 попытку.
+            <div class="recycle-model-line">
+                <span>Списано:</span>
+                <strong>${safeModel}</strong>
             </div>
-            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Понятно</button>
+            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">${buttonLabel}</button>
         </div>
     `;
     document.body.appendChild(modal);
@@ -1851,8 +1912,13 @@ function init() {
         Telegram.WebApp.expand();
     }
 
-    // Check daily login bonus
-    setTimeout(() => checkDailyLogin(), 500);
+    const demoMode = IS_ADMIN && new URLSearchParams(window.location.search).get("demo") === "ultimate";
+    if (demoMode) {
+        setTimeout(() => showBuildResult(BUILD_TIERS[BUILD_TIERS.length - 1], 642), 200);
+    } else {
+        // Check daily login bonus
+        setTimeout(() => checkDailyLogin(), 500);
+    }
 }
 
 init();
