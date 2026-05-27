@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=157 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=158 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1622,35 +1622,36 @@ function showRecycleAnimation(model, sample) {
     const modal = document.createElement("div");
     modal.className = "recycle-modal";
     modal.innerHTML = `
-        <div class="recycle-content recycle-clear" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
-            <div class="recycle-clear-head">
-                <span>Переработка дубликатов</span>
-                <strong>+1 попытка</strong>
+        <div class="recycle-content recycle-clear recycle-result" style="--rarity:${rar.color};--rarity-soft:${rar.color}24">
+            <div class="recycle-result-head">
+                <span>Переработка</span>
+                <strong>+1 🎫</strong>
             </div>
-            <div class="recycle-formula">
-                <div class="recycle-formula-card recycle-formula-left">
-                    <div class="recycle-dupe-images" aria-hidden="true">
+            <h2 class="recycle-result-title">3 детали → 1 билет</h2>
+            <div class="recycle-result-stage">
+                <div class="recycle-spent" aria-label="Списано 3 дубликата">
+                    <div class="recycle-stack" aria-hidden="true">
                         <span><img src="${imgSrc}" alt=""></span>
                         <span><img src="${imgSrc}" alt=""></span>
                         <span><img src="${imgSrc}" alt=""></span>
+                        <em>×3</em>
                     </div>
-                    <b>3 дубликата</b>
-                    <small>${safeModel}</small>
+                    <b>${cat.name}</b>
                 </div>
-                <div class="recycle-formula-arrow" aria-hidden="true">→</div>
-                <div class="recycle-formula-card recycle-formula-right">
+                <div class="recycle-convert" aria-hidden="true"></div>
+                <div class="recycle-earned" aria-label="Получен 1 билет">
                     <div class="recycle-ticket-big" aria-hidden="true">
-                        <b>+1</b>
-                        <span>билет</span>
+                        <b>1</b>
+                        <span>🎫</span>
                     </div>
-                    <b>Новая попытка</b>
-                    <small>добавлена в счетчик</small>
+                    <b>Билет получен</b>
                 </div>
             </div>
-            <div class="recycle-clear-summary">
-                Списали 3 дубликата и вернули 1 попытку.
+            <div class="recycle-model-line">
+                <span>Списано:</span>
+                <strong>${safeModel}</strong>
             </div>
-            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Понятно</button>
+            <button class="recycle-btn" onclick="this.closest('.recycle-modal').remove()">Забрать билет</button>
         </div>
     `;
     document.body.appendChild(modal);
