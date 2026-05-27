@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=89">
+    <link rel="stylesheet" href="style.css?v=118">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -14,10 +14,12 @@
     <div id="app">
         <!-- Header -->
         <div class="header">
-            <div class="header-title">⚡ RE:BORN — Собери ПК</div>
-            <div class="header-stats">
-                <span class="stat">🪙 <span id="bonus-points">0</span></span>
-                <span class="stat">🎫 <span id="tickets">2</span>/2</span>
+            <div class="header-brand" aria-label="RE:BORN">
+                <span class="brand-text"><span>RE</span><span class="brand-colon">:</span><span>BORN</span></span>
+            </div>
+            <div class="header-stats" aria-label="Resources">
+                <span class="stat stat-coin"><span class="stat-value" id="bonus-points">0</span><span class="coin-glyph" aria-hidden="true"></span></span>
+                <span class="stat stat-ticket"><span class="stat-value" id="tickets">2</span><span class="ticket-glyph" aria-hidden="true"></span></span>
             </div>
         </div>
 
@@ -39,32 +41,53 @@
                 <div class="pc-desk"></div>
             </div>
 
-            <!-- Drop button under case image -->
-            <div class="action-area">
-                <button class="btn-drop" id="btn-drop">
-                    <span class="btn-drop-icon">📦</span>
-                    <span class="btn-drop-text">Выбить деталь</span>
-                    <span class="btn-drop-sub" id="drop-sub">🎫 2 попытки</span>
+            <div class="main-control-deck">
+                <div class="deck-actions">
+                    <button class="btn-drop" id="btn-drop">
+                        <span class="btn-drop-text">Выбить</span>
+                        <span class="btn-drop-sub" id="drop-sub"><b>2</b><span class="ticket-total">/100</span> 🎫</span>
+                    </button>
+                    <button class="btn-assemble" id="btn-assemble" disabled>
+                        <span class="assemble-mark">⚡</span>
+                        <span class="assemble-label">Собрать ПК</span>
+                    </button>
+                </div>
+
+                <div class="deck-status">
+                    <div class="ticket-timer" id="ticket-timer"></div>
+                </div>
+
+                <button class="build-summary" id="build-summary" type="button">
+                    <span id="build-summary-title">Сборка 0/6</span>
+                    <span id="build-summary-power">⚡0</span>
                 </button>
             </div>
-            <div class="ticket-timer" id="ticket-timer"></div>
 
-            <!-- Components grid -->
-            <div class="comp-grid" id="comp-grid"></div>
-        </div>
-
-        <!-- Assemble -->
-        <div class="action-area">
-            <button class="btn-assemble" id="btn-assemble" disabled>
-                <span>⚡ Собрать ПК</span>
-            </button>
+            <div class="build-sheet hidden" id="build-sheet">
+                <div class="build-sheet-card">
+                    <div class="build-sheet-header">
+                        <span>Слоты сборки</span>
+                        <button class="build-sheet-close" id="build-sheet-close" type="button">×</button>
+                    </div>
+                    <div class="comp-grid" id="comp-grid"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Bottom tabs -->
-        <div class="bottom-tabs">
-            <button class="btab active" data-tab="main">🖥 Сборка</button>
-            <button class="btab" data-tab="inventory">🎒 Детали</button>
-            <button class="btab" data-tab="rating">🏆 Рейтинг</button>
+        <div class="bottom-tabs" aria-label="Навигация">
+            <button class="btab active" data-tab="main" type="button">
+                <span class="btab-icon btab-icon-main" aria-hidden="true"></span>
+                <span class="btab-label">Сборка</span>
+            </button>
+            <button class="btab" data-tab="inventory" type="button">
+                <span class="btab-icon btab-icon-inventory" aria-hidden="true"></span>
+                <span class="btab-label">Детали</span>
+            </button>
+            <button class="btab" data-tab="rating" type="button">
+                <span class="btab-icon btab-icon-rating" aria-hidden="true"></span>
+                <span class="btab-label">Рейтинг</span>
+            </button>
         </div>
 
         <!-- Inventory -->
@@ -123,7 +146,7 @@
 
         <!-- Version + admin badge. Lives INSIDE #app so it's parsed before
              the scripts run; otherwise game.js's getElementById returns null. -->
-        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=123</div>
+        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=152</div>
     </div>
 
     <!-- Force-refetch on every load — Telegram WebView caches scripts very

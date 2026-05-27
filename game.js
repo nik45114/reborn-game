@@ -9,6 +9,15 @@ const CATEGORIES = {
     cool: { name: "Охлаждение",   icon: "❄️" }
 };
 
+const SLOT_LABELS = {
+    cpu: "CPU",
+    gpu: "GPU",
+    ram: "RAM",
+    mb: "Плата",
+    psu: "БП",
+    cool: "Кулер"
+};
+
 const RARITIES = {
     common:    { name: "Обычная",    chance: 0.45, color: "#9ca3af", power: [10, 30] },
     rare:      { name: "Редкая",     chance: 0.30, color: "#3b82f6", power: [31, 60] },
@@ -131,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=123 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=152 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -322,10 +331,10 @@ function updateTicketTimer() {
     const dropSub = document.getElementById("drop-sub");
     const dropBtn = document.getElementById("btn-drop");
     const locked = isLocked();
-
-    dropSub.textContent = locked
-        ? "🔒 Жди разблокировки"
-        : `🎫 ${state.tickets} попыт${state.tickets === 1 ? "ка" : "ки"}`;
+    const ticketLimitLabel = IS_ADMIN ? "∞" : MAX_TICKETS;
+    dropSub.innerHTML = locked
+        ? "🔒"
+        : `<b>${state.tickets}</b><span class="ticket-total">/${ticketLimitLabel}</span> 🎫`;
     dropBtn.disabled = locked || state.tickets <= 0;
 
     if (IS_ADMIN) {
@@ -340,7 +349,7 @@ function updateTicketTimer() {
     const remaining = msUntilNextRefill();
     const hrs = Math.floor(remaining / 3600000);
     const min = Math.floor((remaining % 3600000) / 60000);
-    el.textContent = `+5 купонов в 12:00 МСК (через ${hrs}ч ${min.toString().padStart(2,"0")}м) — копятся до ${USER_TICKET_CAP}`;
+    el.textContent = `+5 в 12:00 МСК · через ${hrs}ч ${min.toString().padStart(2,"0")}м · до ${USER_TICKET_CAP}`;
 }
 
 // ========== DROP ==========
@@ -554,24 +563,34 @@ function renderCase() {
     const grid = document.getElementById("comp-grid");
     if (grid) {
         const slotOrder = ["cpu", "gpu", "ram", "mb", "psu", "cool"];
-        grid.innerHTML = slotOrder.map(slot => {
+        const cards = slotOrder.map(slot => {
             const comp = state.currentBuild[slot];
-            const cat = CATEGORIES[slot];
 
             if (comp) {
                 filledCount++;
                 const rar = RARITIES[comp.rarity];
                 return `
-                    <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}">
-                        <div class="comp-slot-icon">${cat.icon}</div>
-                        <div class="comp-slot-power" style="color:${rar.color}">⚡${comp.power}</div>
+                    <div class="comp-slot filled ${comp.rarity}" data-slot="${slot}" style="--slot-color:${rar.color}">
+                        <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                        <div class="comp-slot-value">⚡${comp.power}</div>
                     </div>`;
             }
             return `
                 <div class="comp-slot empty" data-slot="${slot}">
-                    <div class="comp-slot-icon">${cat.icon}</div>
+                    <div class="comp-slot-name">${SLOT_LABELS[slot]}</div>
+                    <div class="comp-slot-value">пусто</div>
                 </div>`;
-        }).join("");
+        });
+        grid.innerHTML = cards.join("");
+    }
+
+    const buildSummary = document.getElementById("build-summary");
+    const buildSummaryTitle = document.getElementById("build-summary-title");
+    const buildSummaryPower = document.getElementById("build-summary-power");
+    if (buildSummary && buildSummaryTitle && buildSummaryPower) {
+        buildSummaryTitle.textContent = `Сборка ${filledCount}/6`;
+        buildSummaryPower.textContent = `⚡${power}`;
+        buildSummary.classList.toggle("complete", isBuildComplete());
     }
 
     // Slot click — open slot inventory popup
@@ -585,14 +604,21 @@ function renderCase() {
     }
 
     // Update build bar
-    document.getElementById("build-tier-name").textContent = tier.emoji + " " + tier.name;
+    document.getElementById("build-tier-name").textContent = tier.name;
     document.getElementById("build-power").textContent = "⚡" + power + " · " + filledCount + "/6";
 
     const maxPower = 700;
     document.getElementById("build-progress").style.width = Math.min(100, (power / maxPower) * 100) + "%";
 
     // Assemble button — disabled if build incomplete OR player locked for this window
-    document.getElementById("btn-assemble").disabled = !isBuildComplete() || isLocked();
+    const assembleBtn = document.getElementById("btn-assemble");
+    assembleBtn.disabled = !isBuildComplete() || isLocked();
+    const assembleLabel = assembleBtn.querySelector(".assemble-label") || assembleBtn.querySelector("span");
+    if (assembleLabel) {
+        assembleLabel.textContent = isBuildComplete()
+            ? "Собрать ПК"
+            : `Собрать · ${filledCount}/6`;
+    }
 
     document.getElementById("bonus-points").textContent = state.bonusPoints;
 }
@@ -924,13 +950,24 @@ function flyFromCardToCase(cardEl, comp) {
 // ========== UI: TABS ==========
 
 const mainView = document.querySelector(".case-container");
-// There are TWO .action-area divs (drop button + assemble button) — both
-// must be hidden when leaving the main tab.
+// Legacy action areas may be absent after the control deck redesign.
 const actionAreas = document.querySelectorAll(".action-area");
 const timerEl = document.querySelector(".ticket-timer");
+const buildSheet = document.getElementById("build-sheet");
+const buildSummary = document.getElementById("build-summary");
+const buildSheetClose = document.getElementById("build-sheet-close");
+
+function closeBuildSheet() {
+    if (buildSheet) buildSheet.classList.add("hidden");
+}
+
+function openBuildSheet() {
+    if (buildSheet) buildSheet.classList.remove("hidden");
+}
 
 document.querySelectorAll(".btab").forEach(tab => {
     tab.addEventListener("click", () => {
+        closeBuildSheet();
         document.querySelectorAll(".btab").forEach(t => t.classList.remove("active"));
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         tab.classList.add("active");
@@ -950,6 +987,20 @@ document.querySelectorAll(".btab").forEach(tab => {
         }
     });
 });
+
+if (buildSummary) {
+    buildSummary.addEventListener("click", openBuildSheet);
+}
+
+if (buildSheetClose) {
+    buildSheetClose.addEventListener("click", closeBuildSheet);
+}
+
+if (buildSheet) {
+    buildSheet.addEventListener("click", (e) => {
+        if (e.target === buildSheet) closeBuildSheet();
+    });
+}
 
 // ========== UI: DROP BUTTON ==========
 
@@ -984,26 +1035,24 @@ document.getElementById("btn-assemble").addEventListener("click", () => {
 // ========== UI: INVENTORY ==========
 
 let invActiveCategory = "cpu";
+const INV_TAB_CODES = { cpu: "CPU", gpu: "GPU", ram: "RAM", mb: "MB", psu: "БП", cool: "FAN" };
+const INV_TAB_NAMES = { cpu: "Процессор", gpu: "Видеокарта", ram: "Оперативка", mb: "Мат. плата", psu: "Питание", cool: "Охлаждение" };
 
 function renderInvTabs() {
     const tabsEl = document.getElementById("inv-tabs");
-    tabsEl.style.cssText = "display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px";
+    tabsEl.removeAttribute("style");
     const catKeys = Object.keys(CATEGORIES);
     tabsEl.innerHTML = catKeys.map(key => {
         const cat = CATEGORIES[key];
+        const label = INV_TAB_CODES[key] || SLOT_LABELS[key] || key.toUpperCase();
+        const name = INV_TAB_NAMES[key] || cat.name;
         const count = state.inventory.filter(i => i.category === key).length;
         const isActive = key === invActiveCategory;
-        const bg = isActive ? "var(--accent)" : "var(--bg2)";
-        const fg = isActive ? "#0a0a0a" : "#fff";
-        const sub = isActive ? "rgba(0,0,0,0.55)" : "var(--text2)";
-        const border = isActive ? "transparent" : "rgba(255,255,255,0.06)";
         return `
-            <button class="invtab2 ${isActive ? 'invtab2-active' : ''}" data-cat="${key}"
-                    style="background:${bg};color:${fg};border:1px solid ${border};border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-family:inherit;position:relative;min-height:78px">
-                <span style="font-size:24px;line-height:1">${cat.icon}</span>
-                <span style="font-size:12px;font-weight:700;line-height:1.1;text-align:center">${cat.name}</span>
-                <span style="font-size:11px;color:${sub};font-weight:600">${count} шт.</span>
-                ${count > 0 ? `<span style="position:absolute;top:6px;right:8px;background:${isActive ? '#0a0a0a' : 'var(--accent)'};color:${isActive ? 'var(--accent)' : '#0a0a0a'};font-size:10px;font-weight:800;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center">${count}</span>` : ''}
+            <button class="invtab2 ${isActive ? 'invtab2-active' : ''}" data-cat="${key}" type="button" aria-pressed="${isActive}">
+                <span class="invtab2-code">${label}</span>
+                <span class="invtab2-count">${count}</span>
+                <span class="invtab2-name">${name}</span>
             </button>
         `;
     }).join("");
@@ -1037,10 +1086,10 @@ function _renderInventoryListImpl(list) {
 
     if (!items.length) {
         list.innerHTML = `
-            <div style="text-align:center;padding:40px 20px;border:2px dashed rgba(255,255,255,0.08);border-radius:14px;margin-top:8px">
-                <div style="font-size:48px;margin-bottom:10px;opacity:.5">${cat.icon}</div>
-                <div style="font-size:15px;font-weight:600;margin-bottom:6px">Нет деталей: ${cat.name}</div>
-                <div style="font-size:12px;color:var(--text2)">Открой вкладку «🖥 Сборка» и тапай «📦 Выбить деталь», чтобы наполнить склад.</div>
+            <div class="inv-empty-panel">
+                <div class="inv-empty-code">${SLOT_LABELS[invActiveCategory] || invActiveCategory.toUpperCase()}</div>
+                <div class="inv-empty-title">Пока пусто</div>
+                <div class="inv-empty-copy">Выбей деталь на сборке, и она появится здесь.</div>
             </div>
         `;
         return;
@@ -1054,29 +1103,26 @@ function _renderInventoryListImpl(list) {
         // whole list doesn't blow up on a single bad item.
         const rar = RARITIES[item.rarity] || RARITIES.common;
         const inBuild = current && current.id === item.id;
-        const cardBg = inBuild
-            ? `linear-gradient(135deg, ${rar.color}33, var(--bg2))`
-            : item.rarity === "legendary"
-                ? "linear-gradient(135deg, #1a1000, var(--bg2))"
-                : "var(--bg2)";
+        const rarityNum = { common: 1, rare: 2, epic: 3, legendary: 4 }[item.rarity] || 1;
+        const imgSrc = "preview-" + item.category + "-" + rarityNum + ".png";
         return `
-            <div class="invcard2 ${inBuild ? 'invcard2-eq' : ''}" data-item-id="${item.id}"
-                 style="background:${cardBg};border-radius:16px;border:2px solid ${rar.color};padding:16px;display:flex;align-items:center;gap:14px;cursor:${inBuild ? 'default' : 'pointer'};margin:8px 0;box-shadow:0 2px 12px ${rar.color}22">
-                <div style="font-size:42px;min-width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:${rar.color}22;border-radius:12px;border:1px solid ${rar.color}55">
-                    ${cat.icon}
-                </div>
-                <div style="flex:1;min-width:0">
-                    <div style="font-size:16px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px">${item.model}</div>
-                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-                        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:${rar.color};color:#000;text-transform:uppercase;letter-spacing:.3px">${rar.name}</span>
-                        ${inBuild ? `<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;background:#22c55e;color:#000">🖥 В СБОРКЕ</span>` : ""}
-                    </div>
-                </div>
-                <div style="text-align:center;min-width:62px;padding-left:6px;border-left:1px solid rgba(255,255,255,0.08)">
-                    <div style="font-size:22px;font-weight:900;color:${rar.color};line-height:1">${item.power}</div>
-                    <div style="font-size:10px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px">⚡ мощн.</div>
-                </div>
-            </div>
+            <button class="invcard2 ${inBuild ? 'invcard2-eq' : ''}" data-item-id="${item.id}" type="button"
+                    style="--rarity:${rar.color};--rarity-soft:${rar.color}24" ${inBuild ? 'aria-pressed="true"' : ''}>
+                <span class="invcard2-media">
+                    <img src="${imgSrc}" alt="" onerror="this.replaceWith(document.createTextNode('${cat.icon}'))">
+                </span>
+                <span class="invcard2-main">
+                    <span class="invcard2-model">${item.model}</span>
+                    <span class="invcard2-meta">
+                        <span class="invcard2-rarity">${rar.name}</span>
+                        ${inBuild ? `<span class="invcard2-equipped">В сборке</span>` : ""}
+                    </span>
+                </span>
+                <span class="invcard2-power">
+                    <strong>${item.power}</strong>
+                    <span>мощн.</span>
+                </span>
+            </button>
         `;
     }).join("");
 
@@ -1219,82 +1265,154 @@ async function fetchRanking() {
 
 function _myTgId() {
     try {
-        return (window.Telegram && Telegram.WebApp
+        const tgId = (window.Telegram && Telegram.WebApp
             && Telegram.WebApp.initDataUnsafe
             && Telegram.WebApp.initDataUnsafe.user
             && Telegram.WebApp.initDataUnsafe.user.id) || null;
+        if (tgId) return tgId;
+        const params = new URLSearchParams(window.location.search);
+        return params.get("tg") || params.get("tg_id") || params.get("user_id") || null;
     } catch (e) { return null; }
 }
 
 async function renderRating() {
     const tiersEl = document.getElementById("rating-tiers");
-    tiersEl.innerHTML = `<div class="rating-loading" style="padding:12px;color:var(--text2);text-align:center">Загружаю рейтинг…</div>`;
+    const histEl = document.getElementById("builds-history");
+    tiersEl.innerHTML = `<section class="rating-panel rating-loading">Загружаю рейтинг...</section>`;
+    if (histEl) histEl.innerHTML = "";
 
     const data = await fetchRanking();
     const myId = _myTgId();
     const players = (data && Array.isArray(data.players)) ? data.players : [];
+    const escapeHtml = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[ch]);
+    const rub = (v) => Math.round(Number(v) || 0).toLocaleString("ru");
+    const pluralBuilds = (n) => {
+        const x = Math.abs(Number(n) || 0) % 100;
+        const y = x % 10;
+        if (x > 10 && x < 20) return "сборок";
+        if (y === 1) return "сборка";
+        if (y >= 2 && y <= 4) return "сборки";
+        return "сборок";
+    };
+    const buildText = (n) => `${Number(n) || 0} ${pluralBuilds(n)}`;
+    const isMyPlayer = (p) => myId != null && String(p.tg) === String(myId);
+    const rankTone = (rank) => rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "bronze" : "dark";
+    const rankLabel = (rank) => String(rank).padStart(2, "0");
 
     if (!players.length) {
         tiersEl.innerHTML = `
-            <div class="history-title" style="text-align:center;padding:14px">
-                🏆 Рейтинг игроков
-            </div>
-            <div class="history-empty" style="text-align:center;padding:14px;color:var(--text2)">
-                Пока никто не получил бонус. Будь первым!
-            </div>
+            <section class="rating-hero rating-empty-state">
+                <div class="rating-kicker">Рейтинг клуба</div>
+                <div class="rating-hero-title">Топ еще свободен</div>
+                <div class="rating-hero-sub">Собери первый ПК и забери верхнюю строку рейтинга.</div>
+            </section>
         `;
     } else {
-        const medal = (r) => r === 1 ? "🥇" : r === 2 ? "🥈" : r === 3 ? "🥉" : `<span style="opacity:.6">#${r}</span>`;
         const top = players.slice(0, 50);
-        let html = `<div class="history-title" style="padding:10px 12px;font-weight:700">🏆 Топ игроков по бонусам</div>`;
-        html += top.map(p => {
-            const isMe = myId && p.tg === myId;
-            const bg = isMe ? "background:rgba(245,158,11,0.15);border:1px solid #f59e0b" : "";
-            return `
-                <div class="history-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;margin:4px 0;${bg}">
-                    <div style="display:flex;gap:10px;align-items:center">
-                        <div style="font-size:16px;min-width:34px;text-align:center">${medal(p.rank)}</div>
-                        <div>
-                            <div style="font-weight:600">${p.name}${isMe ? " <span style=\"color:#f59e0b\">(ты)</span>" : ""}</div>
-                            <div style="font-size:11px;color:var(--text2)">${p.builds} сборок</div>
-                        </div>
-                    </div>
-                    <div style="text-align:right">
-                        <div style="color:var(--green);font-weight:700">+${p.total.toLocaleString("ru")} ₽</div>
-                    </div>
+        const totalPaid = players.reduce((sum, p) => sum + Number(p.total || 0), 0);
+        const topThree = top.slice(0, 3);
+        const rest = top.slice(3);
+        const me = players.find(isMyPlayer);
+        let html = `
+            <section class="rating-hero">
+                <div>
+                    <div class="rating-kicker">Рейтинг клуба</div>
+                    <div class="rating-hero-title">Топ по бонусам</div>
+                    <div class="rating-hero-sub">Кто чаще собирает ПК и забирает выплаты</div>
                 </div>
+                <div class="rating-hero-stats">
+                    <span><b>${players.length}</b><small>игроков</small></span>
+                    <span><b>+${rub(totalPaid)} ₽</b><small>бонусами</small></span>
+                </div>
+            </section>
+        `;
+        if (me) {
+            const myRank = Number(me.rank) || 0;
+            const myName = escapeHtml(me.name || "Игрок");
+            html += `
+                <section class="rating-self-strip">
+                    <div class="rating-self-rank">
+                        <b>${rankLabel(myRank)}</b>
+                        <small>место</small>
+                    </div>
+                    <div class="rating-self-copy">
+                        <b>Твоя позиция</b>
+                        <span>${myName} · ${buildText(me.builds)}</span>
+                    </div>
+                    <strong>+${rub(me.total)} ₽</strong>
+                </section>
+            `;
+        }
+        html += `<section class="rating-podium">`;
+        html += topThree.map(p => {
+            const isMe = isMyPlayer(p);
+            const name = escapeHtml(p.name || "Игрок");
+            const rank = Number(p.rank) || 0;
+            return `
+                <article class="rating-podium-card rank-${rank} ${isMe ? "rating-me" : ""}">
+                    <div class="rating-rank-badge ${rankTone(rank)}">
+                        <b>${rankLabel(rank)}</b>
+                        <small>место</small>
+                    </div>
+                    <div class="rating-player-main">
+                        <div class="rating-player-name">${name}${isMe ? `<span class="rating-you">ты</span>` : ""}</div>
+                        <div class="rating-player-sub">${buildText(p.builds)}</div>
+                    </div>
+                    <div class="rating-player-money">+${rub(p.total)} ₽</div>
+                </article>
             `;
         }).join("");
+        html += `</section>`;
+        if (rest.length) {
+            html += `<section class="rating-list">`;
+            html += rest.map(p => {
+                const isMe = isMyPlayer(p);
+                const name = escapeHtml(p.name || "Игрок");
+                const rank = Number(p.rank) || 0;
+                return `
+                    <article class="rating-row ${isMe ? "rating-me" : ""}">
+                        <div class="rating-row-rank">${rankLabel(rank)}</div>
+                        <div class="rating-row-info">
+                            <div class="rating-player-name">${name}${isMe ? `<span class="rating-you">ты</span>` : ""}</div>
+                            <div class="rating-player-sub">${buildText(p.builds)}</div>
+                        </div>
+                        <div class="rating-player-money">+${rub(p.total)} ₽</div>
+                    </article>
+                `;
+            }).join("");
+            html += `</section>`;
+        }
         if (data && data.generated_at) {
             const ts = new Date(data.generated_at);
-            html += `<div style="text-align:center;color:var(--text2);font-size:11px;margin-top:6px">Обновлено: ${ts.toLocaleString("ru")}</div>`;
+            html += `<div class="rating-updated">Обновлено ${ts.toLocaleString("ru")}</div>`;
         }
         tiersEl.innerHTML = html;
     }
 
-    const histEl = document.getElementById("builds-history");
     const builds = state.buildsHistory || [];
     if (!builds.length) {
         histEl.innerHTML = `
-            <div class="history-title" style="margin-top:14px">📜 Твои сборки</div>
-            <div class="history-empty">Ещё ни одной — собирай!</div>
+            <section class="my-builds-panel">
+                <div class="rating-section-title">
+                    <span>Твои сборки</span>
+                    <small>0 сборок</small>
+                </div>
+                <div class="rating-empty-card">Здесь появятся твои собранные ПК и сумма бонусов.</div>
+            </section>
         `;
         return;
     }
 
-    // Aggregate by tier so the player gets a quick at-a-glance summary
-    // without scrolling — full chronological list moves into a collapsible.
-    const tierEmojis = { 1: "🖨", 2: "🏠", 3: "🎮", 4: "🔥", 5: "👑" };
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     const sums = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     let totalBonus = 0;
-    let maxStars = 0;
     for (const b of builds) {
-        const s = b.stars || 1;
+        const s = Math.max(1, Math.min(5, Number(b.stars) || 1));
         counts[s] = (counts[s] || 0) + 1;
         sums[s] = (sums[s] || 0) + (b.bonus || 0);
         totalBonus += b.bonus || 0;
-        if (s > maxStars) maxStars = s;
     }
 
     let cards = "";
@@ -1303,40 +1421,40 @@ async function renderRating() {
         if (!c) continue;
         const tier = BUILD_TIERS[t - 1];
         cards += `
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.04);margin:4px 0">
-                <div style="font-size:22px;min-width:32px;text-align:center">${tierEmojis[t]}</div>
-                <div style="flex:1">
-                    <div style="font-weight:600">${tier.name} <span style="opacity:.6">${"⭐".repeat(t)}</span></div>
-                    <div style="font-size:11px;color:var(--text2)">собрано ${c} раз${c === 1 ? "" : c < 5 ? "а" : ""}</div>
+            <article class="my-build-tier tier-${t}">
+                <div class="my-build-mark">${t}★</div>
+                <div class="my-build-info">
+                    <div>${escapeHtml(tier ? tier.name : `${t} звезд`)}</div>
+                    <small>${buildText(c)}</small>
                 </div>
-                <div style="text-align:right;color:var(--green);font-weight:700">+${sums[t].toLocaleString("ru")} ₽</div>
-            </div>
+                <div class="rating-player-money">+${rub(sums[t])} ₽</div>
+            </article>
         `;
     }
 
     const recent = builds.slice(0, 30);
     histEl.innerHTML = `
-        <div class="history-title" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
-            <span>📜 Твои сборки</span>
-            <span style="font-size:12px;color:var(--text2)">всего ${builds.length} · +${totalBonus.toLocaleString("ru")} ₽</span>
-        </div>
-        ${cards}
-        <details style="margin-top:8px">
-            <summary style="cursor:pointer;padding:8px 12px;font-size:13px;color:var(--text2);border-radius:8px;background:rgba(255,255,255,0.03)">
-                📅 Хронология (последние ${recent.length})
-            </summary>
-            <div style="margin-top:6px">
-                ${recent.map(b => `
-                    <div class="history-item" style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;margin:3px 0;font-size:12px">
-                        <div>
-                            <span style="font-weight:600">${b.tier}</span>
-                            <span style="opacity:.5"> · ${b.date}</span>
-                        </div>
-                        <div style="color:var(--green);font-weight:600">+${b.bonus} ₽</div>
-                    </div>
-                `).join("")}
+        <section class="my-builds-panel">
+            <div class="rating-section-title">
+                <span>Твои сборки</span>
+                <small>${builds.length} · +${rub(totalBonus)} ₽</small>
             </div>
-        </details>
+            <div class="my-build-grid">${cards}</div>
+            <details class="rating-details">
+                <summary>Последние сборки (${recent.length})</summary>
+                <div class="rating-timeline">
+                    ${recent.map(b => `
+                        <article class="rating-timeline-row">
+                            <div>
+                                <b>${escapeHtml(b.tier)}</b>
+                                <small>${escapeHtml(b.date)}</small>
+                            </div>
+                            <span>+${rub(b.bonus)} ₽</span>
+                        </article>
+                    `).join("")}
+                </div>
+            </details>
+        </section>
     `;
 }
 
