@@ -166,9 +166,6 @@ function defaultState() {
         // Last bonus window we saw the player in. When this stops matching
         // currentWindowKey() we wipe any unspent accumulated tickets.
         lastSeenWindow: null,
-        // One-shot migration flags. Used to fix locks left behind by the
-        // pre-v113 inline-button bug where claims never reached the bot.
-        migratedV113: false,
         // Last consumed bot grant signature ("YYYY-MM-DD:N") so we credit
         // each ?bonus_tickets= payload at most once.
         lastClubPlayGrant: null,
@@ -1859,17 +1856,6 @@ function init() {
         state.tickets = MAX_TICKETS;
         saveState();
     }
-
-    // Until the claim flow is fully proven on the user's device we keep
-    // clearing phantom lockouts on every load — claims that the bot's
-    // bot_award_log can confirm will be added back via a future server
-    // sync. For now the safer default is "always playable".
-    if (state.lockedUntilWindow) {
-        state.lockedUntilWindow = null;
-        state.lastRefillStamp = null; // force fresh ticket refill below
-        saveState();
-    }
-    state.migratedV113 = true;
 
     // Consume bonus tickets the bot owes us for real club play. The bot
     // signs the URL with `bonus_tickets=N&grant_date=YYYY-MM-DD`; we apply
