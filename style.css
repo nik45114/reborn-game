@@ -7750,6 +7750,94 @@ body {
     }
 }
 
+/* ===== BOTTOM TABS SEPARATE BUTTONS v170 ===== */
+.bottom-tabs {
+    width: min(calc(100% - 20px), 390px);
+    height: 56px;
+    padding: 0;
+    gap: 7px;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.btab {
+    height: 54px;
+    padding: 7px 0 8px;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 16px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.074), rgba(255,255,255,0.018)),
+        rgba(10, 11, 11, 0.91) !important;
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.085) !important;
+    color: rgba(246,243,234,0.52);
+    transition:
+        transform 0.14s ease,
+        border-color 0.16s ease,
+        color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+.btab::after {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 5px;
+    width: 24px;
+    height: 2px;
+    opacity: 0;
+    transform: translateX(-50%);
+}
+
+.btab.active {
+    color: #f2d987;
+    border-color: rgba(232,199,117,0.46);
+    background:
+        linear-gradient(180deg, rgba(232,199,117,0.24), rgba(232,199,117,0.07)),
+        rgba(24, 22, 16, 0.94) !important;
+    box-shadow:
+        0 12px 24px rgba(0,0,0,0.34),
+        0 0 18px rgba(232,199,117,0.11),
+        inset 0 1px 0 rgba(255,255,255,0.13) !important;
+    text-shadow: 0 0 12px rgba(239,212,127,0.20);
+}
+
+.btab.active::after {
+    background: #efd47f;
+    box-shadow: 0 0 10px rgba(232,199,117,0.30);
+    opacity: 1;
+}
+
+.btab:active {
+    transform: translateY(1px) scale(0.985);
+}
+
+.btab:active .btab-svg,
+.btab:active .btab-label {
+    transform: none;
+}
+
+@media (max-width: 380px) {
+    .bottom-tabs {
+        width: min(calc(100% - 18px), 390px);
+        height: 54px;
+        gap: 6px;
+        padding: 0;
+    }
+
+    .btab {
+        height: 52px;
+        border-radius: 15px;
+        padding-top: 7px;
+        padding-bottom: 8px;
+    }
+}
+
 /* ===== RECYCLE IMAGE CLIPPING v160 ===== */
 .recycle-stack span,
 .recycle-dupe-images span,
