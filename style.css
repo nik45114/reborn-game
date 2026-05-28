@@ -8578,6 +8578,100 @@ body {
     }
 }
 
+/* ===== ALWAYS OPEN BUILD SLOTS v176 ===== */
+.main-control-deck {
+    gap: 7px;
+}
+
+.build-sheet.always-open,
+.build-sheet.always-open.hidden {
+    position: static;
+    inset: auto;
+    z-index: auto;
+    display: block;
+    width: 100%;
+    background: transparent;
+}
+
+.build-sheet.always-open .build-sheet-card {
+    position: static;
+    width: 100%;
+    padding: 9px;
+    transform: none;
+    border-radius: 15px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.028)),
+        rgba(9,10,10,0.80);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        0 10px 22px rgba(0,0,0,0.22);
+    backdrop-filter: none;
+}
+
+.build-sheet.always-open .build-sheet-header {
+    height: 18px;
+    margin-bottom: 7px;
+}
+
+.build-sheet.always-open .build-sheet-header > span {
+    color: rgba(246,243,234,0.78);
+    font-size: 11px;
+    font-weight: 1000;
+}
+
+.build-sheet-metrics {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(246,243,234,0.48);
+    font-size: 10px;
+    font-weight: 950;
+    line-height: 1;
+}
+
+.build-sheet-metrics #build-summary-power {
+    color: #efd47f;
+}
+
+.build-sheet.always-open .comp-grid {
+    padding: 0;
+    gap: 5px;
+}
+
+.build-sheet.always-open .comp-slot {
+    height: 34px;
+    border-radius: 11px;
+}
+
+.build-sheet.always-open .build-sheet-close {
+    display: none;
+}
+
+@media (max-width: 380px) {
+    .build-sheet.always-open .build-sheet-card {
+        padding: 8px;
+        border-radius: 14px;
+    }
+
+    .build-sheet.always-open .build-sheet-header {
+        height: 17px;
+        margin-bottom: 6px;
+    }
+
+    .build-sheet.always-open .build-sheet-header > span {
+        font-size: 10.5px;
+    }
+
+    .build-sheet-metrics {
+        font-size: 9px;
+        gap: 5px;
+    }
+
+    .build-sheet.always-open .comp-slot {
+        height: 31px;
+    }
+}
+
 /* ===== RECYCLE IMAGE CLIPPING v160 ===== */
 .recycle-stack span,
 .recycle-dupe-images span,
