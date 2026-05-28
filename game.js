@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=175 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=176 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1038,7 +1038,7 @@ const buildSummary = document.getElementById("build-summary");
 const buildSheetClose = document.getElementById("build-sheet-close");
 
 function closeBuildSheet() {
-    if (buildSheet) buildSheet.classList.add("hidden");
+    if (buildSheet && !buildSheet.classList.contains("always-open")) buildSheet.classList.add("hidden");
 }
 
 function openBuildSheet() {
