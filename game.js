@@ -140,7 +140,7 @@ function applyTier() {
                 && Telegram.WebApp.initDataUnsafe.user
                 && Telegram.WebApp.initDataUnsafe.user.id;
             const adminParam = new URLSearchParams(window.location.search).get("admin") || "—";
-            el.textContent = `v=171 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
+            el.textContent = `v=173 · ${IS_ADMIN ? "ADMIN" : "user"} · id=${id || "—"} · q=${adminParam}`;
         }
     } catch (e) {}
 }
@@ -1796,17 +1796,16 @@ function showDailyReward(reward, legendaryComp, forcedDay) {
     const rewardNote = reward.legendary
         ? "Финальный день серии"
         : "Добавлено в твой счетчик";
-    const topBadge = reward.legendary ? "Финал" : `+${tickets}`;
+    const daysLeft = Math.max(0, 7 - displayDay);
+    const seriesNote = reward.legendary
+        ? "Серия завершена"
+        : `MAX через ${daysLeft}`;
     const streakDots = DAILY_REWARDS.map((r, i) => {
         const day = i + 1;
         const done = reward.legendary ? day <= 7 : day <= displayDay;
         const current = day === displayDay;
         const isLegendary = day === 7;
-        const mark = isLegendary ? "MAX" : `+${r.tickets}`;
-        return `<div class="daily-step ${done ? "done" : ""} ${current ? "current" : ""} ${isLegendary ? "legendary" : ""}">
-            <span class="daily-step-num">${day}</span>
-            <span class="daily-step-mark">${mark}</span>
-        </div>`;
+        return `<span class="daily-dot ${done ? "done" : ""} ${current ? "current" : ""} ${isLegendary ? "legendary" : ""}">${isLegendary ? "★" : day}</span>`;
     }).join("");
     const legendaryDetails = legendaryComp ? `
         <div class="daily-legendary">
@@ -1818,29 +1817,23 @@ function showDailyReward(reward, legendaryComp, forcedDay) {
     const modal = document.createElement("div");
     modal.className = "daily-modal";
     modal.innerHTML = `
-        <div class="daily-content daily-content-v171">
-            <div class="daily-head">
-                <div>
-                    <div class="daily-kicker">Ежедневная серия</div>
-                    <div class="daily-title">Бонус получен</div>
-                </div>
-                <div class="daily-day-pill"><b>${displayDay}</b><span>/7</span></div>
+        <div class="daily-content daily-content-v172">
+            <div class="daily-v172-top">
+                <span>День ${displayDay} из 7</span>
+                <b>${seriesNote}</b>
             </div>
-            <div class="daily-streak" aria-label="Прогресс серии">${streakDots}</div>
-            <div class="daily-reward-card ${reward.legendary ? "legendary" : ""}">
-                <div class="daily-ticket-art" aria-hidden="true">
+            <div class="daily-prize-stage ${reward.legendary ? "legendary" : ""}">
+                <div class="daily-ticket-big" aria-hidden="true">
                     <span></span>
-                    <b>${reward.legendary ? "★" : tickets}</b>
+                    <b>${reward.legendary ? "★" : `+${tickets}`}</b>
                 </div>
-                <div class="daily-reward-copy">
-                    <span>Сегодня</span>
-                    <strong>${rewardTitle}</strong>
-                    <small>${rewardNote}</small>
-                </div>
-                <div class="daily-reward-badge">${topBadge}</div>
+                <div class="daily-title">Ежедневный бонус</div>
+                <div class="daily-reward-main">${rewardTitle}</div>
+                <div class="daily-reward-sub">${rewardNote}</div>
             </div>
+            <div class="daily-progress-v172" aria-label="Прогресс серии">${streakDots}</div>
             ${legendaryDetails}
-            <button class="daily-btn" onclick="this.closest('.daily-modal').remove()">Забрать бонус</button>
+            <button class="daily-btn" onclick="this.closest('.daily-modal').remove()">Забрать</button>
         </div>
     `;
     document.body.appendChild(modal);
