@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T17:26:22+00:00",
+  "generated_at": "2026-06-09T15:03:15+00:00",
   "players": [
     {
       "tg": 5046401423,
@@ -9,16 +9,16 @@
       "rank": 1
     },
     {
-      "tg": 7704310171,
-      "name": "wan†e",
+      "tg": 711296726,
+      "name": "a.koreshov",
       "builds": 3,
-      "total": 300.0,
+      "total": 350.0,
       "rank": 2
     },
     {
-      "tg": 711296726,
-      "name": "a.koreshov",
-      "builds": 2,
+      "tg": 7704310171,
+      "name": "wan†e",
+      "builds": 3,
       "total": 300.0,
       "rank": 3
     },
