@@ -172,7 +172,16 @@ function defaultState() {
         bonusPoints: 0,
         inventory: [],
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
+        // Builds that the bot's bot_award_log confirmed. Source of truth for
+        // "Твои сборки". Items are never appended here directly — they live in
+        // pendingBuilds until a URL grant (?last_credit=<client_key>) confirms
+        // them. Prevents phantom-build complaints when bot rejected the claim
+        // (anti-cheat, network, rate-limit) but we already painted +X ₽ locally.
         buildsHistory: [],
+        // Locally-claimed builds awaiting URL confirmation from the bot.
+        // Cleaned up after 48h regardless (the bot would have credited or
+        // dropped by then; older entries are evidence of nothing).
+        pendingBuilds: [],
         lastLoginDate: null,
         loginStreak: 0,
         // First-time rules modal shown once per device. Pressing the «?» button
@@ -443,10 +452,25 @@ function assembleBuild(opts) {
     const power = getBuildPower();
     const tier = getBuildTier(power);
     state.bonusPoints += tier.bonus;
-    state.buildsHistory.unshift({
+    // Generate a per-claim client key. The bot echoes confirmed keys back
+    // through ?last_credit= on the next launch URL; only then does this
+    // build graduate into buildsHistory. If the bot rejected the claim
+    // (anti-cheat / rate-limit / network) we'd never see the key come
+    // back, the pending entry expires after 48h, and "Твои сборки" stays
+    // honest — no phantom +X ₽ entries.
+    const clientKey = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : `c_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    state.pendingBuilds = state.pendingBuilds || [];
+    state.pendingBuilds.unshift({
         date: new Date().toLocaleDateString("ru"),
-        tier: tier.name, stars: tier.stars, power, bonus: tier.bonus
+        tier: tier.name, stars: tier.stars, power, bonus: tier.bonus,
+        clientKey,
+        queuedAt: Date.now(),
     });
+    // Cap pending list — 48h cleanup happens at init(), this is just a
+    // belt-and-braces against abuse.
+    if (state.pendingBuilds.length > 50) state.pendingBuilds.length = 50;
 
     const buildSnapshot = {};
     for (const slot of Object.keys(state.currentBuild)) {
@@ -483,7 +507,8 @@ function assembleBuild(opts) {
         power: power,
         build: buildSnapshot,
         auto: auto,
-        ts: Date.now()
+        ts: Date.now(),
+        client_key: clientKey,
     });
     const tg = window.Telegram && window.Telegram.WebApp;
     const hasSend = tg && typeof tg.sendData === "function";
@@ -1329,25 +1354,44 @@ function renderAdminPanel() {
         <button id="admin-clear-lock" style="padding:6px 10px;border-radius:8px;border:1px solid #f59e0b;background:transparent;color:#f59e0b;cursor:pointer">🔓 Снять блокировку</button>
         <button id="admin-full-reset" style="padding:6px 10px;border-radius:8px;border:1px solid #94a3b8;background:transparent;color:#94a3b8;cursor:pointer">💯 Полный сброс</button>
     `;
+    // Fire-and-forget audit notice to the bot so the owner sees admin-only
+    // state mutations in chat (no payload-trust needed — bot just logs).
+    function _notifyAdmin(action, extra) {
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (!tg || typeof tg.sendData !== "function") return;
+        try {
+            tg.sendData(JSON.stringify({
+                event: "admin_action",
+                action,
+                extra: extra || null,
+                ts: Date.now(),
+            }));
+        } catch (e) {}
+    }
     document.getElementById("admin-clear-inv").onclick = () => {
         if (!confirm("Удалить все детали из инвентаря и обнулить сборку?")) return;
+        const had = (state.inventory || []).length;
         state.inventory = [];
         for (const k of Object.keys(state.currentBuild)) state.currentBuild[k] = null;
         state.buildWindowKey = null;
         saveState();
         renderCase();
         renderInventory();
+        _notifyAdmin("clear_inventory", { items_removed: had });
     };
     document.getElementById("admin-clear-lock").onclick = () => {
+        const before = state.lockedUntilWindow || null;
         state.lockedUntilWindow = null;
         saveState();
         updateTicketTimer();
         renderCase();
+        _notifyAdmin("clear_lock", { was_locked_to: before });
     };
     document.getElementById("admin-full-reset").onclick = () => {
         if (!confirm("Полный сброс прогресса (включая историю сборок)?")) return;
         resetAll();
         renderInventory();
+        _notifyAdmin("full_reset", null);
     };
 }
 
@@ -1914,6 +1958,38 @@ function init() {
         state.tickets = MAX_TICKETS;
         saveState();
     }
+
+    // Promote pending builds to confirmed history when the bot tells us
+    // they were really credited. Bot encodes confirmed client_keys as
+    // `?last_credit=k1,k2,...` in the next launch URL. Also drop stale
+    // pending entries (>48h) — if the bot didn't ack in 48h, the claim
+    // is dead regardless of why (anti-cheat, rate-limit, queue drop),
+    // and a phantom build sitting there forever just confuses the player.
+    try {
+        const cutoff = Date.now() - 48 * 3600 * 1000;
+        if (Array.isArray(state.pendingBuilds) && state.pendingBuilds.length) {
+            state.pendingBuilds = state.pendingBuilds.filter(b => (b.queuedAt || 0) > cutoff);
+        } else {
+            state.pendingBuilds = [];
+        }
+        const lastCredit = new URLSearchParams(window.location.search).get("last_credit");
+        if (lastCredit) {
+            const confirmedKeys = new Set(lastCredit.split(",").filter(Boolean));
+            const remaining = [];
+            for (const b of state.pendingBuilds) {
+                if (confirmedKeys.has(b.clientKey)) {
+                    state.buildsHistory.unshift({
+                        date: b.date, tier: b.tier, stars: b.stars,
+                        power: b.power, bonus: b.bonus,
+                    });
+                } else {
+                    remaining.push(b);
+                }
+            }
+            state.pendingBuilds = remaining;
+        }
+        saveState();
+    } catch (e) {}
 
     // Consume bonus tickets the bot owes us for real club play. The bot
     // signs the URL with `bonus_tickets=N&grant_date=YYYY-MM-DD`; we apply
