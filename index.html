@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>RE:BORN — Собери ПК</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=142">
+    <link rel="stylesheet" href="style.css?v=181">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -20,6 +20,58 @@
             <div class="header-stats" aria-label="Resources">
                 <span class="stat stat-coin"><span class="stat-value" id="bonus-points">0</span><span class="coin-glyph" aria-hidden="true"></span></span>
                 <span class="stat stat-ticket"><span class="stat-value" id="tickets">2</span><span class="ticket-glyph" aria-hidden="true"></span></span>
+                <button class="rules-btn" id="rules-btn" type="button" aria-label="Правила">?</button>
+            </div>
+        </div>
+
+        <!-- Rules modal -->
+        <div class="rules-modal hidden" id="rules-modal" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+            <div class="rules-backdrop" id="rules-backdrop"></div>
+            <div class="rules-card">
+                <div class="rules-head">
+                    <span class="rules-title" id="rules-title">📖 Правила RE:BORN</span>
+                    <button class="rules-close" id="rules-close" aria-label="Закрыть">✕</button>
+                </div>
+                <div class="rules-body">
+                    <div class="rules-section">
+                        <div class="rules-h">🎫 Купоны (дропы)</div>
+                        <p>5 купонов каждый день в 12:00 МСК. Накопить можно до 100. За реальную игру в клубе бот добавляет дополнительные купоны на следующий день. Купоны живут до конца текущего периода — потом сгорают.</p>
+                    </div>
+                    <div class="rules-section">
+                        <div class="rules-h">📦 Дроп</div>
+                        <p>Каждый дроп = 1 купон → случайная деталь. Редкости: обычная / редкая / эпическая / легендарная. Чем больше дропов — тем выше шанс легендарки.</p>
+                    </div>
+                    <div class="rules-section">
+                        <div class="rules-h">🖥 Сборка ПК</div>
+                        <p>6 слотов: CPU, GPU, RAM, материнка, охлаждение, БП. Каждая деталь даёт «мощность». Сборка получает звёзды по сумме мощности:</p>
+                        <ul class="rules-tiers">
+                            <li><b>1★</b> Стартовая · <b>+25 ₽</b></li>
+                            <li><b>2★</b> Базовая · <b>+50 ₽</b></li>
+                            <li><b>3★</b> Игровая · <b>+100 ₽</b></li>
+                            <li><b>4★</b> Pro Gaming · <b>+200 ₽</b></li>
+                            <li><b>5★</b> Ultimate (все 6 легендарок) · <b>+350 ₽</b></li>
+                        </ul>
+                    </div>
+                    <div class="rules-section rules-highlight">
+                        <div class="rules-h">⏱ Выплата — раз в 15 дней</div>
+                        <p>Только <b>одна оплачиваемая сборка на период</b>. Периоды: <b>1–14</b> и <b>15–конец месяца</b> (по МСК). После «Собрать ПК» бонус падает на клубный счёт, дальше до начала следующего периода — копи детали и купоны, но «Собрать» вернётся только в новом периоде.</p>
+                    </div>
+                    <div class="rules-section">
+                        <div class="rules-h">💰 Бонусы</div>
+                        <p>Тратятся в клубе как обычные деньги: время, бар, периферия. Зачисляются на твой клубный аккаунт (нужно привязать телефон в боте). Виден баланс через «👤 Мой профиль».</p>
+                    </div>
+                    <div class="rules-section">
+                        <div class="rules-h">👥 Пригласи друга</div>
+                        <p>Кнопка «👥 Пригласить друга» в боте даёт твою личную ссылку. Когда друг привяжет телефон — <b>оба</b> получите по 5 купонов в стек.</p>
+                    </div>
+                    <div class="rules-section">
+                        <div class="rules-h">🏆 Рейтинг</div>
+                        <p>Лидерборд считается по сумме заработанных бонусов за всё время. Обновляется автоматически после каждой сборки.</p>
+                    </div>
+                </div>
+                <div class="rules-foot">
+                    <button class="rules-ok" id="rules-ok" type="button">Понятно 🚀</button>
+                </div>
             </div>
         </div>
 
@@ -165,7 +217,7 @@
 
         <!-- Version + admin badge. Lives INSIDE #app so it's parsed before
              the scripts run; otherwise game.js's getElementById returns null. -->
-        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=179</div>
+        <div id="app-version" style="position:fixed;bottom:2px;right:4px;font-size:9px;color:rgba(255,255,255,0.25);z-index:9999;pointer-events:none">v=181</div>
     </div>
 
     <!-- Force-refetch on every load — Telegram WebView caches scripts very

@@ -174,7 +174,10 @@ function defaultState() {
         currentBuild: { cpu: null, gpu: null, ram: null, mb: null, psu: null, cool: null },
         buildsHistory: [],
         lastLoginDate: null,
-        loginStreak: 0
+        loginStreak: 0,
+        // First-time rules modal shown once per device. Pressing the «?» button
+        // in the header opens it again at any time.
+        rulesShown: false,
     };
 }
 
@@ -311,10 +314,28 @@ function regenTickets() {
         state.lastRefillStamp = null; // force a fresh refill below
         saveState();
     }
-    // Daily refill: accumulate +5 per missed day, capped at USER_TICKET_CAP.
+    // Daily refill: accumulate USER_MAX_TICKETS per missed day, capped at
+    // USER_TICKET_CAP. The previous version added a flat +5 regardless of
+    // how many days had passed — players who skipped 5 days got +5, not +25,
+    // while the bot's daily-ticket nudge cheerfully claimed they'd been
+    // racking up tickets the whole time.
     const stamp = currentRefillStamp();
     if (state.lastRefillStamp !== stamp) {
-        state.tickets = Math.min(USER_TICKET_CAP, (state.tickets || 0) + USER_MAX_TICKETS);
+        let missedDays = 1;
+        if (state.lastRefillStamp) {
+            // Parse "YYYY-MM-DD" stamps as UTC midnight and count whole days
+            // between them. Clamp to 20 so a player returning from a long
+            // hiatus doesn't insta-cap from a stale stamp.
+            const prev = Date.parse(state.lastRefillStamp + "T00:00:00Z");
+            const cur = Date.parse(stamp + "T00:00:00Z");
+            if (Number.isFinite(prev) && Number.isFinite(cur) && cur > prev) {
+                missedDays = Math.min(20, Math.max(1, Math.round((cur - prev) / 86400000)));
+            }
+        }
+        state.tickets = Math.min(
+            USER_TICKET_CAP,
+            (state.tickets || 0) + USER_MAX_TICKETS * missedDays,
+        );
         state.lastRefillStamp = stamp;
         state.lastTicketTime = Date.now();
         saveState();
@@ -1086,6 +1107,33 @@ document.getElementById("btn-drop").addEventListener("click", () => {
     if (!comp) return;
     showDrop(comp);
 });
+
+// ========== UI: RULES MODAL ==========
+
+function openRules() {
+    const m = document.getElementById("rules-modal");
+    if (m) m.classList.remove("hidden");
+}
+
+function closeRules() {
+    const m = document.getElementById("rules-modal");
+    if (m) m.classList.add("hidden");
+    if (!state.rulesShown) {
+        state.rulesShown = true;
+        saveState();
+    }
+}
+
+(function wireRules() {
+    const btn = document.getElementById("rules-btn");
+    const closeBtn = document.getElementById("rules-close");
+    const okBtn = document.getElementById("rules-ok");
+    const bdrop = document.getElementById("rules-backdrop");
+    if (btn) btn.addEventListener("click", openRules);
+    if (closeBtn) closeBtn.addEventListener("click", closeRules);
+    if (okBtn) okBtn.addEventListener("click", closeRules);
+    if (bdrop) bdrop.addEventListener("click", closeRules);
+})();
 
 // ========== UI: ASSEMBLE ==========
 
@@ -1957,6 +2005,13 @@ function init() {
     } else {
         // Check daily login bonus
         setTimeout(() => checkDailyLogin(), 500);
+    }
+
+    // First-time onboarding: show the rules popup once per device. After it
+    // closes (close-X / OK / backdrop tap) we mark rulesShown=true so it
+    // never auto-opens again. The «?» button in the header always opens it.
+    if (!state.rulesShown && !IS_ADMIN) {
+        setTimeout(openRules, 700);
     }
 }
 
