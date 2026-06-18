@@ -1726,17 +1726,27 @@ const DAILY_REWARDS = [
     { day: 7, tickets: 0, label: "Легендарная деталь!", legendary: true }
 ];
 
+// Daily-login bookkeeping runs on MSK clock, NOT UTC — the bot's own
+// daily/window logic is MSK, and using UTC let players double-claim the
+// streak bonus during the 21:00–24:00 UTC window (where UTC and MSK
+// disagree on which calendar day it is).
+function _mskDateString(date) {
+    const d = date || new Date();
+    const msk = new Date(d.getTime() + 3 * 3600 * 1000);
+    return msk.toISOString().split("T")[0];
+}
+
 function getToday() {
-    return new Date().toISOString().split("T")[0];
+    return _mskDateString();
 }
 
 function checkDailyLogin() {
     const today = getToday();
     if (state.lastLoginDate === today) return; // already claimed
 
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split("T")[0];
+    const y = new Date();
+    y.setDate(y.getDate() - 1);
+    const yesterdayStr = _mskDateString(y);
 
     if (state.lastLoginDate === yesterdayStr) {
         state.loginStreak = Math.min(state.loginStreak + 1, 7);
@@ -1861,6 +1871,12 @@ function init() {
     // signs the URL with `bonus_tickets=N&grant_date=YYYY-MM-DD`; we apply
     // each (date, N) pair exactly once by remembering the last-credited
     // grant signature in localStorage.
+    //
+    // ORDER MATTERS: we persist `lastClubPlayGrant` BEFORE adding the
+    // tickets so a tab-close (or a crash) between the two writes does
+    // NOT cause a double-grant on the next open. The tickets going up
+    // is recoverable (player just re-opens and we'd notice the same
+    // grantKey is already consumed); silently re-granting is not.
     try {
         const params = new URLSearchParams(window.location.search);
         const bonus = parseInt(params.get("bonus_tickets") || "0", 10);
@@ -1868,8 +1884,9 @@ function init() {
         if (bonus > 0 && grantDate) {
             const grantKey = `${grantDate}:${bonus}`;
             if (state.lastClubPlayGrant !== grantKey && !IS_ADMIN) {
-                state.tickets = (state.tickets || 0) + bonus;
                 state.lastClubPlayGrant = grantKey;
+                saveState();
+                state.tickets = (state.tickets || 0) + bonus;
                 saveState();
                 setTimeout(() => {
                     alert(`🎮 +${bonus} купон(а) за игру в клубе сегодня!\nЗаработано в реальной игре, можно тратить тут.`);
